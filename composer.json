@@ -1,0 +1,22 @@
+{
+    "name" : "aslikeyou/pdffiller-php-client",
+    "description": "Simple client for pdffiller.com api",
+    "require": {
+        "league/oauth2-client": "^1.0",
+        "league/uri": "^4.0"
+    },
+    "require-dev": {
+        "adammbalogh/key-value-store-file": "^0.5.3",
+        "larapack/dd": "^1.0",
+        "nesbot/carbon": "^1.21",
+        "vlucas/phpdotenv": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "aslikeyou\\OAuth2\\Client\\Provider\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": { "Examples\\": "examples/" }
+    }
+}
