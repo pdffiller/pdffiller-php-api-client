@@ -25,3 +25,10 @@ require 'vendor/autoload.php';
 ## Usage
 
 For examples of usages go to [examples](https://github.com/aslikeyou/oauth2-pdffiller/tree/master/examples) dir
+
+## LICENSE
+
+This software is licensed under following MIT [license](https://github.com/aslikeyou/oauth2-pdffiller/blob/master/LICENSE)
+
+## Author
+Alex Pekhota (pekhota.alex@pdffiller.com)
