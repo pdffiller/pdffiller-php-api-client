@@ -1,7 +1,7 @@
 <?php
 
 $provider = require_once __DIR__.'/../bootstrap/initWithFabric.php';
-$fillRequestEntity = new \aslikeyou\OAuth2\Client\Provider\FillRequest($provider);
+$fillRequestEntity = new \PDFfiller\OAuth2\Client\Provider\FillRequest($provider);
 
 $e = $fillRequestEntity->create(20113290, ["access" => "full", "status" => "public", "email_required" => true,
     "name_required" => true, "custom_message" => "Custom string to show for a user",

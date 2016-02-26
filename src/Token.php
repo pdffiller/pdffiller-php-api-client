@@ -1,6 +1,6 @@
 <?php
 
-namespace aslikeyou\OAuth2\Client\Provider;
+namespace PDFfiller\OAuth2\Client\Provider;
 
 
 class Token extends BaseEntity

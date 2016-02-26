@@ -2,7 +2,7 @@
 
 $provider = require_once __DIR__.'/../bootstrap/initWithFabric.php';
 
-$fillableTemplateEntity = new \aslikeyou\OAuth2\Client\Provider\FillableTemplate($provider);
+$fillableTemplateEntity = new \PDFfiller\OAuth2\Client\Provider\FillableTemplate($provider);
 
 $e = $fillableTemplateEntity->makeFillableTemplate('20267665', [
     "Text_1"=> "Quam voluptatem quas.",

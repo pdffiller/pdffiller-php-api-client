@@ -3,7 +3,7 @@
 require_once __DIR__.'/../bootstrap/init.php';
 
 dd(md5(getenv('USER_ID').getenv('USER_EMAIL').md5(getenv('PASSWORD'))));
-/** @var \aslikeyou\OAuth2\Client\Provider\Pdffiller $provider */
+/** @var \PDFfiller\OAuth2\Client\Provider\PDFfiller $provider */
 $provider = Examples\ExampleFabric::getProvider(Examples\ExampleFabric::INTERNAL_GRANT, [
     'clientId'       => getenv('PASSWORD_GRANT_CLIENT_ID'),
     'clientSecret'   => getenv('PASSWORD_GRANT_CLIENT_SECRET'),

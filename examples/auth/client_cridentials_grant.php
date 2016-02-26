@@ -2,7 +2,7 @@
 
 require_once __DIR__.'/../bootstrap/init.php';
 
-/** @var \aslikeyou\OAuth2\Client\Provider\Pdffiller $provider */
+/** @var \PDFfiller\OAuth2\Client\Provider\PDFfiller $provider */
 $provider = Examples\ExampleFabric::getProvider(Examples\ExampleFabric::CLIENT_CRIDENTIALS_GRANT, [
     'clientId'       => getenv('CLIENT_ID'),
     'clientSecret'   => getenv('CLIENT_SECRET'),

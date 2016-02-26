@@ -1,6 +1,6 @@
 <?php
 
-namespace aslikeyou\OAuth2\Client\Provider\Grant;
+namespace PDFfiller\OAuth2\Client\Provider\Grant;
 
 use League\OAuth2\Client\Grant\Password;
 

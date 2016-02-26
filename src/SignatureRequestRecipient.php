@@ -1,6 +1,6 @@
 <?php
 
-namespace aslikeyou\OAuth2\Client\Provider;
+namespace PDFfiller\OAuth2\Client\Provider;
 
 class SignatureRequestRecipient extends BaseEntity
 {
@@ -10,10 +10,10 @@ class SignatureRequestRecipient extends BaseEntity
     private $signatureRequestId;
 
     /**
-     * @param Pdffiller $client
+     * @param PDFfiller $client
      * @param int $signatureRequestId
      */
-    public function __construct(Pdffiller $client, $signatureRequestId) {
+    public function __construct(PDFfiller $client, $signatureRequestId) {
         parent::__construct($client);
 
         $this->signatureRequestId = $signatureRequestId;

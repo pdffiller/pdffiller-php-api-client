@@ -1,18 +1,18 @@
 <?php
 
-namespace aslikeyou\OAuth2\Client\Provider;
+namespace PDFfiller\OAuth2\Client\Provider;
 
 class BaseEntity
 {
     /**
-     * @var Pdffiller
+     * @var PDFfiller
      */
     public $client;
 
     /**
      * SignatureRequest constructor.
      */
-    public function __construct(Pdffiller $client)
+    public function __construct(PDFfiller $client)
     {
         $this->client = $client;
     }

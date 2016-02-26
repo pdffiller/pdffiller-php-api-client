@@ -2,7 +2,7 @@
 
 namespace Examples;
 
-use aslikeyou\OAuth2\Client\Provider\Pdffiller;
+use PDFfiller\OAuth2\Client\Provider\PDFfiller;
 use Flintstone\Flintstone;
 use AdammBalogh\KeyValueStore\Adapter\FileAdapter;
 use AdammBalogh\KeyValueStore\KeyValueStore;
@@ -26,7 +26,7 @@ class ExampleFabric {
     ];
 
     public static function getProvider($type, $params, $accessTokenParams = []) {
-        $provider = new Pdffiller($params);
+        $provider = new PDFfiller($params);
 
         $tz = 'America/New_York';
 

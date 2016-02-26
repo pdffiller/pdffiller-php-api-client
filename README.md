@@ -12,7 +12,7 @@ System Requirements
 The library is available on Packagist and should be installed using Composer. This can be done by running the following command on a composer installed box:
 
 ```
-$ composer require aslikeyou/pdffiller-php-client
+$ composer require pdffiller/pdffiller-php-api-client
 ```
 
 Most modern frameworks will include Composer out of the box, but ensure the following file is included:
@@ -24,11 +24,11 @@ require 'vendor/autoload.php';
 
 ## Usage
 
-For examples of usages go to [examples](https://github.com/aslikeyou/oauth2-pdffiller/tree/master/examples) dir
+For examples of usages go to [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/master/examples) dir
 
 ## LICENSE
 
-This software is licensed under following MIT [license](https://github.com/aslikeyou/oauth2-pdffiller/blob/master/LICENSE)
+This software is licensed under following MIT [license](https://github.com/pdffiller/pdffiller-php-api-client/blob/master/LICENSE)
 
 ## Author
 Alex Pekhota (pekhota.alex@pdffiller.com)

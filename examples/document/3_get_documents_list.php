@@ -1,7 +1,7 @@
 <?php
 
 $provider = require_once __DIR__.'/../bootstrap/initWithFabric.php';
-$documentEntity = new \aslikeyou\OAuth2\Client\Provider\Document($provider);
+$documentEntity = new \PDFfiller\OAuth2\Client\Provider\Document($provider);
 
 $e = $documentEntity->itemsList();
 dd($e);

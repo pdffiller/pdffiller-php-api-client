@@ -1,8 +1,8 @@
 <?php
 
-namespace aslikeyou\OAuth2\Client\Provider;
+namespace PDFfiller\OAuth2\Client\Provider;
 
-use aslikeyou\OAuth2\Client\Provider\Grant\InternalGrant;
+use PDFfiller\OAuth2\Client\Provider\Grant\InternalGrant;
 use League\OAuth2\Client\Provider\GenericProvider;
 use InvalidArgumentException;
 use League\Uri\Schemes\Http as HttpUri;
@@ -14,7 +14,7 @@ use \GuzzleHttp\Psr7 as Psr7;
  * Represents a generic service provider that may be used to interact with any
  * OAuth 2.0 service provider, using Bearer token authentication.
  */
-class Pdffiller extends GenericProvider
+class PDFfiller extends GenericProvider
 {
     private $urlApiDomain;
     private $accessTokenHash;

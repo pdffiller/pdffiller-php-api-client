@@ -1,7 +1,7 @@
 <?php
 
 $provider = require_once __DIR__.'/../bootstrap/initWithFabric.php';
-$tokenEntity = new \aslikeyou\OAuth2\Client\Provider\Token($provider);
+$tokenEntity = new \PDFfiller\OAuth2\Client\Provider\Token($provider);
 
 $e = $tokenEntity->create([
     'key1' => 'value1',
