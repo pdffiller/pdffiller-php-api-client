@@ -1,5 +1,5 @@
 {
-    "name" : "aslikeyou/pdffiller-php-client",
+    "name" : "pdffiller/pdffiller-php-client",
     "description": "Simple client for pdffiller.com api",
     "require": {
         "league/oauth2-client": "^1.0",
@@ -13,7 +13,7 @@
     },
     "autoload": {
         "psr-4": {
-            "aslikeyou\\OAuth2\\Client\\Provider\\": "src/"
+            "PDFfiller\\OAuth2\\Client\\Provider\\": "src/"
         }
     },
     "autoload-dev": {
