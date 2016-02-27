@@ -23,13 +23,13 @@ require 'vendor/autoload.php';
 ```
 
 ## Quick getting started steps
-Intall required libraries using composer
+Install required libraries using composer
 ```
 cd pdffiller-php-api-client/
 composer install
 ```
 
-Edit .env file in examples dir to setclient_id and client_secret
+Edit .env file in examples dir to set client_id and client_secret
 ```
 cd examples/ 
 cp .env.example .env
