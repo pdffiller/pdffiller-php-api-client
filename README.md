@@ -22,6 +22,26 @@ Most modern frameworks will include Composer out of the box, but ensure the foll
 require 'vendor/autoload.php';
 ```
 
+## Quick getting started steps
+Intall required libraries using composer
+```
+cd pdffiller-php-api-client/
+composer install
+```
+
+Edit .env file in examples dir to setclient_id and client_secret
+```
+cd examples/ 
+cp .env.example .env
+vi .env
+```
+
+Run any example
+```
+cd signature_request/
+php 1_get_signature_request_list.php
+```
+
 ## Usage
 
 Usage examples available at [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/master/examples) dir
