@@ -24,7 +24,7 @@ require 'vendor/autoload.php';
 
 ## Usage
 
-For examples of usages go to [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/master/examples) dir
+Usage examples available at [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/master/examples) dir
 
 ## LICENSE
 
