@@ -1,7 +1,7 @@
 {
     "name" : "pdffiller/pdffiller-php-api-client",
     "description": "Simple client for pdffiller.com api",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev-master",
     "require": {
         "league/oauth2-client": "^1.0",
         "league/uri": "^4.0"
