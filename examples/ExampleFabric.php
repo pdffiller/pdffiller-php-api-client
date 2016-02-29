@@ -30,7 +30,8 @@ class ExampleFabric {
 
         $tz = 'America/New_York';
 
-        $kvs = new KeyValueStore(new FileAdapter(Flintstone::load('usersDatabase', ['dir' => '/tmp'])));
+        $tmp_dir = sys_get_temp_dir() ?: ini_get('upload_tmp_dir');
+        $kvs = new KeyValueStore(new FileAdapter(Flintstone::load('usersDatabase', ['dir' => $tmp_dir])));
         $accessTokenKey = 'access_token';
 
         if (!$kvs->has($accessTokenKey)) {
