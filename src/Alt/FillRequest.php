@@ -26,8 +26,10 @@ class FillRequest extends Model
             'access',
             'status',
             'email_required',
+            'redirect_url',
             'name_required',
             'custom_message',
+            'url',
             'notification_emails',
             'document_id',
         ];
@@ -36,15 +38,17 @@ class FillRequest extends Model
     public function rules()
     {
         return [
-            'id' => 'integer',
-            'access' => ['string', 'in:full,enhanced', 'required'],
+            'access' => ['string', 'in:full,signature'],
             'status' => ['string', 'in:public,private', 'required'],
-            'email_required' => ['boolean', 'required'],
-            'name_required' => ['boolean', 'required'],
-            'custom_message' => ['string', 'required'],
+            'email_required' => ['boolean'],
+            'redirect_url' => ['url'],
+            'allow_downloads' => ['boolean'],
+            'name_required' => ['boolean'],
+            'custom_message' => ['string'],
+            'url' => ['url'],
             'notification_emails' => ['array', 'required'],
-            'notification_emails.*.email' => ['email', 'required'],
-            'notification_emails.*.name' => ['string', 'required'],
+            'notification_emails.*.email' => ['email'],
+            'notification_emails.*.name' => ['string'],
             'document_id' => ['integer', 'required'],
         ];
     }

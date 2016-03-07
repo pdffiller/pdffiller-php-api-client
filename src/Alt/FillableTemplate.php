@@ -16,16 +16,28 @@ class FillableTemplate extends Model
 
     protected static $entityUri = 'fillable_template';
 
-    protected $attributes = [
-        'document_id',
-        'fillable_fields',
-    ];
+    public function attributes()
+    {
+        return [
+            'document_id',
+            'fillable_fields',
+        ];
+    }
+
+    public function rules()
+    {
+        return [
+            'document_id' => 'integer',
+            'fillable_fields' => 'array',
+        ];
+    }
     /**
      * @param $id
      * @return mixed
      */
     public static function dictionary($id)
     {
+        //TODO: make fillable field model
         return static::one($id);
     }
 
@@ -36,16 +48,5 @@ class FillableTemplate extends Model
     public static function download($id)
     {
         return static::query($id, 'download');
-    }
-
-    /**
-     * @param $id
-     * @param array $fields ex: [ 'Text_1' => 'hello world', 'Number_1' => '123' ]
-     * @return mixed
-     */
-    public function makeFillableTemplate()
-    {
-        $params = $this->toArray();
-        return static::post(static::getUri(), $params);
     }
 }

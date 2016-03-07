@@ -1,7 +1,7 @@
 <?php
 
-namespace PDFfiller\OAuth2\Client\Provider;
-
+namespace PDFfiller\OAuth2\Client\Provider\Alt;
+use PDFfiller\OAuth2\Client\Provider\PDFfiller;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 
 class FillRequestForm extends Model
@@ -12,6 +12,28 @@ class FillRequestForm extends Model
     private static $fillRequestId;
 
     protected static $entityUri = 'fill_request';
+
+    public function attributes()
+    {
+        return [
+            'document_id',
+            'name',
+            'email',
+            'date',
+            'ip',
+        ];
+    }
+
+    public function rules()
+    {
+        return [
+            'document_id' => 'integer',
+            'name' => 'string',
+            'email' => 'email',
+            'date' => 'integer',
+            'ip' => 'ip',
+        ];
+    }
 
     public static function init(PDFfiller $client, $fillRequestId)
     {

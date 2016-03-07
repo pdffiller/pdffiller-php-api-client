@@ -152,7 +152,7 @@ abstract class Model
     public function validate()
     {
         $values = $this->toArray();
-        $rules = $this->rules();
+        $rules = array_merge($this->rules(), ['id' => 'integer']);
         $translator = new Translator('en_US');
         $validator = new Validator($translator, $values, $rules);
         return $validator->passes();
@@ -186,6 +186,7 @@ abstract class Model
         $uri = static::getUri();
         $uri .= $id ?: '';
         $uri .= $request ? '/' . $request : '';
+        echo $uri;
         return static::apiCall('query', $uri);
     }
 
@@ -225,7 +226,7 @@ abstract class Model
      * @param array $options
      * @return mixed
      */
-    public function create($options = [])
+    protected function create($options = [])
     {
         $params = $this->toArray($options);
         $uri = static::getUri();
@@ -239,7 +240,7 @@ abstract class Model
      * @param array $options supports 'only' or 'except' options
      * @return mixed
      */
-    public function update($options = [])
+    protected function update($options = [])
     {
         $params = $this->toArray($options);
         $diff = $this->findDiff($this->oldValues, $params);

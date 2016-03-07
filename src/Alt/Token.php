@@ -12,6 +12,18 @@ class Token extends Model
 
     public function attributes()
     {
-        return [];
+        return [
+            'id',
+            'hash',
+            'data',
+        ];
+    }
+
+    public function rules()
+    {
+        return [
+            'hash' => 'string',
+            'data' => 'array',
+        ];
     }
 }

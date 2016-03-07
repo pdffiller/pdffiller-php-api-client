@@ -17,6 +17,21 @@ class Callback extends Model
 {
     protected static $entityUri = 'callback';
 
-    protected $attributes = ['document_id', 'event_id', 'callback_uri'];
+    public function attributes()
+    {
+        return [
+            'document_id',
+            'event_id',
+            'callback_url'
+        ];
+    }
 
+    public function rules()
+    {
+        return [
+            'document_id' => 'integer',
+            'event_id' => ['string', 'in:fill_request.done,signature_request.done'],
+            'callback_url' => 'url',
+        ];
+    }
 }
