@@ -40,6 +40,7 @@ abstract class Model
 
     public function __construct($provider, $array = [])
     {
+        $this->client = $provider;
         $this->parseArray($array);
     }
 
@@ -99,7 +100,6 @@ abstract class Model
     {
         $allowed = $this->getAttributes();
         $props = get_object_vars($this);
-
         !isset($options['except']) && $options['except'] = [];
 //        $options['except'][] = 'resource_type';
 
@@ -187,7 +187,6 @@ abstract class Model
         $uri = static::getUri();
         $uri .= $id ?: '';
         $uri .= $request ? '/' . $request : '';
-        echo $uri;
         return static::apiCall($provider, 'query', $uri);
     }
 
@@ -287,7 +286,7 @@ abstract class Model
     public static function one($provider, $id)
     {
         $params = static::query($provider, $id);
-        $instance = new static($params);
+        $instance = new static($provider, $params);
         $instance->cacheFields($params);
         return $instance;
     }
@@ -303,7 +302,7 @@ abstract class Model
         $set = [];
 
         foreach ($paramsArray['items'] as $params) {
-            $instance = new static($params);
+            $instance = new static($provider, $params);
             $instance->cacheFields($params);
             $set[] = $instance;
         }
