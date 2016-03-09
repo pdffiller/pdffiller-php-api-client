@@ -29,16 +29,16 @@ class SignatureRequestRecipient extends Model
 
     protected static $entityUri = 'signature_request';
 
-    /**
-     * @param PDFfiller $client
-     * @param null|string $signatureId
-     * @param null $uri
-     */
-    public static function init(PDFfiller $client, $signatureId, $uri = null)
-    {
-        self::setSignatureRequestId($signatureId);
-        parent::init($client, $uri);
-    }
+//    /**
+//     * @param PDFfiller $client
+//     * @param null|string $signatureId
+//     * @param null $uri
+//     */
+//    public static function init(PDFfiller $client, $signatureId, $uri = null)
+//    {
+//        self::setSignatureRequestId($signatureId);
+//        parent::init($client, $uri);
+//    }
 
     /**
      * @inheritdoc

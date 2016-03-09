@@ -2,6 +2,7 @@
 
 namespace PDFfiller\OAuth2\Client\Provider\Alt;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\Alt\FillRequestForm;
 
 /**
  * Class FillRequest
@@ -51,5 +52,31 @@ class FillRequest extends Model
             'notification_emails.*.name' => ['string'],
             'document_id' => ['integer', 'required'],
         ];
+    }
+
+    public function forms()
+    {
+        $response = static::query($this->client, $this->id, 'filled_form/');
+        $forms = [];
+
+        if (isset($response['items'])) {
+            foreach ($response['items'] as $item) {
+                $forms[] = new FillRequestForm($this->client, $this->id, $item);
+            }
+        }
+
+        return $forms;
+    }
+
+    /**
+     * @param $id
+     * @return FillRequestForm
+     */
+    public function form($id)
+    {
+
+        $params = static::query($this->client, $this->id, 'filled_form/' . $id);
+        dd($params);
+        return new FillRequestForm($this->client, $this->id, $params);
     }
 }

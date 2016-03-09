@@ -189,6 +189,7 @@ abstract class Model
         $uri = static::getUri();
         $uri .= $id ?: '';
         $uri .= $request ? '/' . $request : '';
+//        print_r($uri);
         return static::apiCall($provider, 'query', $uri);
     }
 
@@ -235,9 +236,18 @@ abstract class Model
     {
         $params = $this->toArray($options);
         $uri = static::getUri();
-        return static::post($this->client, $uri, [
+        $createResult =  static::post($this->client, $uri, [
             'json' => $params,
         ]);
+
+        if (!isset($createResult['errors'])) {
+            $this->cacheFields($params);
+            foreach($createResult['items'][0] as $name => $property) {
+                $this->__set($name, $property);
+            }
+        }
+
+        return $createResult;
     }
 
     /**
@@ -251,9 +261,18 @@ abstract class Model
         $diff = $this->findDiff($this->oldValues, $params);
         $uri = static::getUri() . $this->id;
 
-        return static::put($this->client, $uri, [
+        $updateResult = static::put($this->client, $uri, [
             'json' => $diff,
         ]);
+
+        if (!isset($updateResult['errors'])) {
+            $this->cacheFields($params);
+            foreach($updateResult as $name => $property) {
+                $this->__set($name, $property);
+            }
+        }
+//        return $diff;
+        return $updateResult;
     }
 
     /**
@@ -355,12 +374,13 @@ abstract class Model
     {
         $diff = [];
         foreach ($new as $key => $value) {
-            if (is_array($value)) {
-                isset($old[$key]) && $temp = $this->findDiff($old[$key], $new[$key]);
-                if ($temp) {
-                    $diff[$key] = $temp;
-                }
-            } elseif (!isset($old[$key]) || $old[$key] !== $new[$key]) {
+//            if (is_array($value)) {
+//                isset($old[$key]) && $temp = $this->findDiff($old[$key], $new[$key]);
+//                if ($temp) {
+//                    $diff[$key] = $temp;
+//                }
+//            } else
+            if (!isset($old[$key]) || $old[$key] !== $new[$key]) {
                 $diff[$key] = $value;
             }
         }

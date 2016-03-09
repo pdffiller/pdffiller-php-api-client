@@ -8,6 +8,8 @@
 
 namespace PDFfiller\OAuth2\Client\Provider\Alt;
 
+use PDFfiller\OAuth2\Client\Provider\Core\Object;
+
 /**
  * Class FillableField
  * @package PDFfiller\OAuth2\Client\Provider\Alt
@@ -18,51 +20,13 @@ namespace PDFfiller\OAuth2\Client\Provider\Alt;
  * @property $initial
  * @property boolean $required
  */
-class FillableField
+class FillableField extends Object
 {
-    private $attributes = [
+    protected $attributes = [
         'name',
         'type',
         'format',
         'initial',
         'required',
     ];
-
-    public function __construct($properties)
-    {
-        foreach ($properties as $name => $property) {
-            $this->{$name} = $property;
-        }
-    }
-
-    public function __set($name, $value)
-    {
-        $attributes = $this->attributes;
-        if (in_array($name, $attributes)) {
-            $this->{$name} = $value;
-        }
-    }
-
-    public function __get($name)
-    {
-        $attributes = $this->attributes;
-        if (in_array($name, $attributes)) {
-            return $this->{$name};
-        }
-    }
-
-
-    public function toArray()
-    {
-        $array = [];
-
-        foreach ($this->attributes as $attribute)
-        {
-            if (isset($this->{$attribute})) {
-                $array[$attribute] = $this->{$attribute};
-            }
-        }
-
-        return $array;
-    }
 }

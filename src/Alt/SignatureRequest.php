@@ -14,6 +14,7 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
  * Class SignatureRequest
  * @package PDFfiller\OAuth2\Client\Provider\Alt
  *
+ * @property string $document_id
  * @property string $method
  * @property string $envelope_name
  * @property string $security_pin
@@ -30,11 +31,14 @@ class SignatureRequest extends Model
     public function attributes()
     {
         return [
+            'document_id',
             'method',
             'envelope_name',
             'security_pin',
             'sign_in_order',
             'recipients',
+            'date_created',
+            'date_signed',
         ];
     }
 
@@ -61,11 +65,23 @@ class SignatureRequest extends Model
         ];
     }
 
-    public function certificate($id) {
-        return self::query($id, 'certificate');
+    public function __construct($provider, array $array)
+    {
+//        if (isset($array['recipients'])) {
+//            $recipients = [];
+//            foreach ($array['recipients'] as $recipient) {
+//                $recipients[] = new SignatureRequestRecipient($provider, $recipient);
+//            }
+//        }
+//        $array['recipients'] = $recipients;
+        parent::__construct($provider, $array);
     }
 
-    public function signedDocument($id) {
-        return self::query($id, 'signed_document');
+    public function certificate() {
+        return self::query($this->client, $this->id, 'certificate');
+    }
+
+    public function signedDocument() {
+        return self::query($this->client, $this->id, 'signed_document');
     }
 }
