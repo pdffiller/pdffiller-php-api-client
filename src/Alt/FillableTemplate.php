@@ -3,6 +3,7 @@
 namespace PDFfiller\OAuth2\Client\Provider\Alt;
 
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\PDFfiller;
 
 /**
  * Class FillableTemplate
@@ -33,20 +34,26 @@ class FillableTemplate extends Model
     }
     /**
      * @param $id
-     * @return mixed
+     * @return FillableTemplate
      */
-    public static function dictionary($id)
+    public static function dictionary($provider, $id)
     {
-        //TODO: make fillable field model
-        return static::one($id);
+        $fields = static::query($provider, $id);
+        $params = ['document_id' => $id, 'fillable_fields' => []];
+        foreach ($fields as $fieldProperties) {
+            $params['fillable_fields'][] = new FillableField($fieldProperties);
+        }
+
+        return new static($provider, $params);
     }
 
     /**
+     * @param PDFfiller $provider
      * @param $id
      * @return mixed
      */
-    public static function download($id)
+    public static function download($provider, $id)
     {
-        return static::query($id, 'download');
+        return static::query($provider, $id, 'download');
     }
 }

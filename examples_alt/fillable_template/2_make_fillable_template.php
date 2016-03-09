@@ -1,9 +1,9 @@
 <?php
 use PDFfiller\OAuth2\Client\Provider\Alt\FillableTemplate;
 $provider = require_once __DIR__.'/../../examples/bootstrap/initWithFabric.php';
-FillableTemplate::init($provider);
+//FillableTemplate::init($provider);
 
-$fillableTemplate = new FillableTemplate();
+$fillableTemplate = new FillableTemplate($provider);
 $fillableTemplate->document_id = 53690143;
 $fillableTemplate->fillable_fields['Text_1'] = 'Hop hey lalaley';
 $fillableTemplate->fillable_fields['Number_1'] = '2016';

@@ -104,27 +104,29 @@ abstract class Model
 //        $options['except'][] = 'resource_type';
 
         if (isset($options['only'])) {
-            $allowed = array_merge($allowed, $options['only']);
+            foreach ($options['only'] as $ndx => $option) {
+                if (!in_array($option, $allowed)) {
+                    unset($options['only'][$ndx]);
+                }
+
+                $allowed = $options['only'];
+            }
         } else {
-            foreach ($allowed as &$value) {
-                unset($value);
+            foreach ($allowed as $ndx => $value) {
+                if (in_array($value, $options['except'])) {
+                    unset($allowed[$ndx]);
+                }
             }
         }
 
         foreach ($props as $key => $value) {
             if (!in_array($key, $allowed)) {
                 unset($props[$key]);
+            } elseif (is_object($value) && method_exists($value, 'toArray')){
+                $props[$key] = $value->toArray();
             }
         }
-        // nested call & remove null
-//        foreach ($props as $key => $value) {
-//            if (!$options['null_values'] && $value === null) {
-//                unset($props[$key]);
-//            } elseif ($value instanceof AbstractObject
-//                || $value instanceof AbstractList) {
-//                $props[$key] = $value->toArray();
-//            }
-//        }
+
         return $props;
     }
 
@@ -144,7 +146,7 @@ abstract class Model
         return $this;
     }
 
-    private function cacheFields($properties)
+    protected function cacheFields($properties)
     {
         $this->oldValues = $properties;
     }
