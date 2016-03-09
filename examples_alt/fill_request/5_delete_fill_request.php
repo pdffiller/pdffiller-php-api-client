@@ -2,7 +2,7 @@
 use PDFfiller\OAuth2\Client\Provider\Alt\FillRequest;
 
 $provider = require_once __DIR__.'/../../examples/bootstrap/initWithFabric.php';
-FillRequest::init($provider);
+$factory = new \PDFfiller\OAuth2\Client\Provider\Core\Factory($provider);
 
-$e = FillRequest::deleteOne(53690143);
+$e = $factory->deleteOne(FillRequest::class, 53690143);
 dd($e);

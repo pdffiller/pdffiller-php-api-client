@@ -21,7 +21,7 @@ abstract class Model
     /**
      * @var PDFfiller
      */
-    protected static $client = null;
+    protected $client = null;
 
     /**
      * Model constructor.
@@ -38,7 +38,7 @@ abstract class Model
      */
     protected $attributes = ['id'];
 
-    public function __construct($array = [])
+    public function __construct($provider, $array = [])
     {
         $this->parseArray($array);
     }
@@ -54,18 +54,18 @@ abstract class Model
         return [];
     }
 
-    /**
-     * Initialize base model settings
-     * @param PDFfiller $client
-     * @param string|null $uri base entity uri
-     */
-    public static function init(PDFfiller $client, $uri = null)
-    {
-        self::setClient($client);
-        if ($uri !== null) {
-           static::setEntityUri($uri);
-        }
-    }
+//    /**
+//     * Initialize base model settings
+//     * @param PDFfiller $client
+//     * @param string|null $uri base entity uri
+//     */
+//    public static function init(PDFfiller $client, $uri = null)
+//    {
+//        self::setClient($client);
+//        if ($uri !== null) {
+//           static::setEntityUri($uri);
+//        }
+//    }
 
     protected static function getUri()
     {
@@ -160,66 +160,70 @@ abstract class Model
 
     /**
      * Sends request by given type, uri and options.
+     * @param PDFfiller $provider
      * @param $method
      * @param $uri
      * @param array $params
      * @return mixed
      */
-    private static function apiCall($method, $uri, $params = [])
+    private static function apiCall($provider, $method, $uri, $params = [])
     {
         $methodName = $method . 'ApiCall';
-        $client = static::getClient();
-        if (method_exists($client, $methodName)) {
-            return $client->{$methodName}($uri, $params);
+        if (method_exists($provider, $methodName)) {
+            return $provider->{$methodName}($uri, $params);
         }
         throw new \InvalidArgumentException('Invalid request type.');
     }
 
     /**
      * Returns entity properties as a result of get request.
+     * @param PDFfiller $provider
      * @param string|null $id entity id, if not given - returns list of all entities
      * @param string|null $request entity item request
      * @return mixed entity parameters
      */
-    protected static function query($id = null, $request = null)
+    protected static function query($provider, $id = null, $request = null)
     {
         $uri = static::getUri();
         $uri .= $id ?: '';
         $uri .= $request ? '/' . $request : '';
         echo $uri;
-        return static::apiCall('query', $uri);
+        return static::apiCall($provider, 'query', $uri);
     }
 
     /**
      * Returns a result of post request.
+     * @param PDFfiller $provider
      * @param $uri
      * @param array $params
      * @return mixed
      */
-    public static function post($uri, $params = [])
+    public static function post($provider, $uri, $params = [])
     {
-        return static::apiCall('post', $uri, $params);
+        return static::apiCall($provider, 'post', $uri, $params);
     }
 
     /**
      * Returns a result of put request.
+     * @param PDFfiller $provider
      * @param $uri
      * @param array $params
      * @return mixed
      */
-    public static function put($uri, $params = [])
+    public static function put($provider, $uri, $params = [])
     {
-        return static::apiCall('put', $uri, $params);
+        return static::apiCall($provider, 'put', $uri, $params);
     }
 
     /**
      * Returns a result of delete request.
+     * @param PDFfiller $provider
      * @param $uri
      * @return mixed
      */
-    public static function delete($uri)
+    public static function delete($provider, $uri)
     {
-        return static::apiCall('delete', $uri);
+        return static::apiCall($provider, 'delete', $uri);
     }
 
     /**
@@ -230,7 +234,7 @@ abstract class Model
     {
         $params = $this->toArray($options);
         $uri = static::getUri();
-        return static::post($uri, [
+        return static::post($this->client, $uri, [
             'json' => $params,
         ]);
     }
@@ -246,7 +250,7 @@ abstract class Model
         $diff = $this->findDiff($this->oldValues, $params);
         $uri = static::getUri() . $this->id;
 
-        return static::put($uri, [
+        return static::put($this->client, $uri, [
             'json' => $diff,
         ]);
     }
@@ -258,29 +262,31 @@ abstract class Model
     public function remove()
     {
         if (property_exists($this, 'id')) {
-            return static::deleteOne($this->id);
+            return static::deleteOne($this->client, $this->id);
         }
     }
 
     /**
      * Removes entity by id.
+     * @param PDFfiller $provider
      * @param $id
      * @return mixed deletion result
      */
-    public static function deleteOne($id)
+    public static function deleteOne($provider, $id)
     {
         $uri = static::getUri() . $id;
-        return static::delete($uri);
+        return static::delete($provider, $uri);
     }
 
     /**
      * Returns model instance.
+     * @param PDFfiller $provider
      * @param $id
      * @return static
      */
-    public static function one($id)
+    public static function one($provider, $id)
     {
-        $params = static::query($id);
+        $params = static::query($provider, $id);
         $instance = new static($params);
         $instance->cacheFields($params);
         return $instance;
@@ -288,13 +294,12 @@ abstract class Model
 
     /**
      * Returns a list of entities
+     * @param PDFfiller $provider
      * @return array entities list
      */
-    public static function all($provider = null)
+    public static function all($provider)
     {
-        $provider ? static::setClient($provider) : false ;
-
-        $paramsArray = static::query();
+        $paramsArray = static::query($provider);
         $set = [];
 
         foreach ($paramsArray['items'] as $params) {
@@ -309,17 +314,17 @@ abstract class Model
     /**
      * @return PDFfiller
      */
-    public static function getClient()
+    public function getClient()
     {
-        return static::$client;
+        return $this->client;
     }
 
     /**
      * @param PDFfiller $client
      */
-    public static function setClient(PDFfiller $client)
+    public function setClient(PDFfiller $client)
     {
-        static::$client = $client;
+        $this->client = $client;
     }
 
     /**
@@ -371,6 +376,8 @@ abstract class Model
     {
         if (in_array($name, $this->getAttributes())) {
             return $this->{$name};
+        } elseif (method_exists($this, $method = 'get' . ucfirst($name))) {
+            return $this->{$method}();
         }
     }
 
@@ -378,6 +385,8 @@ abstract class Model
     {
         if (in_array($name, $this->getAttributes())) {
             $this->{$name} = $value;
+        } elseif (method_exists($this, $method = 'set' . ucfirst($name))) {
+            $this->{$method}($value);
         }
     }
 }
