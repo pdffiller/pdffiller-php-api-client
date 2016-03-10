@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: srg_kas
- * Date: 10.03.16
- * Time: 14:01
- */
 
 namespace PDFfiller\OAuth2\Client\Provider\Alt;
 

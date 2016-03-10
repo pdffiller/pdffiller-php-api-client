@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: srg_kas
- * Date: 09.03.16
- * Time: 14:15
- */
 
 namespace PDFfiller\OAuth2\Client\Provider\Core;
 
