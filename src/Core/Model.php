@@ -189,7 +189,7 @@ abstract class Model
         $uri = static::getUri();
         $uri .= $id ?: '';
         $uri .= $request ? '/' . $request : '';
-//        print_r($uri);
+
         return static::apiCall($provider, 'query', $uri);
     }
 
@@ -271,7 +271,7 @@ abstract class Model
                 $this->__set($name, $property);
             }
         }
-//        return $diff;
+
         return $updateResult;
     }
 
@@ -309,6 +309,7 @@ abstract class Model
         $params = static::query($provider, $id);
         $instance = new static($provider, $params);
         $instance->cacheFields($params);
+
         return $instance;
     }
 
@@ -380,12 +381,6 @@ abstract class Model
     {
         $diff = [];
         foreach ($new as $key => $value) {
-//            if (is_array($value)) {
-//                isset($old[$key]) && $temp = $this->findDiff($old[$key], $new[$key]);
-//                if ($temp) {
-//                    $diff[$key] = $temp;
-//                }
-//            } else
             if (!isset($old[$key]) || $old[$key] !== $new[$key]) {
                 $diff[$key] = $value;
             }
