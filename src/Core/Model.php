@@ -82,7 +82,7 @@ abstract class Model
     public function save($newRecord = true, $validate = true, $options = [])
     {
         if ($validate && !$this->validate()) {
-            throw new \InvalidArgumentException('Check properties values');
+            throw new \InvalidArgumentException('Validation fail. Check properties values');
         }
 
         if ($newRecord) {
@@ -168,7 +168,7 @@ abstract class Model
      * @param array $params
      * @return mixed
      */
-    private static function apiCall($provider, $method, $uri, $params = [])
+    protected static function apiCall($provider, $method, $uri, $params = [])
     {
         $methodName = $method . 'ApiCall';
         if (method_exists($provider, $methodName)) {
@@ -320,9 +320,15 @@ abstract class Model
     public static function all($provider)
     {
         $paramsArray = static::query($provider);
+
+        return static::formItems($provider, $paramsArray);
+    }
+
+    protected static function formItems($provider, $array)
+    {
         $set = [];
 
-        foreach ($paramsArray['items'] as $params) {
+        foreach ($array['items'] as $params) {
             $instance = new static($provider, $params);
             $instance->cacheFields($params);
             $set[] = $instance;
@@ -395,7 +401,7 @@ abstract class Model
 
     public function __get($name)
     {
-        if (in_array($name, $this->getAttributes())) {
+        if (in_array($name, $this->getAttributes()) && isset($this->{$name})) {
             return $this->{$name};
         } elseif (method_exists($this, $method = 'get' . ucfirst($name))) {
             return $this->{$method}();

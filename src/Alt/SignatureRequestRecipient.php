@@ -25,7 +25,7 @@ class SignatureRequestRecipient extends Model
     /**
      * @var int
      */
-    protected static $signatureRequestId = null;
+    protected $signatureRequestId = null;
 
     protected static $entityUri = 'signature_request';
 
@@ -39,37 +39,94 @@ class SignatureRequestRecipient extends Model
 //        self::setSignatureRequestId($signatureId);
 //        parent::init($client, $uri);
 //    }
+    public function attributes()
+    {
+        return [
+          'email',
+          'user_id',
+          'status',
+          'name',
+          'order',
+          'message_subject',
+          'message_text',
+          'date_created',
+          'date_signed',
+          'access',
+          'additional_documents',
+          'require_photo',
+          'ip',
+        ];
+    }
 
     /**
-     * @inheritdoc
+     * SignatureRequestRecipient constructor.
+     * @param $provider
+     * @param integer|string $signatureRequestId
+     * @param array $array
      */
-    protected static function getUri()
+    public function __construct($provider, $signatureRequestId, $array = [])
     {
-        $signatureRequestId = static::getSignatureRequestId();
-        if (!$signatureRequestId) {
-            throw new \InvalidArgumentException('Invalid request id.
-            Note that SignatureRequestRecipient::init() must be performed before call any requests.');
-        }
-        return static::getEntityUri() . '/' . $signatureRequestId . '/recipient/';
+        $this->signatureRequestId = $signatureRequestId;
+//        static::setEntityUri(static::BASE_URI . '/' . $signatureRequestId . '/recipient' );
+        parent::__construct($provider, $array);
     }
 
-    public function remind() {
-        $uri = static::getUri();
-        return static::put($uri . $this->id . '/remind');
+    protected function uri()
+    {
+        return static::getUri() . $this->signatureRequestId . '/recipient/';
+    }
+    public function remind()
+    {
+        $uri = $this->uri() . $this->id . '/remind';
+        return static::put($this->client, $uri);
     }
 
-    public static function getSignatureRequestId()
+    public function getSignatureRequestId()
     {
-        return static::$signatureRequestId;
+        return $this->signatureRequestId;
     }
 
     /**
      * @param int $signatureRequestId
      */
-    public static function setSignatureRequestId($signatureRequestId)
+    public function setSignatureRequestId($signatureRequestId)
     {
-        static::$signatureRequestId = $signatureRequestId;
+        $this->signatureRequestId = $signatureRequestId;
     }
 
+    public static function one($provider, $signatureRequestId, $id)
+    {
+        $params = static::query($provider, $signatureRequestId, 'recipient/' . $id);
+        $instance = new static($provider, $signatureRequestId, $params);
+        $instance->cacheFields($params);
+        return $instance;
+    }
 
+    public function save($validate = true, $options = [])
+    {
+        if ($validate && !$this->validate()) {
+            throw new \InvalidArgumentException('Validation fail. Check properties values');
+        }
+
+        $params = $this->toArray($options);
+        $uri = $this->uri();
+//        dd($uri, $params);
+        $createResult =  static::post($this->client, $uri, [
+            'json' => ['recipients' => [$params]],
+        ]);
+
+        if (!isset($createResult['errors'])) {
+            $this->cacheFields($params);
+            foreach($createResult['items'][0] as $name => $property) {
+                $this->__set($name, $property);
+            }
+        }
+
+        return $createResult;
+    }
+
+    public static function all()
+    {
+        return false;
+    }
 }

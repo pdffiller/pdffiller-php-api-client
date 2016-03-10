@@ -4,7 +4,12 @@ $provider = require_once __DIR__.'/../../examples/bootstrap/initWithFabric.php';
 
 $e = new SignatureRequest($provider);
 $e->document_id = 53690143;
-$e->method = 'sendtoeach';
+//$e->method = 'sendtoeach';
+///////////
+$e->method = 'sendtogroup';
+$e->envelope_name = 'group envelope';
+$e->sign_in_order = false;
+//////////
 $e->security_pin = 'standard';
 $e->recipients = [];
 $e->recipients[] = [

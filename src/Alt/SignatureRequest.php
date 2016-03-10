@@ -46,10 +46,10 @@ class SignatureRequest extends Model
     {
         return [
             'method' => ['string', 'in:sendtoeach,sendtogroup', 'required'],
-            'envelope_name' => ['string'],
+            'envelope_name' => ['string', 'required_if:method,sendtogroup'],
             'status' => ['string', 'in:IN_PROGRESS,NOT_SENT,REJECTED,SENT,SIGNED'],
             'security_pin' => ['string', 'in:standard,enhanced', 'required'],
-            'sign_in_order' => ['boolean'],
+            'sign_in_order' => ['boolean', 'required_if:method,sendtogroup'],
             'recipients' => ['array', 'required'],
             'recipients.*.email' => ['email', 'required'],
             'recipients.*.name' => ['string', 'required'],
@@ -65,15 +65,18 @@ class SignatureRequest extends Model
         ];
     }
 
-    public function __construct($provider, array $array)
+    public function __construct($provider, $array = [])
     {
-//        if (isset($array['recipients'])) {
-//            $recipients = [];
-//            foreach ($array['recipients'] as $recipient) {
-//                $recipients[] = new SignatureRequestRecipient($provider, $recipient);
-//            }
-//        }
-//        $array['recipients'] = $recipients;
+        if (isset($array['recipients'])) {
+            $recipients = [];
+            foreach ($array['recipients'] as $recipient) {
+                $recipients[] = new SignatureRequestRecipient($provider, $this->id, $recipient);
+            }
+
+            unset($array['recipients']);
+            $array['recipients'] = $recipients;
+        }
+
         parent::__construct($provider, $array);
     }
 
@@ -83,5 +86,28 @@ class SignatureRequest extends Model
 
     public function signedDocument() {
         return self::query($this->client, $this->id, 'signed_document');
+    }
+
+    /**
+     * @param SignatureRequestRecipient $recipient
+     * @return array recipient creation result
+     */
+    public function addRecipient($recipient)
+    {
+        $createResult = $recipient->save();
+
+        if (!isset($createResult['errors'])) {
+            $this->recipients[] = $recipient;
+        }
+
+        return $createResult;
+    }
+
+    /**
+     * @return SignatureRequestRecipient SignatureRequestRecipient
+     */
+    public function createRecipient()
+    {
+        return new SignatureRequestRecipient($this->client, $this->id);
     }
 }
