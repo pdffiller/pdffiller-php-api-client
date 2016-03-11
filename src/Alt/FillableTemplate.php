@@ -16,6 +16,7 @@ class FillableTemplate extends Model
 {
 
     protected static $entityUri = 'fillable_template';
+    const DOWNLOAD = 'download';
 
     public function attributes()
     {
@@ -39,11 +40,13 @@ class FillableTemplate extends Model
     public static function dictionary($provider, $id)
     {
         $fields = static::query($provider, $id);
-        $params = ['document_id' => $id, 'fillable_fields' => []];
+        $fillableFields = [];
+
         foreach ($fields as $fieldProperties) {
-            $params['fillable_fields'][] = new FillableField($fieldProperties);
+            $fillableFields[] = new FillableField($fieldProperties);
         }
 
+        $params = ['document_id' => $id, 'fillable_fields' => $fillableFields];
         return new static($provider, $params);
     }
 
@@ -54,6 +57,6 @@ class FillableTemplate extends Model
      */
     public static function download($provider, $id)
     {
-        return static::query($provider, $id, 'download');
+        return static::query($provider, $id, self::DOWNLOAD);
     }
 }

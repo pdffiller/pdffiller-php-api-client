@@ -28,6 +28,8 @@ class SignatureRequestRecipient extends Model
     protected $signatureRequestId = null;
 
     protected static $entityUri = 'signature_request';
+    const RECIPIENT = 'recipient';
+    const REMIND = 'remind';
 
 //    /**
 //     * @param PDFfiller $client
@@ -73,11 +75,11 @@ class SignatureRequestRecipient extends Model
 
     protected function uri()
     {
-        return static::getUri() . $this->signatureRequestId . '/recipient/';
+        return static::getUri() . $this->signatureRequestId . '/' . self::RECIPIENT . '/';
     }
     public function remind()
     {
-        $uri = $this->uri() . $this->id . '/remind';
+        $uri = $this->uri() . $this->id . '/' . self::REMIND;
         return static::put($this->client, $uri);
     }
 
@@ -96,7 +98,7 @@ class SignatureRequestRecipient extends Model
 
     public static function one($provider, $signatureRequestId, $id)
     {
-        $params = static::query($provider, $signatureRequestId, 'recipient/' . $id);
+        $params = static::query($provider, $signatureRequestId, self::RECIPIENT . '/' . $id);
         $instance = new static($provider, $signatureRequestId, $params);
         $instance->cacheFields($params);
         return $instance;

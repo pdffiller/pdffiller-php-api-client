@@ -11,12 +11,14 @@ class FillRequestForm extends Model
     private $fillRequestId;
 
     protected static $baseUri = 'fill_request';
+    const DOWNLOAD = 'download';
+    const EXPORT = 'export';
 
 
     public function __construct($provider, $fillRequestId, $array = [])
     {
         $this->fillRequestId = $fillRequestId;
-        static::setEntityUri(static::$baseUri . '/' . $fillRequestId . '/filled_form');
+        static::setEntityUri(static::$baseUri . '/' . $fillRequestId . '/' . FillRequest::FORMS_URI);
         parent::__construct($provider, $array);
     }
 
@@ -49,11 +51,11 @@ class FillRequestForm extends Model
 
     public function export()
     {
-        return static::query($this->client, $this->id, 'export');
+        return static::query($this->client, $this->id, self::EXPORT);
     }
 
     public function download()
     {
-        return static::query($this->client, $this->id, 'download');
+        return static::query($this->client, $this->id, self::DOWNLOAD);
     }
 }

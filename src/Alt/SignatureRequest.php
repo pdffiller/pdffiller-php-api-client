@@ -21,6 +21,8 @@ class SignatureRequest extends Model
      * @var string
      */
     protected static $entityUri = 'signature_request';
+    const CERTIFICATE = 'certificate';
+    const SIGNED_DOCUMENT = 'signed_document';
 
     public function attributes()
     {
@@ -75,11 +77,11 @@ class SignatureRequest extends Model
     }
 
     public function certificate() {
-        return self::query($this->client, $this->id, 'certificate');
+        return self::query($this->client, $this->id, self::CERTIFICATE);
     }
 
     public function signedDocument() {
-        return self::query($this->client, $this->id, 'signed_document');
+        return self::query($this->client, $this->id, self::SIGNED_DOCUMENT);
     }
 
     /**

@@ -20,6 +20,7 @@ use PDFfiller\OAuth2\Client\Provider\Alt\FillRequestForm;
 class FillRequest extends Model
 {
     protected static $entityUri = 'fill_request';
+    const FORMS_URI = 'filled_form';
 
     public function attributes()
     {
@@ -56,7 +57,7 @@ class FillRequest extends Model
 
     public function forms()
     {
-        $response = static::query($this->client, $this->id, 'filled_form/');
+        $response = static::query($this->client, $this->id, self::FORMS_URI);
         $forms = [];
 
         if (isset($response['items'])) {
@@ -75,7 +76,7 @@ class FillRequest extends Model
     public function form($id)
     {
 
-        $params = static::query($this->client, $this->id, 'filled_form/' . $id);
+        $params = static::query($this->client, $this->id, self::FORMS_URI . '/' . $id);
         return new FillRequestForm($this->client, $this->id, $params);
     }
 }
