@@ -18,7 +18,7 @@ $provider = require_once __DIR__.'/../../examples/bootstrap/initWithFabric.php';
 //$recipient = $signatureRequest->createRecipient();
 
 //creating recipient as independent instance
-$recipient = new SignatureRequestRecipient($provider, 129498);
+$recipient = new SignatureRequestRecipient($provider, 130541);
 $recipient->email = 'new@recipient.com';
 $recipient->name = 'New Recipient';
 $recipient->access = 'full';

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Validator;
+use PDFfiller\OAuth2\Client\Provider\Alt\Rules;
 use PDFfiller\OAuth2\Client\Provider\PDFfiller;
 use Symfony\Component\Translation\Translator;
 
@@ -17,6 +18,8 @@ use Symfony\Component\Translation\Translator;
  */
 abstract class Model
 {
+    const RULES_KEY = false;
+
     protected static $entityUri = null;
     /**
      * @var PDFfiller
@@ -52,6 +55,10 @@ abstract class Model
 
     public function rules()
     {
+        if (static::RULES_KEY) {
+            return Rules::rules(static::RULES_KEY);
+        }
+
         return [];
     }
 
@@ -242,7 +249,11 @@ abstract class Model
 
         if (!isset($createResult['errors'])) {
             $this->cacheFields($params);
-            foreach($createResult['items'][0] as $name => $property) {
+            $object = $createResult;
+            if (isset($createResult['items'])) {
+                $object = $createResult['items'][0];
+            }
+            foreach($object as $name => $property) {
                 $this->__set($name, $property);
             }
         }

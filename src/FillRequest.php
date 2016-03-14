@@ -5,6 +5,8 @@ namespace PDFfiller\OAuth2\Client\Provider;
 
 class FillRequest extends BaseEntity
 {
+    const RULES_KEY = 'fillRequest';
+
     public function listItems() {
         return $this->client->queryApiCall('fill_request/');
     }
