@@ -21,6 +21,7 @@ class FillRequest extends Model
 {
     protected static $entityUri = 'fill_request';
     const FORMS_URI = 'filled_form';
+    const RULES_KEY = 'fillRequest';
 
     public function attributes()
     {
@@ -34,24 +35,6 @@ class FillRequest extends Model
             'url',
             'notification_emails',
             'document_id',
-        ];
-    }
-
-    public function rules()
-    {
-        return [
-            'access' => ['string', 'in:full,signature'],
-            'status' => ['string', 'in:public,private', 'required'],
-            'email_required' => ['boolean'],
-            'redirect_url' => ['url'],
-            'allow_downloads' => ['boolean'],
-            'name_required' => ['boolean'],
-            'custom_message' => ['string'],
-            'url' => ['url'],
-            'notification_emails' => ['array', 'required'],
-            'notification_emails.*.email' => ['email'],
-            'notification_emails.*.name' => ['string'],
-            'document_id' => ['integer', 'required'],
         ];
     }
 

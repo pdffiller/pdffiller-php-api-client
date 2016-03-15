@@ -23,6 +23,7 @@ class SignatureRequest extends Model
     protected static $entityUri = 'signature_request';
     const CERTIFICATE = 'certificate';
     const SIGNED_DOCUMENT = 'signed_document';
+    const RULES_KEY = 'signatureRequest|recipient';
 
     public function attributes()
     {
@@ -31,33 +32,10 @@ class SignatureRequest extends Model
             'method',
             'envelope_name',
             'security_pin',
-            'sign_in_order',
+            'callback_url',
             'recipients',
             'date_created',
             'date_signed',
-        ];
-    }
-
-    public function rules()
-    {
-        return [
-            'method' => ['string', 'in:sendtoeach,sendtogroup', 'required'],
-            'envelope_name' => ['string', 'required_if:method,sendtogroup'],
-            'status' => ['string', 'in:IN_PROGRESS,NOT_SENT,REJECTED,SENT,SIGNED'],
-            'security_pin' => ['string', 'in:standard,enhanced', 'required'],
-            'sign_in_order' => ['boolean', 'required_if:method,sendtogroup'],
-            'recipients' => ['array', 'required'],
-            'recipients.*.email' => ['email', 'required'],
-            'recipients.*.name' => ['string', 'required'],
-            'recipients.*.order' => ['integer', 'required_if:sign_in_order,true'],
-            'recipients.*.message_subject' => ['string', 'required'],
-            'recipients.*.message_text' => ['string', 'required'],
-            'recipients.*.date_created' => ['integer'],
-            'recipients.*.date_signed' => ['integer'],
-            'recipients.*.access' => ['string', 'in:full,signature'],
-            'recipients.*.require_photo' => ['boolean'],
-            'recipients.*.additional_documents' => ['array'],
-            'recipients.*.additional_documents.*.document_request_notification' => ['string'],
         ];
     }
 

@@ -4,6 +4,7 @@ namespace PDFfiller\OAuth2\Client\Provider\Alt;
 
 
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\Validation\Rules;
 
 class Uploader extends Model
 {

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Validator;
-use PDFfiller\OAuth2\Client\Provider\Alt\Rules;
+use PDFfiller\Validation\Rules;
 use PDFfiller\OAuth2\Client\Provider\PDFfiller;
 use Symfony\Component\Translation\Translator;
 
@@ -41,6 +41,8 @@ abstract class Model
      */
     protected $attributes = ['id'];
 
+    private $validationErrors;
+
     public function __construct($provider, $array = [])
     {
         $this->client = $provider;
@@ -53,10 +55,14 @@ abstract class Model
         return [];
     }
 
-    public function rules()
+    public function rules($key = null)
     {
+        if ($key) {
+            return Rules::get($key);
+        }
+
         if (static::RULES_KEY) {
-            return Rules::rules(static::RULES_KEY);
+            return Rules::get(static::RULES_KEY);
         }
 
         return [];
@@ -89,7 +95,7 @@ abstract class Model
     public function save($newRecord = true, $validate = true, $options = [])
     {
         if ($validate && !$this->validate()) {
-            throw new \InvalidArgumentException('Validation fail. Check properties values');
+            throw new \InvalidArgumentException('Valiadtion failed:' . PHP_EOL .  $this->validationErrors);
         }
 
         if ($newRecord) {
@@ -158,13 +164,26 @@ abstract class Model
         $this->oldValues = $properties;
     }
 
-    public function validate()
+    public function validate($key = null)
     {
         $values = $this->toArray();
-        $rules = array_merge($this->rules(), ['id' => 'integer']);
-        $translator = new Translator('en_US');
-        $validator = new Validator($translator, $values, $rules);
-        return $validator->passes();
+        $rules = array_merge($this->rules($key), ['id' => 'integer']);
+        $validator = $this->getValidator($values, $rules);
+        $passes = $validator->passes();
+        $this->validationErrors = $validator->errors();
+
+        return $passes;
+    }
+
+    /**
+     * @param $values
+     * @param $rules
+     * @param $locale
+     * @return Validator
+     */
+    protected function getValidator($values, array $rules, $locale = 'en_US')
+    {
+        return new Validator(new Translator($locale), $values, $rules);
     }
 
     /**

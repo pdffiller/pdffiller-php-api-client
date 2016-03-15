@@ -10,11 +10,13 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
  * @package PDFfiller\OAuth2\Client\Provider\Alt
  *
  * @property array $data
+ * @property string $hash
  */
 class Token extends Model
 {
 
     protected static $entityUri = 'token';
+    const RULES_KEY = 'token';
 
     public function attributes()
     {
@@ -22,14 +24,6 @@ class Token extends Model
             'id',
             'hash',
             'data',
-        ];
-    }
-
-    public function rules()
-    {
-        return [
-            'hash' => 'string',
-            'data' => 'array',
         ];
     }
 }

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e5150d80e544f1b7124d1a398ac1b247",
-    "content-hash": "f89a22ddbe40f5947d163a5a5028d4f1",
+    "hash": "002b9287819f64cb88199b89ce7ca941",
+    "content-hash": "b33a4807c30b3d7dbc4dd525f167a93a",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -722,6 +722,33 @@
             "time": "2015-11-03 07:54:30"
         },
         {
+            "name": "pdffiller/public-rest-api-validation-rules",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:pdffiller/public-rest-api-validation-rules.git",
+                "reference": "fc4399ccc940c049e6b17ab13dec5fa4fe18bd8e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pdffiller/public-rest-api-validation-rules/zipball/fc4399ccc940c049e6b17ab13dec5fa4fe18bd8e",
+                "reference": "fc4399ccc940c049e6b17ab13dec5fa4fe18bd8e",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PDFfiller\\Validation\\": "Validation/"
+                }
+            },
+            "description": "Validation rules for PDFfiller API endpoints data.",
+            "support": {
+                "source": "https://github.com/pdffiller/public-rest-api-validation-rules/tree/master",
+                "issues": "https://github.com/pdffiller/public-rest-api-validation-rules/issues"
+            },
+            "time": "2016-03-15 14:10:20"
+        },
+        {
             "name": "psr/http-message",
             "version": "1.0",
             "source": {
@@ -1301,7 +1328,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "pdffiller/public-rest-api-validation-rules": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

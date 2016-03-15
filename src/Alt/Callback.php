@@ -15,6 +15,7 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
  */
 class Callback extends Model
 {
+    const RULES_KEY = 'callback';
     protected static $entityUri = 'callback';
 
     public function attributes()
@@ -23,15 +24,6 @@ class Callback extends Model
             'document_id',
             'event_id',
             'callback_url'
-        ];
-    }
-
-    public function rules()
-    {
-        return [
-            'document_id' => 'integer',
-            'event_id' => ['string', 'in:fill_request.done,signature_request.done'],
-            'callback_url' => 'url',
         ];
     }
 }

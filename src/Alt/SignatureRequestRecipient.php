@@ -30,6 +30,7 @@ class SignatureRequestRecipient extends Model
     protected static $entityUri = 'signature_request';
     const RECIPIENT = 'recipient';
     const REMIND = 'remind';
+    const RULES_KEY = 'recipient';
 
 //    /**
 //     * @param PDFfiller $client
