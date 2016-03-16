@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Validator;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\IdMissingException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidRequestException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\ValidationException;
 use PDFfiller\Validation\Rules;
 use PDFfiller\OAuth2\Client\Provider\PDFfiller;
 use Symfony\Component\Translation\Translator;
@@ -95,7 +98,7 @@ abstract class Model
     public function save($newRecord = true, $validate = true, $options = [])
     {
         if ($validate && !$this->validate()) {
-            throw new \InvalidArgumentException('Valiadtion failed:' . PHP_EOL .  $this->validationErrors);
+            throw new ValidationException('Validation failed:' . PHP_EOL .  $this->validationErrors);
         }
 
         if ($newRecord) {
@@ -200,7 +203,7 @@ abstract class Model
         if (method_exists($provider, $methodName)) {
             return $provider->{$methodName}($uri, $params);
         }
-        throw new \InvalidArgumentException('Invalid request type.');
+        throw new InvalidRequestException('Invalid request type.');
     }
 
     /**
@@ -314,6 +317,8 @@ abstract class Model
         if (property_exists($this, 'id')) {
             return static::deleteOne($this->client, $this->id);
         }
+
+        throw new IdMissingException();
     }
 
     /**
