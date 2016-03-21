@@ -11,10 +11,12 @@ use PDFfiller\OAuth2\Client\Provider\Alt\FillRequestForm;
  * @property string $document_id
  * @property string $access
  * @property string $status
- * @property string $email_required
- * @property string $name_required
+ * @property boolean $email_required
+ * @property boolean $name_required
  * @property string $custom_message
- * @property string $notification_emails
+ * @property array $notification_emails
+ * @property boolean $required_fields
+ * @property string $custom_logo
  *
  */
 class FillRequest extends Model
@@ -35,6 +37,8 @@ class FillRequest extends Model
             'url',
             'notification_emails',
             'document_id',
+            'required_fields',
+            'custom_logo',
         ];
     }
 
@@ -58,7 +62,6 @@ class FillRequest extends Model
      */
     public function form($id)
     {
-
         $params = static::query($this->client, $this->id, self::FORMS_URI . '/' . $id);
         return new FillRequestForm($this->client, $this->id, $params);
     }
