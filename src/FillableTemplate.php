@@ -2,35 +2,54 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
-class FillableTemplate extends BaseEntity
+use PDFfiller\OAuth2\Client\Provider\Core\Model;
+
+/**
+ * Class FillableTemplate
+ * @package PDFfiller\OAuth2\Client\Provider
+ *
+ * @property $document_id
+ * @property $fillable_fields array
+ */
+class FillableTemplate extends Model
 {
-    /**
-     * @param $id
-     * @return mixed
-     */
-    public function dictionary($id) {
-        return $this->client->queryApiCall('fillable_template/'.$id);
+
+    protected static $entityUri = 'fillable_template';
+    const DOWNLOAD = 'download';
+    const RULES_KEY = 'fillableTemplate';
+
+    public function attributes()
+    {
+        return [
+            'document_id',
+            'fillable_fields',
+        ];
     }
 
     /**
      * @param $id
-     * @return mixed
+     * @return FillableTemplate
      */
-    public function download($id) {
-        return $this->client->queryApiCall('fillable_template/'.$id.'/download');
+    public static function dictionary($provider, $id)
+    {
+        $fields = static::query($provider, $id);
+        $fillableFields = [];
+
+        foreach ($fields as $fieldProperties) {
+            $fillableFields[] = new FillableField($fieldProperties);
+        }
+
+        $params = ['document_id' => $id, 'fillable_fields' => $fillableFields];
+        return new static($provider, $params);
     }
 
     /**
+     * @param PDFfiller $provider
      * @param $id
-     * @param array $fields ex: [ 'Text_1' => 'hello world', 'Number_1' => '123' ]
      * @return mixed
      */
-    public function makeFillableTemplate($id, array $fields) {
-        return $this->client->postApiCall('fillable_template', [
-            'json' => [
-                'document_id' => $id,
-                'fillable_fields' => $fields
-            ]
-        ]);
+    public static function download($provider, $id)
+    {
+        return static::query($provider, $id, self::DOWNLOAD);
     }
 }

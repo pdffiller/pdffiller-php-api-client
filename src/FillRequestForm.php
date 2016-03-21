@@ -2,44 +2,71 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
-class FillRequestForm extends BaseEntity
+use PDFfiller\OAuth2\Client\Provider\Core\Model;
+
+/**
+ * Class FillRequestForm
+ * @package PDFfiller\OAuth2\Client\Provider
+ *
+ * @property integer $document_id
+ * @property string $name
+ * @property string $email
+ * @property string $date
+ * @property integer $id
+ */
+class FillRequestForm extends Model
 {
     /**
      * @var int
      */
     private $fillRequestId;
 
+    protected static $baseUri = 'fill_request';
+    const DOWNLOAD = 'download';
+    const EXPORT = 'export';
+
+
+    public function __construct($provider, $fillRequestId, $array = [])
+    {
+        $this->fillRequestId = $fillRequestId;
+        static::setEntityUri(static::$baseUri . '/' . $fillRequestId . '/' . FillRequest::FORMS_URI);
+        parent::__construct($provider, $array);
+    }
+
+    public function attributes()
+    {
+        return [
+            'document_id',
+            'name',
+            'email',
+            'date',
+            'ip',
+        ];
+    }
+
     /**
-     * @param PDFfiller $client
-     * @param int $signatureRequestId
+     * @return int
      */
-    public function __construct(PDFfiller $client, $signatureRequestId) {
-        parent::__construct($client);
-
-        $this->fillRequestId = $signatureRequestId;
+    public function getFillRequestId()
+    {
+        return $this->fillRequestId;
     }
 
-    private function filled_form_path($id = '') {
-        return "fill_request/$this->fillRequestId/filled_form/$id";
+    /**
+     * @param int $fillRequestId
+     */
+    public function setFillRequestId($fillRequestId)
+    {
+        $this->fillRequestId = $fillRequestId;
     }
 
-    public function listItems() {
-        return $this->client->queryApiCall($this->filled_form_path());
+    public function export()
+    {
+        return static::query($this->client, $this->id, self::EXPORT);
     }
 
-    public function info($id) {
-        return $this->client->queryApiCall($this->filled_form_path($id));
-    }
-
-    public function delete($id) {
-        return $this->client->deleteApiCall($this->filled_form_path($id));
-    }
-
-    public function export($id) {
-        return $this->client->queryApiCall($this->filled_form_path($id).'/export');
-    }
-
-    public function download($id) {
-        return $this->client->queryApiCall($this->filled_form_path($id).'/download');
+    public function download()
+    {
+        return static::query($this->client, $this->id, self::DOWNLOAD);
     }
 }

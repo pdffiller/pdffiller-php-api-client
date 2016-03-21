@@ -1,7 +1,5 @@
 <?php
-
-$provider = require_once __DIR__.'/../bootstrap/initWithFabric.php';
-$callbackEntity = new \PDFfiller\OAuth2\Client\Provider\Callback($provider);
-
-$e = $callbackEntity->delete(123);
+use PDFfiller\OAuth2\Client\Provider\Callback;
+$provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
+$e = Callback::deleteOne($provider, 684);
 dd($e);

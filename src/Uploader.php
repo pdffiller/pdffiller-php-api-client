@@ -1,10 +1,9 @@
 <?php
 
-namespace PDFfiller\OAuth2\Client\Provider\Alt;
+namespace PDFfiller\OAuth2\Client\Provider;
 
 
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
-use PDFfiller\Validation\Rules;
 
 class Uploader extends Model
 {

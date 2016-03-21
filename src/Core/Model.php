@@ -2,9 +2,6 @@
 
 namespace PDFfiller\OAuth2\Client\Provider\Core;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Facade;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Validator;
 use PDFfiller\Validation\Rules;
 use PDFfiller\OAuth2\Client\Provider\PDFfiller;
@@ -19,6 +16,7 @@ use Symfony\Component\Translation\Translator;
 abstract class Model
 {
     const RULES_KEY = false;
+    const USER_AGENT = 'pdffiller-php-api-client/1.1.0';
 
     protected static $entityUri = null;
     /**
@@ -68,19 +66,6 @@ abstract class Model
         return [];
     }
 
-//    /**
-//     * Initialize base model settings
-//     * @param PDFfiller $client
-//     * @param string|null $uri base entity uri
-//     */
-//    public static function init(PDFfiller $client, $uri = null)
-//    {
-//        self::setClient($client);
-//        if ($uri !== null) {
-//           static::setEntityUri($uri);
-//        }
-//    }
-
     protected static function getUri()
     {
         return static::getEntityUri() . '/';
@@ -114,7 +99,6 @@ abstract class Model
         $allowed = $this->getAttributes();
         $props = get_object_vars($this);
         !isset($options['except']) && $options['except'] = [];
-//        $options['except'][] = 'resource_type';
 
         if (isset($options['only'])) {
             foreach ($options['only'] as $ndx => $option) {
@@ -196,6 +180,7 @@ abstract class Model
      */
     protected static function apiCall($provider, $method, $uri, $params = [])
     {
+        $params['headers']['User-Agent'] = self::USER_AGENT;
         $methodName = $method . 'ApiCall';
         if (method_exists($provider, $methodName)) {
             return $provider->{$methodName}($uri, $params);
@@ -314,6 +299,8 @@ abstract class Model
         if (property_exists($this, 'id')) {
             return static::deleteOne($this->client, $this->id);
         }
+
+        return null;
     }
 
     /**
@@ -431,6 +418,8 @@ abstract class Model
         } elseif (method_exists($this, $method = 'get' . ucfirst($name))) {
             return $this->{$method}();
         }
+
+        return null;
     }
 
     public function __set($name, $value)

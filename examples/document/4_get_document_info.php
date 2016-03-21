@@ -1,7 +1,5 @@
 <?php
-
-$provider = require_once __DIR__.'/../bootstrap/initWithFabric.php';
-$documentEntity = new \PDFfiller\OAuth2\Client\Provider\Document($provider);
-
-$e = $documentEntity->itemInfo('20268658');
+use PDFfiller\OAuth2\Client\Provider\Document;
+$provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
+$e = Document::one($provider, 53690143);
 dd($e);
