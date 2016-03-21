@@ -18,7 +18,8 @@ class FillRequest extends BaseEntity
      * @param array $params example:
      *      ["access" => "full", "status" => "public", "email_required" => true,
      *       "name_required" => true, "custom_message" => "string", 
-     *       "notification_emails" => [ [ "name" => "string", "email" => "email" ] ] ]
+     *       "notification_emails" => [ [ "name" => "string", "email" => "email" ] ] ],
+     *       "required_fields" => false, "custom_logo" => "logo_url"
      * @return mixed
      */
     public function create($id, array $params = []) {
@@ -34,6 +35,7 @@ class FillRequest extends BaseEntity
      *      ["access" => "full", "status" => "public", "email_required" => true,
      *       "name_required" => true, "custom_message" => "string",
      *       "notification_emails" => [ [ "name" => "string", "email" => "email" ] ] ]
+     *       "required_fields" => false, "custom_logo" => "logo_url"
      * @return mixed
      */
     public function update($id, array $params = []) {
