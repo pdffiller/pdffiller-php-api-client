@@ -17,7 +17,7 @@ abstract class ExceptionsMessages
 
     protected static function getMessages()
     {
-        $jsonMessages = file_get_contents(__DIR__ . " ../Exceptions/messages.json");
+        $jsonMessages = file_get_contents(__DIR__ . "/../Exceptions/messages.json");
 
         return json_decode($jsonMessages, true);
     }
