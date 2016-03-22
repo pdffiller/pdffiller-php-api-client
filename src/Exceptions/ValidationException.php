@@ -6,7 +6,6 @@ use PDFfiller\OAuth2\Client\Provider\Core\Exception;
 
 class ValidationException extends Exception
 {
-    const EXCEPTION_KEY = 'validation';
     protected $errors = [];
 
     public function __construct($errors, $message = "", $code = 0, Exception $previous = null)

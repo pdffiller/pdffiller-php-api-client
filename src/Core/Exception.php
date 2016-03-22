@@ -5,7 +5,6 @@ namespace PDFfiller\OAuth2\Client\Provider\Core;
 class Exception extends \Exception
 {
     protected $defaultMessage = "";
-    const EXCEPTION_KEY = "exception";
 
     public function __construct($message = "", $code = 0, Exception $previous = null)
     {
@@ -17,6 +16,10 @@ class Exception extends \Exception
 
     protected function getDefaultMessage()
     {
-        return ExceptionsMessages::getMessage(static::EXCEPTION_KEY);
+        $className = (new \ReflectionClass($this))->getShortName();
+        $class = substr($className, 0, strpos($className, 'Exception'));
+        $class = lcfirst($class) ?: "default";
+
+        return ExceptionsMessages::getMessage($class);
     }
 }

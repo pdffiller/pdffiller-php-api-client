@@ -7,18 +7,19 @@ abstract class ExceptionsMessages
 {
     public static function getMessage($exception, $locale = "en")
     {
-        $messages = self::getMessages();
-        if (isset($messages[$exception]) && !empty($messages[$exception])) {
-            return $messages[$exception][$locale] ?: $messages[$exception]["en"];
+        $messages = self::getMessages($locale);
+
+        return $messages[$exception] ?: (ucfirst($exception) . "Exception");
+    }
+
+    protected static function getMessages($locale = "en")
+    {
+        $path = __DIR__ . "/../Messages/" . $locale . "/messages.json";
+        if (file_exists($path)) {
+            $jsonMessages = file_get_contents($path);
+            return json_decode($jsonMessages, true);
         }
 
         return null;
-    }
-
-    protected static function getMessages()
-    {
-        $jsonMessages = file_get_contents(__DIR__ . "/../Exceptions/messages.json");
-
-        return json_decode($jsonMessages, true);
     }
 }

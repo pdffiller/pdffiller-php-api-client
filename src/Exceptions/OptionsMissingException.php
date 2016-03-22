@@ -7,7 +7,6 @@ use PDFfiller\OAuth2\Client\Provider\Core\Exception;
 
 class OptionsMissingException extends Exception
 {
-    const EXCEPTION_KEY = 'optionsMissing';
     protected $options = [];
 
     public function __construct($options, $code = 0, Exception $previous = null)
