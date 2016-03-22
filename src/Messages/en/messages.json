@@ -1,0 +1,11 @@
+{
+  "default": "Exception",
+  "idMissing": "Object must have an id property",
+  "invalidBody": "Passing in the 'body' request option as an array to send a POST request has been deprecated. Please use the 'form_params' request option to send a application/x-www-form-urlencoded request, or a the 'multipart' request option to send a multipart/form-data request",
+  "invalidBodySource": "You cannot use form_params and multipart at the same time Use the form_params option if you want to send application/x-www-form-urlencoded requests, and the multipart option to send multipart/form-data requests",
+  "invalidQuery": "Query must be a string or an array",
+  "invalidRequest": "Invalid request type. Allowed request types are: GET, POST, PUT, DELETE",
+  "optionsMissing": "Required options are not defined",
+  "tokenMissing": "Token is missing",
+  "validation": "Validation failed"
+}

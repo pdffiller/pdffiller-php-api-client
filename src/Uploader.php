@@ -9,6 +9,12 @@ class Uploader extends Model
 {
     public static $entityUri = 'document';
 
+
+    public function attributes()
+    {
+        return [];
+    }
+
     public function uploadViaUrl($url) {
         return $this->upload([
             'json' => [

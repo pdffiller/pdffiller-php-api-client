@@ -3,6 +3,9 @@
 namespace PDFfiller\OAuth2\Client\Provider\Core;
 
 use Illuminate\Validation\Validator;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\IdMissingException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidRequestException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\ValidationException;
 use PDFfiller\Validation\Rules;
 use PDFfiller\OAuth2\Client\Provider\PDFfiller;
 use Symfony\Component\Translation\Translator;
@@ -47,11 +50,7 @@ abstract class Model
         $this->parseArray($array);
     }
 
-
-    public function attributes()
-    {
-        return [];
-    }
+    public abstract  function attributes();
 
     public function rules($key = null)
     {
@@ -76,11 +75,12 @@ abstract class Model
      * @param bool $validate
      * @param array $options
      * @return mixed
+     * @throws ValidationException
      */
     public function save($newRecord = true, $validate = true, $options = [])
     {
         if ($validate && !$this->validate()) {
-            throw new \InvalidArgumentException('Valiadtion failed:' . PHP_EOL .  $this->validationErrors);
+            throw new ValidationException($this->validationErrors);
         }
 
         if ($newRecord) {
@@ -177,6 +177,7 @@ abstract class Model
      * @param $uri
      * @param array $params
      * @return mixed
+     * @throws InvalidRequestException
      */
     protected static function apiCall($provider, $method, $uri, $params = [])
     {
@@ -185,7 +186,7 @@ abstract class Model
         if (method_exists($provider, $methodName)) {
             return $provider->{$methodName}($uri, $params);
         }
-        throw new \InvalidArgumentException('Invalid request type.');
+        throw new InvalidRequestException();
     }
 
     /**
@@ -293,6 +294,7 @@ abstract class Model
     /**
      * Removes current instance entity if it has an id property.
      * @return mixed
+     * @throws IdMissingException if object has no id
      */
     public function remove()
     {
@@ -300,7 +302,7 @@ abstract class Model
             return static::deleteOne($this->client, $this->id);
         }
 
-        return null;
+        throw new IdMissingException();
     }
 
     /**

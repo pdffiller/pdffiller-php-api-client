@@ -2,6 +2,11 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
+use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodyException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodySourceException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidQueryException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\OptionsMissingException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\TokenMissingException;
 use PDFfiller\OAuth2\Client\Provider\Grant\InternalGrant;
 use League\OAuth2\Client\Provider\GenericProvider;
 use InvalidArgumentException;
@@ -54,11 +59,12 @@ class PDFfiller extends GenericProvider
 
     /**
      * Applies the array of request options to a request.
-     *
      * @param RequestInterface $request
-     * @param array            $options
-     *
+     * @param array $options
      * @return RequestInterface
+     * @throws InvalidBodySourceException
+     * @throws InvalidBodyException
+     * @throws InvalidQueryException
      */
     private function applyOptions(RequestInterface $request, array &$options)
     {
@@ -66,11 +72,7 @@ class PDFfiller extends GenericProvider
 
         if (isset($options['form_params'])) {
             if (isset($options['multipart'])) {
-                throw new \InvalidArgumentException('You cannot use '
-                    . 'form_params and multipart at the same time. Use the '
-                    . 'form_params option if you want to send application/'
-                    . 'x-www-form-urlencoded requests, and the multipart '
-                    . 'option to send multipart/form-data requests.');
+                throw new InvalidBodySourceException();
             }
             $options['body'] = http_build_query($options['form_params'], null, '&');
             unset($options['form_params']);
@@ -100,7 +102,7 @@ class PDFfiller extends GenericProvider
 
         if (isset($options['body'])) {
             if (is_array($options['body'])) {
-                $this->invalidBody();
+                throw new InvalidBodyException();
             }
             $modify['body'] = Psr7\stream_for($options['body']);
             unset($options['body']);
@@ -131,7 +133,7 @@ class PDFfiller extends GenericProvider
                 $value = http_build_query($value, null, '&', PHP_QUERY_RFC3986);
             }
             if (!is_string($value)) {
-                throw new \InvalidArgumentException('query must be a string or array');
+                throw new InvalidQueryException();
             }
             $modify['query'] = $value;
             unset($options['query']);
@@ -166,21 +168,11 @@ class PDFfiller extends GenericProvider
 
         return $request;
     }
-    private function invalidBody()
-    {
-        throw new \InvalidArgumentException('Passing in the "body" request '
-            . 'option as an array to send a POST request has been deprecated. '
-            . 'Please use the "form_params" request option to send a '
-            . 'application/x-www-form-urlencoded request, or a the "multipart" '
-            . 'request option to send a multipart/form-data request.');
-    }
 
     public function apiCall($method, $url, $options = []) {
 
         if($this->accessTokenHash === null) {
-            throw new InvalidArgumentException(
-                'You did not set access token'
-            );
+            throw new TokenMissingException();
         }
 
         $request = $this->getAuthenticatedRequest($method, $url, $this->getAccessToken(), $options);
@@ -246,16 +238,14 @@ class PDFfiller extends GenericProvider
      *
      * @param  array $options
      * @return void
-     * @throws InvalidArgumentException
+     * @throws OptionsMissingException
      */
     private function assertPdffillerOptions(array $options)
     {
         $missing = array_diff_key(array_flip($this->getPdffillerOptions()), $options);
 
         if (!empty($missing)) {
-            throw new InvalidArgumentException(
-                'Required options not defined: ' . implode(', ', array_keys($missing))
-            );
+            throw new OptionsMissingException(array_keys($missing));
         }
     }
 
