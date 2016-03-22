@@ -1,7 +1,7 @@
 <?php
+use PDFfiller\OAuth2\Client\Provider\FillRequest;
 
-$provider = require_once __DIR__.'/../bootstrap/initWithFabric.php';
-$fillRequestFormEntity = new \PDFfiller\OAuth2\Client\Provider\FillRequestForm($provider, 20113290);
+$provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
 
-$e = $fillRequestFormEntity->info(1);
+$e = FillRequest::one($provider, 53690143)->form(1);
 dd($e);

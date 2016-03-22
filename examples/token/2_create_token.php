@@ -1,10 +1,11 @@
 <?php
+use PDFfiller\OAuth2\Client\Provider\Token;
 
-$provider = require_once __DIR__.'/../bootstrap/initWithFabric.php';
-$tokenEntity = new \PDFfiller\OAuth2\Client\Provider\Token($provider);
+$provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
+$token = new Token($provider);
 
-$e = $tokenEntity->create([
+$token->data = [
     'key1' => 'value1',
     'key2' => 'value2'
-]);
-dd($e);
+];
+dd($token->save());
