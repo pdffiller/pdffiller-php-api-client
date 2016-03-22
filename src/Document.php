@@ -2,37 +2,31 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
+use PDFfiller\OAuth2\Client\Provider\Core\Model;
 
-class Document extends BaseEntity
+/**
+ * Class Document
+ * @package PDFfiller\OAuth2\Client\Provider
+ * @property string $name
+ * @property string $type
+ * @property string $created
+ */
+class Document extends Model
 {
-    /**
-     * @param $url
-     * @return mixed
-     */
-    public function uploadViaUrl($url) {
-        return $this->client->postApiCall('document', [
-            'json' => [
-                'file' => $url
-            ]
-        ]);
+    public static $entityUri = 'document';
+
+    public function attributes()
+    {
+        return [
+            'name',
+            'type',
+            'created',
+        ];
     }
 
-    public function uploadViaMultipart($fopenResource) {
-        return $this->client->postApiCall('document', [
-            'multipart' => [
-                [
-                    'name' => 'file',
-                    'contents' => $fopenResource
-                ]
-            ]
-        ]);
-    }
-
-    public function itemsList($page = 1) {
-        return $this->client->queryApiCall('document/?page='.$page);
-    }
-
-    public function itemInfo($id) {
-        return $this->client->queryApiCall('document/'.$id);
+    public static function all($provider, $page = 1)
+    {
+        $params = static::query($provider, '?page=' . $page);
+        return static::formItems($provider, $params);
     }
 }

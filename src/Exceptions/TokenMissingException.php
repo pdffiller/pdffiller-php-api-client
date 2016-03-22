@@ -7,5 +7,5 @@ use PDFfiller\OAuth2\Client\Provider\Core\Exception;
 
 class TokenMissingException extends Exception
 {
-    protected $defaultMessage = "Token is missing.";
+    const EXCEPTION_KEY = 'tokenMissing';
 }

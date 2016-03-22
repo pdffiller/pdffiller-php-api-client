@@ -2,58 +2,124 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
-class SignatureRequestRecipient extends BaseEntity
+use PDFfiller\OAuth2\Client\Provider\Core\Model;
+
+/**
+ * Class SignatureRequestRecipient
+ * @package PDFfiller\OAuth2\Client\Provider
+ *
+ * @property string $email
+ * @property string $name
+ * @property integer $order
+ * @property string $message_subject
+ * @property string $message_text
+ * @property integer $date_created unix timestamp
+ * @property integer $date_signed unix timestamp
+ * @property string $access
+ * @property array $additional_documents
+ * @property boolean $require_photo
+ */
+
+class SignatureRequestRecipient extends Model
 {
     /**
      * @var int
      */
-    private $signatureRequestId;
+    protected $signatureRequestId = null;
+
+    protected static $entityUri = 'signature_request';
+    const RECIPIENT = 'recipient';
+    const REMIND = 'remind';
+    const RULES_KEY = 'recipient';
+
+    public function attributes()
+    {
+        return [
+          'email',
+          'user_id',
+          'status',
+          'name',
+          'order',
+          'message_subject',
+          'message_text',
+          'date_created',
+          'date_signed',
+          'access',
+          'additional_documents',
+          'require_photo',
+          'ip',
+        ];
+    }
 
     /**
-     * @param PDFfiller $client
+     * SignatureRequestRecipient constructor.
+     * @param $provider
+     * @param integer|string $signatureRequestId
+     * @param array $array
+     */
+    public function __construct($provider, $signatureRequestId, $array = [])
+    {
+        $this->signatureRequestId = $signatureRequestId;
+//        static::setEntityUri(static::BASE_URI . '/' . $signatureRequestId . '/recipient' );
+        parent::__construct($provider, $array);
+    }
+
+    protected function uri()
+    {
+        return static::getUri() . $this->signatureRequestId . '/' . self::RECIPIENT . '/';
+    }
+    public function remind()
+    {
+        $uri = $this->uri() . $this->id . '/' . self::REMIND;
+        return static::put($this->client, $uri);
+    }
+
+    public function getSignatureRequestId()
+    {
+        return $this->signatureRequestId;
+    }
+
+    /**
      * @param int $signatureRequestId
      */
-    public function __construct(PDFfiller $client, $signatureRequestId) {
-        parent::__construct($client);
-
+    public function setSignatureRequestId($signatureRequestId)
+    {
         $this->signatureRequestId = $signatureRequestId;
     }
 
-    private function recipient_path($id = '') {
-        return "signature_request/$this->signatureRequestId/recipient/$id";
+    public static function one($provider, $signatureRequestId, $id)
+    {
+        $params = static::query($provider, $signatureRequestId, self::RECIPIENT . '/' . $id);
+        $instance = new static($provider, $signatureRequestId, $params);
+        $instance->cacheFields($params);
+        return $instance;
     }
 
-    public function info($id) {
-        return $this->client->queryApiCall($this->recipient_path($id));
-    }
+    public function save($validate = true, $options = [])
+    {
+        if ($validate && !$this->validate()) {
+            throw new \InvalidArgumentException('Validation fail. Check properties values');
+        }
 
-    /**
-     * @param array $params example:
-     *              [
-     *                  "email" => "string",
-     *                  "name" => "string",
-     *                  "order" => 0,
-     *                  "message_subject" => "string",
-     *                  "message_text" => "string",
-     *                  "date_created" => 0,
-     *                  "date_signed" => 0,
-     *                  "access" => "full",
-     *                  "additional_documents" => [
-     *                      [
-     *                          "document_request_notification" => "string"
-     *                      ]
-     *                  ],
-     *                  "require_photo" => true
-     *              ]
-     * @return mixed
-     */
-    public function create(array $params) {
-        return $this->client->postApiCall($this->recipient_path(),  [
-            'json' => $params,
+        $params = $this->toArray($options);
+        $uri = $this->uri();
+//        dd($uri, $params);
+        $createResult =  static::post($this->client, $uri, [
+            'json' => ['recipients' => [$params]],
         ]);
+
+        if (!isset($createResult['errors'])) {
+            $this->cacheFields($params);
+            foreach($createResult['items'][0] as $name => $property) {
+                $this->__set($name, $property);
+            }
+        }
+
+        return $createResult;
     }
 
-    public function remind($id) {
-        return $this->client->putApiCall($this->recipient_path($id).'/remind');
+    public static function all()
+    {
+        return null;
     }
 }

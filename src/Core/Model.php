@@ -2,9 +2,6 @@
 
 namespace PDFfiller\OAuth2\Client\Provider\Core;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Facade;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Validator;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\IdMissingException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidRequestException;
@@ -22,6 +19,7 @@ use Symfony\Component\Translation\Translator;
 abstract class Model
 {
     const RULES_KEY = false;
+    const USER_AGENT = 'pdffiller-php-api-client/1.1.0';
 
     protected static $entityUri = null;
     /**
@@ -52,11 +50,7 @@ abstract class Model
         $this->parseArray($array);
     }
 
-
-    public function attributes()
-    {
-        return [];
-    }
+    public abstract  function attributes();
 
     public function rules($key = null)
     {
@@ -71,19 +65,6 @@ abstract class Model
         return [];
     }
 
-//    /**
-//     * Initialize base model settings
-//     * @param PDFfiller $client
-//     * @param string|null $uri base entity uri
-//     */
-//    public static function init(PDFfiller $client, $uri = null)
-//    {
-//        self::setClient($client);
-//        if ($uri !== null) {
-//           static::setEntityUri($uri);
-//        }
-//    }
-
     protected static function getUri()
     {
         return static::getEntityUri() . '/';
@@ -94,11 +75,12 @@ abstract class Model
      * @param bool $validate
      * @param array $options
      * @return mixed
+     * @throws ValidationException
      */
     public function save($newRecord = true, $validate = true, $options = [])
     {
         if ($validate && !$this->validate()) {
-            throw new ValidationException('Validation failed:' . PHP_EOL .  $this->validationErrors);
+            throw new ValidationException($this->validationErrors);
         }
 
         if ($newRecord) {
@@ -117,7 +99,6 @@ abstract class Model
         $allowed = $this->getAttributes();
         $props = get_object_vars($this);
         !isset($options['except']) && $options['except'] = [];
-//        $options['except'][] = 'resource_type';
 
         if (isset($options['only'])) {
             foreach ($options['only'] as $ndx => $option) {
@@ -196,14 +177,16 @@ abstract class Model
      * @param $uri
      * @param array $params
      * @return mixed
+     * @throws InvalidRequestException
      */
     protected static function apiCall($provider, $method, $uri, $params = [])
     {
+        $params['headers']['User-Agent'] = self::USER_AGENT;
         $methodName = $method . 'ApiCall';
         if (method_exists($provider, $methodName)) {
             return $provider->{$methodName}($uri, $params);
         }
-        throw new InvalidRequestException('Invalid request type.');
+        throw new InvalidRequestException();
     }
 
     /**
@@ -311,6 +294,7 @@ abstract class Model
     /**
      * Removes current instance entity if it has an id property.
      * @return mixed
+     * @throws IdMissingException if object has no id
      */
     public function remove()
     {
@@ -436,6 +420,8 @@ abstract class Model
         } elseif (method_exists($this, $method = 'get' . ucfirst($name))) {
             return $this->{$method}();
         }
+
+        return null;
     }
 
     public function __set($name, $value)

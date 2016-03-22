@@ -1,13 +1,14 @@
 <?php
+use PDFfiller\OAuth2\Client\Provider\FillableTemplate;
 
-$provider = require_once __DIR__.'/../bootstrap/initWithFabric.php';
+$provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
 
-$fillableTemplateEntity = new \PDFfiller\OAuth2\Client\Provider\FillableTemplate($provider);
+$fillableTemplate = new FillableTemplate($provider);
+$fillableTemplate->document_id = 53690143;
+$fillableTemplate->fillable_fields['Text_1'] = 'Hop hey lalaley';
+$fillableTemplate->fillable_fields['Number_1'] = '2016';
+$fillableTemplate->fillable_fields['Checkbox_1'] = '1';
+$fillableTemplate->fillable_fields['Date_1'] = '03/07/2016';
 
-$e = $fillableTemplateEntity->makeFillableTemplate('53690143', [
-    "Text_1"=> "Quam voluptatem quas.",
-    "Number_1"=> 24352,
-    "Checkbox_1"=> "0",
-    "Date_1"=> "02/20/2016"
-]);
+$e = $fillableTemplate->save();
 dd($e);

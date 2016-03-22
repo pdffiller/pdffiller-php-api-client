@@ -1,9 +1,8 @@
 <?php
+use PDFfiller\OAuth2\Client\Provider\FillableTemplate;
 
-$provider = require_once __DIR__.'/../bootstrap/initWithFabric.php';
+$provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
 
-$fillableTemplateEntity = new \PDFfiller\OAuth2\Client\Provider\FillableTemplate($provider);
-
-$e = $fillableTemplateEntity->download('56436761');
+$e = FillableTemplate::download($provider, '20267666');
 
 dd($e);

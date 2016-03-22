@@ -7,5 +7,5 @@ use PDFfiller\OAuth2\Client\Provider\Core\Exception;
 
 class InvalidQueryException extends Exception
 {
-    protected $defaultMessage = "Query must be a string or an array";
+    const EXCEPTION_KEY = 'invalidQuery';
 }

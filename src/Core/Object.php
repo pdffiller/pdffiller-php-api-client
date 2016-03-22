@@ -28,6 +28,8 @@ abstract class Object
         if (in_array($name, $attributes)) {
             return $this->{$name};
         }
+
+        return null;
     }
 
 

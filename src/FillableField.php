@@ -1,12 +1,12 @@
 <?php
 
-namespace PDFfiller\OAuth2\Client\Provider\Alt;
+namespace PDFfiller\OAuth2\Client\Provider;
 
 use PDFfiller\OAuth2\Client\Provider\Core\Object;
 
 /**
  * Class FillableField
- * @package PDFfiller\OAuth2\Client\Provider\Alt
+ * @package PDFfiller\OAuth2\Client\Provider
  *
  * @property $name
  * @property $type
