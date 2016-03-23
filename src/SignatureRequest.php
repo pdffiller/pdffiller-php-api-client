@@ -2,61 +2,86 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
-class SignatureRequest extends BaseEntity
+use PDFfiller\OAuth2\Client\Provider\Core\Model;
+
+/**
+ * Class SignatureRequest
+ * @package PDFfiller\OAuth2\Client\Provider
+ *
+ * @property string $document_id
+ * @property string $method
+ * @property string $envelope_name
+ * @property string $security_pin
+ * @property string $sign_in_order
+ * @property array $recipients
+ */
+class SignatureRequest extends Model
 {
-    public function listItems() {
-        return $this->client->queryApiCall('signature_request/');
+    /**
+     * @var string
+     */
+    protected static $entityUri = 'signature_request';
+    const CERTIFICATE = 'certificate';
+    const SIGNED_DOCUMENT = 'signed_document';
+    const RULES_KEY = 'signatureRequest|recipient';
+
+    public function attributes()
+    {
+        return [
+            'document_id',
+            'method',
+            'envelope_name',
+            'security_pin',
+            'callback_url',
+            'recipients',
+            'date_created',
+            'date_signed',
+        ];
     }
 
-    public function info($id) {
-        return $this->client->queryApiCall('signature_request/'.$id);
+    public function __construct($provider, $array = [])
+    {
+        if (isset($array['recipients'])) {
+            $recipients = [];
+            foreach ($array['recipients'] as $recipient) {
+                $recipients[] = new SignatureRequestRecipient($provider, $this->id, $recipient);
+            }
+
+            unset($array['recipients']);
+            $array['recipients'] = $recipients;
+        }
+
+        parent::__construct($provider, $array);
+    }
+
+    public function certificate() {
+        return self::query($this->client, $this->id, self::CERTIFICATE);
+    }
+
+    public function signedDocument() {
+        return self::query($this->client, $this->id, self::SIGNED_DOCUMENT);
     }
 
     /**
-     * @param int|string $id
-     * @param array $params example:
-     *      [
-     *          "method" => "sendtoeach",
-     *          "envelope_name" => "string",
-     *          "security_pin" => "standard",
-     *          "sign_in_order" => true,
-     *          "recipients" => [
-     *              [
-     *                  "email" => "string",
-     *                  "name" => "string",
-     *                  "order" => 0,
-     *                  "message_subject" => "string",
-     *                  "message_text" => "string",
-     *                  "date_created" => 0,
-     *                  "date_signed" => 0,
-     *                  "access" => "full",
-     *                  "additional_documents" => [
-     *                      [
-     *                          "document_request_notification" => "string"
-     *                      ]
-     *                  ],
-     *                  "require_photo" => true
-     *              ]
-     *          ]
-     *      ]
-     * @return mixed
+     * @param SignatureRequestRecipient $recipient
+     * @return array recipient creation result
      */
-    public function create($id, array $params) {
-        $params = array_merge($params, ['document_id' => $id]);
-        return $this->client->postApiCall('signature_request/',  [
-            'json' => $params,
-        ]);
+    public function addRecipient($recipient)
+    {
+        $createResult = $recipient->save();
+
+        if (!isset($createResult['errors'])) {
+            $this->recipients[] = $recipient;
+        }
+
+        return $createResult;
     }
 
-    public function delete($id) {
-        return $this->client->deleteApiCall('signature_request/'.$id);
-    }
-
-    public function certificate($id) {
-        return $this->client->queryApiCall('signature_request/'.$id.'/certificate');
-    }
-
-    public function signedDocument($id) {
-        return $this->client->queryApiCall('signature_request/'.$id.'/signed_document');
+    /**
+     * @return SignatureRequestRecipient SignatureRequestRecipient
+     */
+    public function createRecipient()
+    {
+        return new SignatureRequestRecipient($this->client, $this->id);
     }
 }

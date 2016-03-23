@@ -1,14 +1,17 @@
 <?php
+use PDFfiller\OAuth2\Client\Provider\FillRequest;
 
-$provider = require_once __DIR__.'/../bootstrap/initWithFabric.php';
-$fillRequestEntity = new \PDFfiller\OAuth2\Client\Provider\FillRequest($provider);
+$provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
 
-$e = $fillRequestEntity->create(20113290, ["access" => "full", "status" => "public", "email_required" => true,
-    "name_required" => true, "custom_message" => "Custom string to show for a user",
-    "required_fields" => true, "custom_logo" => "https://www.pdffiller.com/img/logo-pdffiller.svg",
-    "notification_emails" => [
-        [ "name" => "Test User", "email" => "test@user.com" ],
-        [ "name" => "Another Testuser", "email" => "another@user.com" ]
-    ]
-]);
+$fillRequestEntity = new FillRequest($provider);
+$fillRequestEntity->document_id = 53690143;
+$fillRequestEntity->access = "full";
+$fillRequestEntity->status = "public";
+$fillRequestEntity->email_required = true;
+$fillRequestEntity->name_required = true;
+$fillRequestEntity->custom_message = "Custom";
+$fillRequestEntity->notification_emails = [['name' => 'name', 'email' => 'email@email.com']];
+
+$e = $fillRequestEntity->save();
+
 dd($e);

@@ -1,7 +1,5 @@
 <?php
-
-$provider = require_once __DIR__.'/../bootstrap/initWithFabric.php';
-$signatureRequestEntity = new \PDFfiller\OAuth2\Client\Provider\SignatureRequest($provider);
-
-$e = $signatureRequestEntity->delete('4239');
+use PDFfiller\OAuth2\Client\Provider\SignatureRequest;
+$provider = require_once __DIR__ . '/../../examples/bootstrap/initWithFabric.php';
+$e = SignatureRequest::deleteOne($provider, 129498);
 dd($e);

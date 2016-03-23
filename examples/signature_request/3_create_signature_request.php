@@ -1,20 +1,25 @@
 <?php
+use PDFfiller\OAuth2\Client\Provider\SignatureRequest;
 
-$provider = require_once __DIR__.'/../bootstrap/initWithFabric.php';
-$signatureRequestEntity = new \PDFfiller\OAuth2\Client\Provider\SignatureRequest($provider);
+$provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
 
-$e = $signatureRequestEntity->create('20113290', [
-    "method" => "sendtoeach",
-    "security_pin" => "standard",
-    "recipients" => [
-        [
-            "email" => "test@user.com",
-            "name" => "Test User",
-            "access" => "full",
-            "require_photo" => true,
-            "message_subject" => "Email Subject",
-            "message_text" => "Email text",
-        ]
-    ]
-]);
+$e = new SignatureRequest($provider);
+$e->document_id = 53690143;
+//$e->method = 'sendtoeach';
+///////////
+$e->method = 'sendtogroup';
+$e->envelope_name = 'group envelope';
+$e->sign_in_order = false;
+//////////
+$e->security_pin = 'standard';
+$e->recipients = [];
+$e->recipients[] = [
+    'email' => 'test@test.com',
+    'name' => 'Test user',
+    'access' => 'full',
+    'require_photo' => true,
+    'message_subject' => 'subject',
+    'message_text' => 'message',
+];
+$e->save();
 dd($e);
