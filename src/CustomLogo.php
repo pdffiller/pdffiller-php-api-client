@@ -5,6 +5,8 @@ namespace PDFfiller\OAuth2\Client\Provider;
 
 use PDFfiller\OAuth2\Client\Provider\Core\Exception;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\Core\Uploadable;
+use PDFfiller\Validation\Rules;
 
 /**
  * Class CustomLogo
@@ -18,53 +20,47 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
  * @property $height
  * @property $filesize
  */
-class CustomLogo extends Model
+class CustomLogo extends Model implements Uploadable
 {
 
     protected static $entityUri = 'logo';
-    const RULES_KEY = 'logo';
+    const UPLOAD_URL_RULE = 'customLogoUrl';
+    const UPLOAD_MULTIPART_RULE = 'customLogoMultipart';
 
     public function attributes()
     {
         return [
             'id',
-            'user_id',
             'created_at',
-            'updated_at',
             'width',
             'height',
             'filesize',
+            'logo_url',
         ];
-    }
-
-    public static function uploadViaUrl($provider, $url)
-    {
-        return static::upload($provider, self::urlToBase64($url));
-    }
-
-    public function uploadViaMultipart($provider, $fopenResource)
-    {
-        return $this->upload($provider, self::fileToBase64($fopenResource));
-    }
-
-    protected static function upload($provider, $data)
-    {
-        $uri = static::getUri();
-        $document = static::post($provider, $uri, [
-            'form_params' => [
-                'content' => $data
-            ]
-        ]);
-        /** @var Model $instance */
-        $instance = new static($provider, $document);
-        $instance->cacheFields($document);
-
-        return $instance;
     }
 
     public function save()
     {
-        throw new Exception("Can't save logo, use upload method.");
+        throw new Exception("Can't save logo, use Uploader.");
     }
 
+    public function update()
+    {
+        throw new Exception("Can't update logo, delete old and upload new logo.");
+    }
+
+    public function create()
+    {
+        throw new Exception("Can't create logo, use Uploader.");
+    }
+
+    public static function getUrlKey()
+    {
+        return 'customLogoUrl';
+    }
+
+    public static function getMultipartKey()
+    {
+        return 'customLogoMultipart';
+    }
 }

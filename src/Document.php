@@ -3,6 +3,7 @@
 namespace PDFfiller\OAuth2\Client\Provider;
 
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\Core\Uploadable;
 
 /**
  * Class Document
@@ -11,7 +12,7 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
  * @property string $type
  * @property string $created
  */
-class Document extends Model
+class Document extends Model implements Uploadable
 {
     public static $entityUri = 'document';
 
@@ -28,5 +29,15 @@ class Document extends Model
     {
         $params = static::query($provider, '?page=' . $page);
         return static::formItems($provider, $params);
+    }
+
+    public static function getUrlKey()
+    {
+        return 'documentUrl';
+    }
+
+    public static function getMultipartKey()
+    {
+        return 'documentMultipart';
     }
 }

@@ -3,8 +3,11 @@
 namespace PDFfiller\OAuth2\Client\Provider;
 
 
+use PDFfiller\OAuth2\Client\Provider\Core\Exception;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\Core\Uploadable;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\TypeException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\ValidationException;
 
 /**
  * Class Uploader
@@ -27,11 +30,17 @@ class Uploader extends Model
         'file',
     ];
 
-    public function __construct($provider, $class, array $array = [])
+    public function __construct($provider, Uploadable $class, array $array = [])
     {
-        if (class_exists($class) && is_subclass_of($class, Model::class)) {
-            $this->class = $class;
+        if (!in_array(Uploadable::class, class_implements($class))) {
+            throw new Exception("Given class must implements Uploadable interface");
         }
+
+        if (!is_subclass_of($class, Model::class)) {
+            throw new Exception("Given class must be a subclass of Model");
+        }
+
+        $this->class = $class;
         parent::__construct($provider, $array);
     }
 
@@ -62,7 +71,9 @@ class Uploader extends Model
      */
     private function checkUploadType()
     {
+        $class = $this->class;
         if ($this->type == self::TYPE_URL) {
+            $this->validate($class::getUrlKey());
             return [
                 'json' => [
                     'file' => $this->file
@@ -71,6 +82,7 @@ class Uploader extends Model
         }
 
         if ($this->type == self::TYPE_MULTIPART) {
+            $this->validate($class::getMultipartKey());
             return [
                 'multipart' => [
                     [
@@ -95,6 +107,13 @@ class Uploader extends Model
         }
 
         $this->type = $type;
+    }
+
+    public function validate($key = null)
+    {
+        if (!parent::validate($key)) {
+            throw new ValidationException($this->validationErrors);
+        };
     }
 
 }

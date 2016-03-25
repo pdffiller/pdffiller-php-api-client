@@ -42,7 +42,7 @@ abstract class Model
      */
     protected $attributes = ['id'];
 
-    private $validationErrors;
+    protected $validationErrors;
 
     public function __construct($provider, $array = [])
     {

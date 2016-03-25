@@ -38,7 +38,7 @@ class FillRequest extends Model
             'notification_emails',
             'document_id',
             'required_fields',
-            'active_logo_id',
+            'custom_logo_id',
         ];
     }
 
