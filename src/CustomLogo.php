@@ -23,9 +23,7 @@ use PDFfiller\Validation\Rules;
 class CustomLogo extends Model implements Uploadable
 {
 
-    protected static $entityUri = 'logo';
-    const UPLOAD_URL_RULE = 'customLogoUrl';
-    const UPLOAD_MULTIPART_RULE = 'customLogoMultipart';
+    protected static $entityUri = 'custom_logo';
 
     public function attributes()
     {

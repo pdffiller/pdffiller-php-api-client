@@ -30,7 +30,7 @@ class Uploader extends Model
         'file',
     ];
 
-    public function __construct($provider, Uploadable $class, array $array = [])
+    public function __construct($provider, $class, array $array = [])
     {
         if (!in_array(Uploadable::class, class_implements($class))) {
             throw new Exception("Given class must implements Uploadable interface");
