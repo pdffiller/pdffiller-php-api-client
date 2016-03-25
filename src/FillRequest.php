@@ -16,7 +16,7 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
  * @property string $custom_message
  * @property array $notification_emails
  * @property boolean $required_fields
- * @property string $custom_logo
+ * @property int $active_logo_id
  *
  */
 class FillRequest extends Model
@@ -38,7 +38,7 @@ class FillRequest extends Model
             'notification_emails',
             'document_id',
             'required_fields',
-            'custom_logo',
+            'active_logo_id',
         ];
     }
 

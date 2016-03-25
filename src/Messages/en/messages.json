@@ -7,5 +7,6 @@
   "invalidRequest": "Invalid request type. Allowed request types are: GET, POST, PUT, DELETE",
   "optionsMissing": "Required options are not defined",
   "tokenMissing": "Token is missing",
-  "validation": "Validation failed"
+  "validation": "Validation failed",
+  "type": "Wrong type"
 }
