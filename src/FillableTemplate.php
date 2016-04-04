@@ -50,6 +50,6 @@ class FillableTemplate extends Model
      */
     public static function download($provider, $id)
     {
-        return static::query($provider, $id, self::DOWNLOAD);
+        return static::query($provider, [$id, self::DOWNLOAD]);
     }
 }

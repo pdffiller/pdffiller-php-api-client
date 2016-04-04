@@ -2,18 +2,20 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodyException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodySourceException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidQueryException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\OptionsMissingException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\TokenMissingException;
 use PDFfiller\OAuth2\Client\Provider\Grant\InternalGrant;
 use League\OAuth2\Client\Provider\GenericProvider;
-use InvalidArgumentException;
 use League\Uri\Schemes\Http as HttpUri;
 use League\Uri\Modifiers\Resolve;
 use Psr\Http\Message\RequestInterface;
 use \GuzzleHttp\Psr7 as Psr7;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Represents a generic service provider that may be used to interact with any
@@ -259,5 +261,16 @@ class PDFfiller extends GenericProvider
 
     public function setAccessTokenHash($value) {
         $this->accessTokenHash = $value;
+    }
+
+    protected function checkResponse(ResponseInterface $response, $data)
+    {
+
+        if (!empty($data['errors'])) {
+            $errors = $data['errors'];
+            throw new ResponseException($errors);
+        }
+
+        parent::checkResponse($response, $data);
     }
 }

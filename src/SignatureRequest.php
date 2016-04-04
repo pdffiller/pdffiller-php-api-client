@@ -3,6 +3,7 @@
 namespace PDFfiller\OAuth2\Client\Provider;
 
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 
 /**
  * Class SignatureRequest
@@ -36,45 +37,66 @@ class SignatureRequest extends Model
             'recipients',
             'date_created',
             'date_signed',
+            'sign_in_order',
         ];
     }
 
     public function __construct($provider, $array = [])
     {
-        if (isset($array['recipients'])) {
-            $recipients = [];
-            foreach ($array['recipients'] as $recipient) {
-                $recipients[] = new SignatureRequestRecipient($provider, $this->id, $recipient);
-            }
+        $this->client = $provider;
 
-            unset($array['recipients']);
-            $array['recipients'] = $recipients;
+        if (isset($array['recipients'])) {
+            $array['recipients'] = $this->formRecipients($array['recipients']);
         }
 
         parent::__construct($provider, $array);
     }
 
-    public function certificate() {
-        return self::query($this->client, $this->id, self::CERTIFICATE);
+    protected function formRecipients($array)
+    {
+
+        $recipients = [];
+        foreach ($array as $recipient) {
+            $recipients[$recipient['id']] = new SignatureRequestRecipient($this->client, $this->id, $recipient);
+        }
+
+        return $recipients;
     }
 
+    /**
+     * Returns certificate if document has been signed.
+     * @return mixed
+     */
+    public function certificate() {
+        return self::query($this->client, [$this->id, self::CERTIFICATE]);
+    }
+
+    /**
+     * Returns a signed document.
+     * @return mixed
+     */
     public function signedDocument() {
-        return self::query($this->client, $this->id, self::SIGNED_DOCUMENT);
+        return self::query($this->client, [$this->id, self::SIGNED_DOCUMENT]);
     }
 
     /**
      * @param SignatureRequestRecipient $recipient
      * @return array recipient creation result
      */
-    public function addRecipient($recipient)
+    public function addRecipient(SignatureRequestRecipient &$recipient)
     {
-        $createResult = $recipient->save();
+        $response = $recipient->create();
 
-        if (!isset($createResult['errors'])) {
-            $this->recipients[] = $recipient;
+        if (isset($response['recipients'])) {
+            $recipients = $this->formRecipients($response['recipients']);
+            $newRecipient = array_diff_key($recipients, $this->recipients);
+            $this->recipients = $recipients;
+            $result = array_pop($newRecipient);
+            $recipient = $result;
+            return true;
         }
 
-        return $createResult;
+        return $response;
     }
 
     /**
@@ -83,5 +105,19 @@ class SignatureRequest extends Model
     public function createRecipient()
     {
         return new SignatureRequestRecipient($this->client, $this->id);
+    }
+
+    /**
+     * Returns current signature request recipient by id.
+     * @param string|integer $id
+     * @return SignatureRequestRecipient|null
+     */
+    public function getRecipient($id)
+    {
+        if ($this->recipients[$id]) {
+            return $this->recipients[$id];
+        }
+
+        return null;
     }
 }

@@ -1,6 +1,6 @@
 <?php
-use PDFfiller\OAuth2\Client\Provider\SignatureRequestRecipient;
+use PDFfiller\OAuth2\Client\Provider\SignatureRequest;
 
 $provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
-$e = SignatureRequestRecipient::one($provider, 132303, 140861);
-dd($e);
+$recipient = SignatureRequest::one($provider, 9501)->getRecipient(25076);
+dd($recipient);

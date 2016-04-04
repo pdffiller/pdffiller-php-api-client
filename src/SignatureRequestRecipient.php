@@ -3,6 +3,9 @@
 namespace PDFfiller\OAuth2\Client\Provider;
 
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\Core\Exception;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\ValidationException;
 
 /**
  * Class SignatureRequestRecipient
@@ -87,39 +90,62 @@ class SignatureRequestRecipient extends Model
         $this->signatureRequestId = $signatureRequestId;
     }
 
-    public static function one($provider, $signatureRequestId, $id)
+    /**
+     * Returns created recipient info.
+     * @param array $options
+     * @return mixed
+     * @throws ResponseException
+     * @throws ValidationException
+     */
+    public function create($options = [])
     {
-        $params = static::query($provider, $signatureRequestId, self::RECIPIENT . '/' . $id);
-        $instance = new static($provider, $signatureRequestId, $params);
-        $instance->cacheFields($params);
-        return $instance;
-    }
-
-    public function save($validate = true, $options = [])
-    {
-        if ($validate && !$this->validate()) {
-            throw new \InvalidArgumentException('Validation fail. Check properties values');
-        }
-
         $params = $this->toArray($options);
-        $uri = $this->uri();
-//        dd($uri, $params);
-        $createResult =  static::post($this->client, $uri, [
-            'json' => ['recipients' => [$params]],
-        ]);
+        $recipients['recipients'] = [$params];
 
-        if (!isset($createResult['errors'])) {
-            $this->cacheFields($params);
-            foreach($createResult['items'][0] as $name => $property) {
-                $this->__set($name, $property);
-            }
+        if (!$this->validate()) {
+            throw new ValidationException($this->validationErrors);
+        }
+        $uri = $this->uri();
+        $createResult =  static::post($this->client, $uri, [
+            'json' => $recipients,
+        ]);
+        if (isset($createResult['errors'])) {
+            throw new ResponseException($createResult['errors']);
         }
 
         return $createResult;
     }
 
-    public static function all()
+    public function validate($key = null)
     {
-        return null;
+        $values['recipients'] = [$this->toArray()];
+        $rules = $this->rules($key);
+        $validator = $this->getValidator($values, $rules);
+        $passes = $validator->passes();
+        $this->validationErrors = $validator->errors();
+
+        return $passes;
     }
+
+    public static function all($provider = null, $params = [])
+    {
+        throw new Exception("Getting list of this items isn't supported.");
+    }
+
+    public static function one($provider = null, $id = null)
+    {
+        throw new Exception("Getting instance of this items isn't supported. Use SignatureRequest class.");
+    }
+
+    public function update($options = [])
+    {
+        throw new Exception("Updating instance of this items isn't supported.");
+    }
+
+    public function save($new = true, $validation = null, $options = null)
+    {
+        throw new Exception("Saving instance of this items isn't supported. Use SignatureRequest::addRecipient().");
+    }
+
 }
+

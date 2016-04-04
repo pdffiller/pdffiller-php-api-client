@@ -62,11 +62,11 @@ class FillRequestForm extends Model
 
     public function export()
     {
-        return static::query($this->client, $this->id, self::EXPORT);
+        return static::query($this->client, [$this->id, self::EXPORT]);
     }
 
     public function download()
     {
-        return static::query($this->client, $this->id, self::DOWNLOAD);
+        return static::query($this->client, [$this->id, self::DOWNLOAD]);
     }
 }

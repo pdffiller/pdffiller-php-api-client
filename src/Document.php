@@ -25,11 +25,6 @@ class Document extends Model implements Uploadable
         ];
     }
 
-    public static function all($provider, $page = 1)
-    {
-        $params = static::query($provider, '?page=' . $page);
-        return static::formItems($provider, $params);
-    }
 
     public static function getUrlKey()
     {
