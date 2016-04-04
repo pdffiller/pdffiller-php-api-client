@@ -68,7 +68,7 @@ class SignatureRequest extends Model
      * @return mixed
      */
     public function certificate() {
-        return self::query($this->client, $this->id, self::CERTIFICATE);
+        return self::query($this->client, [$this->id, self::CERTIFICATE]);
     }
 
     /**
@@ -76,7 +76,7 @@ class SignatureRequest extends Model
      * @return mixed
      */
     public function signedDocument() {
-        return self::query($this->client, $this->id, self::SIGNED_DOCUMENT);
+        return self::query($this->client, [$this->id, self::SIGNED_DOCUMENT]);
     }
 
     /**
@@ -85,11 +85,7 @@ class SignatureRequest extends Model
      */
     public function addRecipient(SignatureRequestRecipient &$recipient)
     {
-        try {
-            $response = $recipient->create();
-        } catch (ResponseException $e) {
-            return $e->getErrors();
-        }
+        $response = $recipient->create();
 
         if (isset($response['recipients'])) {
             $recipients = $this->formRecipients($response['recipients']);
