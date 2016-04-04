@@ -5,6 +5,7 @@ namespace PDFfiller\OAuth2\Client\Provider\Core;
 use Illuminate\Validation\Validator;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\IdMissingException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidRequestException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\ValidationException;
 use PDFfiller\Validation\Rules;
 use PDFfiller\OAuth2\Client\Provider\PDFfiller;
@@ -42,7 +43,7 @@ abstract class Model
      */
     protected $attributes = ['id'];
 
-    private $validationErrors;
+    protected $validationErrors;
 
     public function __construct($provider, $array = [])
     {
@@ -243,6 +244,7 @@ abstract class Model
     /**
      * @param array $options
      * @return mixed
+     * @throws ResponseException
      */
     protected function create($options = [])
     {
@@ -252,15 +254,17 @@ abstract class Model
             'json' => $params,
         ]);
 
-        if (!isset($createResult['errors'])) {
-            $this->cacheFields($params);
-            $object = $createResult;
-            if (isset($createResult['items'])) {
-                $object = $createResult['items'][0];
-            }
-            foreach($object as $name => $property) {
-                $this->__set($name, $property);
-            }
+        if (isset($createResult['errors'])) {
+            throw new ResponseException($createResult['errors']);
+        }
+
+        $this->cacheFields($params);
+        $object = $createResult;
+        if (isset($createResult['items'])) {
+            $object = $createResult['items'][0];
+        }
+        foreach($object as $name => $property) {
+            $this->__set($name, $property);
         }
 
         return $createResult;
@@ -340,8 +344,8 @@ abstract class Model
     public static function all($provider)
     {
         $paramsArray = static::query($provider);
-
-        return static::formItems($provider, $paramsArray);
+        $paramsArray['items'] = static::formItems($provider, $paramsArray);
+        return new ModelsList($paramsArray);
     }
 
     protected static function formItems($provider, $array)
@@ -351,7 +355,11 @@ abstract class Model
         foreach ($array['items'] as $params) {
             $instance = new static($provider, $params);
             $instance->cacheFields($params);
-            $set[] = $instance;
+            if (isset($instance->id)) {
+                $set[$instance->id] = $instance;
+            } else {
+                $set[] = $instance;
+            }
         }
 
         return $set;
