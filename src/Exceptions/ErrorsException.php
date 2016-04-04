@@ -2,9 +2,13 @@
 
 namespace PDFfiller\OAuth2\Client\Provider\Exceptions;
 
-
 use PDFfiller\OAuth2\Client\Provider\Core\Exception;
 
+/**
+ * Class ErrorsException
+ * Handle exceptions with errors messages.
+ * @package PDFfiller\OAuth2\Client\Provider\Exceptions
+ */
 class ErrorsException extends Exception
 {
     protected $errors = [];
@@ -18,10 +22,5 @@ class ErrorsException extends Exception
     public function getErrors()
     {
         return $this->errors;
-    }
-
-    protected function getDefaultMessage()
-    {
-        return parent::getDefaultMessage();
     }
 }

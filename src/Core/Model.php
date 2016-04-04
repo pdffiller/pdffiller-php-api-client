@@ -4,6 +4,7 @@ namespace PDFfiller\OAuth2\Client\Provider\Core;
 
 use Illuminate\Validation\Validator;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\IdMissingException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidQueryException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidRequestException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\ValidationException;
@@ -193,15 +194,32 @@ abstract class Model
     /**
      * Returns entity properties as a result of get request.
      * @param PDFfiller $provider
-     * @param string|null $id entity id, if not given - returns list of all entities
-     * @param string|null $request entity item request
+     * @param array $entities entities items for request:
+     * ['entity1', 'entity2'] becomes {request_uri}/entity1/entity2/
+     * @param array $params query parameters
+     * ['param1' => 'val1', 'param2' => 'val2'] becomes ?param1=val1&param2=val2
      * @return mixed entity parameters
+     * @throws InvalidQueryException
      */
-    protected static function query($provider, $id = null, $request = null)
+    protected static function query($provider, $entities = [], $params = [])
     {
         $uri = static::getUri();
-        $uri .= $id ?: '';
-        $uri .= $request ? '/' . $request : '';
+
+        if (!empty($entities)) {
+            if (is_array($entities)){
+                $entities = implode('/', $entities) . '/';
+            }
+
+            if (!is_scalar($entities)) {
+                throw new InvalidQueryException();
+            }
+
+            $uri .= $entities;
+        }
+
+        if (!empty($params)) {
+            $uri .= '?' . http_build_query($params);
+        }
 
         return static::apiCall($provider, 'query', $uri);
     }
@@ -339,11 +357,12 @@ abstract class Model
     /**
      * Returns a list of entities
      * @param PDFfiller $provider
+     * @param array $queryParams
      * @return array entities list
      */
-    public static function all($provider)
+    public static function all($provider, array $queryParams = [])
     {
-        $paramsArray = static::query($provider);
+        $paramsArray = static::query($provider, null, $queryParams);
         $paramsArray['items'] = static::formItems($provider, $paramsArray);
         return new ModelsList($paramsArray);
     }

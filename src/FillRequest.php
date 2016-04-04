@@ -44,7 +44,7 @@ class FillRequest extends Model
 
     public function forms()
     {
-        $response = static::query($this->client, $this->id, self::FORMS_URI);
+        $response = static::query($this->client, [$this->id, self::FORMS_URI]);
         $forms = [];
 
         if (isset($response['items'])) {
@@ -62,7 +62,7 @@ class FillRequest extends Model
      */
     public function form($id)
     {
-        $params = static::query($this->client, $this->id, self::FORMS_URI . '/' . $id);
+        $params = static::query($this->client, [$this->id, self::FORMS_URI, $id]);
         return new FillRequestForm($this->client, $this->id, $params);
     }
 }

@@ -105,12 +105,10 @@ class SignatureRequestRecipient extends Model
         if (!$this->validate()) {
             throw new ValidationException($this->validationErrors);
         }
-
         $uri = $this->uri();
         $createResult =  static::post($this->client, $uri, [
             'json' => $recipients,
         ]);
-
         if (isset($createResult['errors'])) {
             throw new ResponseException($createResult['errors']);
         }
@@ -129,7 +127,7 @@ class SignatureRequestRecipient extends Model
         return $passes;
     }
 
-    public static function all($provider = null)
+    public static function all($provider = null, $params = [])
     {
         throw new Exception("Getting list of this items isn't supported.");
     }
