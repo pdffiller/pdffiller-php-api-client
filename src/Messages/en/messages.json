@@ -8,6 +8,5 @@
   "optionsMissing": "Required options are not defined",
   "tokenMissing": "Token is missing",
   "validation": "Validation failed",
-  "response": "Response returned with errors",
-  "authorization": "Can't pass authorization. Check username and password"
+  "response": "Response returned with errors"
 }
