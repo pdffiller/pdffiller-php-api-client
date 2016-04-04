@@ -4,10 +4,10 @@ use PDFfiller\OAuth2\Client\Provider\SignatureRequest;
 $provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
 
 $e = new SignatureRequest($provider);
-$e->document_id = 53690143;
+$e->document_id = 20312335;
 //$e->method = 'sendtoeach';
 ///////////
-$e->method = 'sendtogroup';
+$e->method = "sendtogroup";
 $e->envelope_name = 'group envelope';
 $e->sign_in_order = false;
 //////////
@@ -21,5 +21,5 @@ $e->recipients[] = [
     'message_subject' => 'subject',
     'message_text' => 'message',
 ];
-$e->save();
-dd($e);
+
+dd($e->save());
