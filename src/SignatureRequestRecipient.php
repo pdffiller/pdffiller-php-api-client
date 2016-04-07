@@ -127,7 +127,7 @@ class SignatureRequestRecipient extends Model
         return $passes;
     }
 
-    public static function all($provider = null, $params = [])
+    public static function all($provider = null, array $params = [])
     {
         throw new Exception("Getting list of this items isn't supported.");
     }
