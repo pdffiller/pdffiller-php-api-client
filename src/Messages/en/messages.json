@@ -8,5 +8,6 @@
   "optionsMissing": "Required options are not defined",
   "tokenMissing": "Token is missing",
   "validation": "Validation failed",
+  "type": "Wrong type",
   "response": "Response returned with errors"
 }
