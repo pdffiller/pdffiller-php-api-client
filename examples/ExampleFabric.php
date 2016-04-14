@@ -34,7 +34,7 @@ class ExampleFabric {
         $kvs = new KeyValueStore(new FileAdapter(Flintstone::load('usersDatabase', ['dir' => $tmp_dir])));
         $accessTokenKey = 'access_token';
 
-        if ($kvs->has($accessTokenKey)) {
+        if (!$kvs->has($accessTokenKey)) {
             $accessToken = $provider->getAccessToken(self::$names[$type], $accessTokenParams);
 
             $liveTimeInSec = Carbon::createFromTimestamp(
