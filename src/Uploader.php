@@ -8,12 +8,13 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Core\Uploadable;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\TypeException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\ValidationException;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * Class Uploader
  * @package PDFfiller\OAuth2\Client\Provider
  *
- * @property string|resource $file
+ * @property string $file absolute file path or url
  * @property string $type
  */
 class Uploader extends Model
@@ -87,7 +88,7 @@ class Uploader extends Model
                 'multipart' => [
                     [
                         'name' => 'file',
-                        'contents' => $this->file
+                        'contents' => fopen($this->file, 'r')
                     ],
                 ]
             ];
@@ -116,4 +117,13 @@ class Uploader extends Model
         };
     }
 
+    public function toArray($options = [])
+    {
+        if (!isset($options['except']) || !in_array('file', $options['except'])) {
+            $options['except'][] = 'file';
+        }
+        $array = parent::toArray($options);
+        $array['file'] = new File($this->file);
+        return $array;
+    }
 }
