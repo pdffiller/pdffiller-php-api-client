@@ -119,11 +119,12 @@ class Uploader extends Model
 
     public function toArray($options = [])
     {
-        if (!isset($options['except']) || !in_array('file', $options['except'])) {
-            $options['except'][] = 'file';
-        }
         $array = parent::toArray($options);
-        $array['file'] = new File($this->file);
+
+        if ($this->type === self::TYPE_MULTIPART) {
+            $array['file'] = new File($this->file);
+        }
+
         return $array;
     }
 }
