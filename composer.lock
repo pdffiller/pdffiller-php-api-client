@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "002b9287819f64cb88199b89ce7ca941",
-    "content-hash": "b33a4807c30b3d7dbc4dd525f167a93a",
+    "hash": "353c5dfc91515d64df8c98acf83b74f9",
+    "content-hash": "7390ad1d7260133a1513f17f01aa02cc",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -723,16 +723,16 @@
         },
         {
             "name": "pdffiller/public-rest-api-validation-rules",
-            "version": "dev-master",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "git@github.com:pdffiller/public-rest-api-validation-rules.git",
-                "reference": "fc4399ccc940c049e6b17ab13dec5fa4fe18bd8e"
+                "url": "https://github.com/pdffiller/public-rest-api-validation-rules.git",
+                "reference": "1f09e4ad7d5db8bf7ef8a0160a17769c6ace9f44"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pdffiller/public-rest-api-validation-rules/zipball/fc4399ccc940c049e6b17ab13dec5fa4fe18bd8e",
-                "reference": "fc4399ccc940c049e6b17ab13dec5fa4fe18bd8e",
+                "url": "https://api.github.com/repos/pdffiller/public-rest-api-validation-rules/zipball/1f09e4ad7d5db8bf7ef8a0160a17769c6ace9f44",
+                "reference": "1f09e4ad7d5db8bf7ef8a0160a17769c6ace9f44",
                 "shasum": ""
             },
             "type": "library",
@@ -743,10 +743,10 @@
             },
             "description": "Validation rules for PDFfiller API endpoints data.",
             "support": {
-                "source": "https://github.com/pdffiller/public-rest-api-validation-rules/tree/master",
+                "source": "https://github.com/pdffiller/public-rest-api-validation-rules/tree/1.0.2",
                 "issues": "https://github.com/pdffiller/public-rest-api-validation-rules/issues"
             },
-            "time": "2016-03-15 14:10:20"
+            "time": "2016-05-26 12:23:51"
         },
         {
             "name": "psr/http-message",
@@ -1328,9 +1328,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "pdffiller/public-rest-api-validation-rules": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

@@ -153,7 +153,7 @@ abstract class Model
     public function validate($key = null)
     {
         $values = $this->toArray();
-        $rules = array_merge($this->rules($key), ['id' => 'integer']);
+        $rules = $this->rules($key);
         $validator = $this->getValidator($values, $rules);
         $passes = $validator->passes();
         $this->validationErrors = $validator->errors();
