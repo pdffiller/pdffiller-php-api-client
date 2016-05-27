@@ -5,7 +5,7 @@ $provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
 
 $uploader = new Uploader($provider, CustomLogo::class);
 $uploader->type = Uploader::TYPE_MULTIPART;
-$uploader->file = fopen(__DIR__ . '/test.jpg', 'r');
+$uploader->file = __DIR__ . '/test.jpg';
 $document = $uploader->upload();
 dd($document);
 
