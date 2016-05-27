@@ -15,6 +15,7 @@ use PDFfiller\OAuth2\Client\Provider\Core\Uploadable;
 class Document extends Model implements Uploadable
 {
     public static $entityUri = 'document';
+    const DOWNLOAD = 'download';
 
     public function attributes()
     {
@@ -25,6 +26,15 @@ class Document extends Model implements Uploadable
         ];
     }
 
+    public static function download($provider, $documentId)
+    {
+        return static::query($provider, [$documentId, self::DOWNLOAD]);
+    }
+
+    public function getContent()
+    {
+        return self::download($this->client, $this->id);
+    }
 
     public static function getUrlKey()
     {
