@@ -1,13 +1,13 @@
 {
     "name" : "pdffiller/pdffiller-php-api-client",
-    "description": "Simple client for pdffiller.com api",
+    "description": "PHP client for pdffiller.com REST API",
     "require": {
         "league/oauth2-client": "^1.0",
         "league/uri": "^4.0",
         "symfony/translation": "^3.0",
         "illuminate/validation": "^5.2",
 
-        "pdffiller/public-rest-api-validation-rules": "dev-master@dev"
+        "pdffiller/public-rest-api-validation-rules": "^1.0"
     },
     "require-dev": {
         "adammbalogh/key-value-store-file": "^0.5.3",
