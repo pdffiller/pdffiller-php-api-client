@@ -44,9 +44,7 @@ It should help. If you have any problems feel free to contact us:
 
 ### Validation package problem
 
-We are using validation package https://github.com/illuminate/validation at 5.2 version
-Usually it's ok but if you have laravel 5.0 project it can became a problem. 
-If you have such problem, please contact us and we will fix it.
+We are using validation package https://github.com/illuminate/validation at 5.2 version. Usually it's ok but if you have laravel 5.0 project it can became a problem. If you have such problem, please contact us and we will fix it.
 
 ## Quick getting started steps
 Install required libraries using composer
