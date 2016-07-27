@@ -23,6 +23,7 @@ class Document extends Model implements Uploadable
             'name',
             'type',
             'created',
+            'folder',
         ];
     }
 
