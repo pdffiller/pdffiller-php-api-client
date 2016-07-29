@@ -47,11 +47,11 @@ class Uploader extends Model
         parent::__construct($provider, $array);
     }
 
-    public function setAdditionsAttrs($attributes) {
+    public function setAdditionalAttributes($attributes) {
         $this->attributesAdditional = $attributes;
     }
 
-    public function getAdditionsAttrs() {
+    public function getAdditionalAttributes() {
         return $this->attributesAdditional;
     }
 
@@ -60,7 +60,7 @@ class Uploader extends Model
         $params =[];
         switch ( $dataType ) {
             case 'json':
-                $params = array_merge( [ 'file' => $this->file ], $this->getAdditionsAttrs() );
+                $params = array_merge( $this->getAdditionalAttributes(), [ 'file' => $this->file ] );
                 break;
 
             case 'multipart':
@@ -68,7 +68,7 @@ class Uploader extends Model
                     'name' => 'file',
                     'contents' => fopen($this->file, 'r'),
                 ];
-                foreach( $this->getAdditionsAttrs() as $key => $value ) {
+                foreach( $this->getAdditionalAttributes() as $key => $value ) {
                     $params[] = [
                         'name' => $key,
                         'contents' => $value,
