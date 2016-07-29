@@ -11,6 +11,7 @@ use PDFfiller\OAuth2\Client\Provider\Core\Uploadable;
  * @property string $name
  * @property string $type
  * @property string $created
+ * @property array $folder
  */
 class Document extends Model implements Uploadable
 {
