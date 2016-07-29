@@ -31,6 +31,8 @@ class Uploader extends Model
         'file',
     ];
 
+    protected $attributesAdditional = [];
+
     public function __construct($provider, $class, array $array = [])
     {
         if (!in_array(Uploadable::class, class_implements($class))) {
@@ -43,6 +45,38 @@ class Uploader extends Model
 
         $this->class = $class;
         parent::__construct($provider, $array);
+    }
+
+    public function setAdditionalAttributes($attributes) {
+        $this->attributesAdditional = $attributes;
+    }
+
+    public function getAdditionalAttributes() {
+        return $this->attributesAdditional;
+    }
+
+    public function getUploadParams($dataType)
+    {
+        $params =[];
+        switch ( $dataType ) {
+            case 'json':
+                $params = array_merge( $this->getAdditionalAttributes(), [ 'file' => $this->file ] );
+                break;
+
+            case 'multipart':
+                $params[] = [
+                    'name' => 'file',
+                    'contents' => fopen($this->file, 'r'),
+                ];
+                foreach( $this->getAdditionalAttributes() as $key => $value ) {
+                    $params[] = [
+                        'name' => $key,
+                        'contents' => $value,
+                    ];
+                }
+                break;
+        }
+        return $params;
     }
 
     public function attributes()
@@ -76,21 +110,14 @@ class Uploader extends Model
         if ($this->type == self::TYPE_URL) {
             $this->validate($class::getUrlKey());
             return [
-                'json' => [
-                    'file' => $this->file
-                ]
+                'json' => $this->getUploadParams('json'),
             ];
         }
 
         if ($this->type == self::TYPE_MULTIPART) {
             $this->validate($class::getMultipartKey());
             return [
-                'multipart' => [
-                    [
-                        'name' => 'file',
-                        'contents' => fopen($this->file, 'r')
-                    ],
-                ]
+                'multipart' => $this->getUploadParams('multipart'),
             ];
         }
 
