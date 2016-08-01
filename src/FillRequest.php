@@ -23,7 +23,6 @@ class FillRequest extends Model
 {
     protected static $entityUri = 'fill_request';
     const FORMS_URI = 'filled_form';
-    const RULES_KEY = 'fillRequest';
 
     public function attributes()
     {

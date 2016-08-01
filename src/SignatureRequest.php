@@ -24,7 +24,6 @@ class SignatureRequest extends Model
     protected static $entityUri = 'signature_request';
     const CERTIFICATE = 'certificate';
     const SIGNED_DOCUMENT = 'signed_document';
-    const RULES_KEY = 'signatureRequest|recipient';
 
     public function attributes()
     {
