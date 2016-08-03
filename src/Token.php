@@ -16,8 +16,6 @@ class Token extends Model
 {
 
     protected static $entityUri = 'token';
-    const RULES_KEY = 'token';
-
     public function attributes()
     {
         return [

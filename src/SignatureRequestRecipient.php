@@ -5,7 +5,6 @@ namespace PDFfiller\OAuth2\Client\Provider;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Core\Exception;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
-use PDFfiller\OAuth2\Client\Provider\Exceptions\ValidationException;
 
 /**
  * Class SignatureRequestRecipient
@@ -33,7 +32,6 @@ class SignatureRequestRecipient extends Model
     protected static $entityUri = 'signature_request';
     const RECIPIENT = 'recipient';
     const REMIND = 'remind';
-    const RULES_KEY = 'recipient';
 
     public function attributes()
     {
@@ -95,16 +93,12 @@ class SignatureRequestRecipient extends Model
      * @param array $options
      * @return mixed
      * @throws ResponseException
-     * @throws ValidationException
      */
     public function create($options = [])
     {
         $params = $this->toArray($options);
         $recipients['recipients'] = [$params];
 
-        if (!$this->validate()) {
-            throw new ValidationException($this->validationErrors);
-        }
         $uri = $this->uri();
         $createResult =  static::post($this->client, $uri, [
             'json' => $recipients,
@@ -114,17 +108,6 @@ class SignatureRequestRecipient extends Model
         }
 
         return $createResult;
-    }
-
-    public function validate($key = null)
-    {
-        $values['recipients'] = [$this->toArray()];
-        $rules = $this->rules($key);
-        $validator = $this->getValidator($values, $rules);
-        $passes = $validator->passes();
-        $this->validationErrors = $validator->errors();
-
-        return $passes;
     }
 
     public static function all($provider = null, array $params = [])
@@ -142,7 +125,7 @@ class SignatureRequestRecipient extends Model
         throw new Exception("Updating instance of this items isn't supported.");
     }
 
-    public function save($new = true, $validation = null, $options = null)
+    public function save($new = true, $options = null)
     {
         throw new Exception("Saving instance of this items isn't supported. Use SignatureRequest::addRecipient().");
     }

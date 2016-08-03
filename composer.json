@@ -4,10 +4,7 @@
     "require": {
         "league/oauth2-client": "^1.0",
         "league/uri": "^4.0",
-        "symfony/translation": "^3.0",
-        "illuminate/validation": "^5.2",
-
-        "pdffiller/public-rest-api-validation-rules": "dev-master@dev"
+        "symfony/translation": "^3.0"
     },
     "require-dev": {
         "adammbalogh/key-value-store-file": "^0.5.3",
@@ -22,11 +19,5 @@
     },
     "autoload-dev": {
         "psr-4": { "Examples\\": "examples/" }
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/pdffiller/public-rest-api-validation-rules"
-        }
-    ]
+    }
 }

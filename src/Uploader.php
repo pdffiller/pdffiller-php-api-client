@@ -7,7 +7,6 @@ use PDFfiller\OAuth2\Client\Provider\Core\Exception;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Core\Uploadable;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\TypeException;
-use PDFfiller\OAuth2\Client\Provider\Exceptions\ValidationException;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
@@ -74,7 +73,6 @@ class Uploader extends Model
     {
         $class = $this->class;
         if ($this->type == self::TYPE_URL) {
-            $this->validate($class::getUrlKey());
             return [
                 'json' => [
                     'file' => $this->file
@@ -83,7 +81,6 @@ class Uploader extends Model
         }
 
         if ($this->type == self::TYPE_MULTIPART) {
-            $this->validate($class::getMultipartKey());
             return [
                 'multipart' => [
                     [
@@ -108,13 +105,6 @@ class Uploader extends Model
         }
 
         $this->type = $type;
-    }
-
-    public function validate($key = null)
-    {
-        if (!parent::validate($key)) {
-            throw new ValidationException($this->validationErrors);
-        };
     }
 
     public function toArray($options = [])

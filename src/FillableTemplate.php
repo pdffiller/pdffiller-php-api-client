@@ -16,7 +16,6 @@ class FillableTemplate extends Model
 
     protected static $entityUri = 'fillable_template';
     const DOWNLOAD = 'download';
-    const RULES_KEY = 'fillableTemplate';
 
     public function attributes()
     {
