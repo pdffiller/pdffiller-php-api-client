@@ -2,13 +2,10 @@
 
 namespace PDFfiller\OAuth2\Client\Provider\Core;
 
-use Illuminate\Validation\Validator;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\IdMissingException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidQueryException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidRequestException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
-use PDFfiller\OAuth2\Client\Provider\Exceptions\ValidationException;
-use PDFfiller\Validation\Rules;
 use PDFfiller\OAuth2\Client\Provider\PDFfiller;
 use Symfony\Component\Translation\Translator;
 use ReflectionClass;
