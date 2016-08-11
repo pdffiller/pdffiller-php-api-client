@@ -12,7 +12,6 @@ $e->envelope_name = 'group envelope';
 $e->sign_in_order = false;
 //////////
 $e->security_pin = 'standard';
-$e->recipients = [];
 $e->recipients[] = [
     'email' => 'test@test.com',
     'name' => 'Test user',
