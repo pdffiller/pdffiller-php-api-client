@@ -14,7 +14,6 @@ use PDFfiller\Validation\Rules;
  *
  * @property int $id
  * @property int $user_id
- * @property array $created_at
  * @property int $width
  * @property int $height
  * @property int $filesize
@@ -27,7 +26,6 @@ class CustomLogo extends Model implements Uploadable
     {
         return [
             'id',
-            'created_at',
             'width',
             'height',
             'filesize',
