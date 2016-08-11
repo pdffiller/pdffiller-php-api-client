@@ -115,7 +115,7 @@ class Uploader extends Model
         }
 
         if ($this->type == self::TYPE_MULTIPART) {
-            $this->validate($class::getMultipartKey());
+//            $this->validate($class::getMultipartKey());
             return [
                 'multipart' => $this->getUploadParams('multipart'),
             ];

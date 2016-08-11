@@ -12,17 +12,15 @@ use PDFfiller\Validation\Rules;
  * Class CustomLogo
  * @package PDFfiller\OAuth2\Client\Provider
  *
- * @property $id
- * @property $user_id
- * @property $created_at
- * @property $updated_at
- * @property $width
- * @property $height
- * @property $filesize
+ * @property int $id
+ * @property int $user_id
+ * @property array $created_at
+ * @property int $width
+ * @property int $height
+ * @property int $filesize
  */
 class CustomLogo extends Model implements Uploadable
 {
-
     protected static $entityUri = 'custom_logo';
 
     public function attributes()
