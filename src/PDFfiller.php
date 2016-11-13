@@ -14,6 +14,7 @@ use League\OAuth2\Client\Provider\GenericProvider;
 use Psr\Http\Message\RequestInterface;
 use \GuzzleHttp\Psr7 as Psr7;
 use Psr\Http\Message\ResponseInterface;
+use PDFfiller\OAuth2\Client\Provider\Core\Uri;
 
 /**
  * Represents a generic service provider that may be used to interact with any
