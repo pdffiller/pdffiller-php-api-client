@@ -3,7 +3,6 @@
     "description": "Simple client for pdffiller.com api",
     "require": {
         "league/oauth2-client": "^1.0",
-        "league/uri": "^4.0",
         "symfony/translation": "^3.0"
     },
     "require-dev": {
