@@ -2,7 +2,6 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
-use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodyException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodySourceException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidQueryException;
@@ -50,8 +49,10 @@ class PDFfiller extends GenericProvider
 
     public function getAuthenticatedRequest($method, $url, $token, array $options = [])
     {
-		$resolver = new  Uri($this->urlApiDomain);
-		$newUri = $resolver->resolve($url);
+        $baseUri = new Psr7\Uri($this->urlApiDomain);
+        $relativeUri = new Psr7\Uri($url);
+        $newUri = Psr7\Uri::resolve($baseUri, $relativeUri);
+
         return parent::getAuthenticatedRequest($method, $newUri, $token, $options);
     }
 
