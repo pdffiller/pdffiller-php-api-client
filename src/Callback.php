@@ -8,9 +8,9 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
  * Class Callback
  * @package PDFfiller\OAuth2\Client\Provider
  *
- * @property $document_id
- * @property $event_id
- * @property $callback_url
+ * @property int $document_id
+ * @property int $event_id
+ * @property string $callback_url
  */
 class Callback extends Model
 {

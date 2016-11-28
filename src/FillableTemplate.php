@@ -8,8 +8,8 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
  * Class FillableTemplate
  * @package PDFfiller\OAuth2\Client\Provider
  *
- * @property $document_id
- * @property $fillable_fields array
+ * @property int $document_id
+ * @property array $fillable_fields
  */
 class FillableTemplate extends Model
 {
@@ -50,5 +50,14 @@ class FillableTemplate extends Model
     public static function download($provider, $id)
     {
         return static::query($provider, [$id, self::DOWNLOAD]);
+    }
+
+    public function getFillableFields()
+    {
+        if (!isset($this->fillable_fields) || empty($this->fillable_fields)) {
+            $this->fillable_fields = [];
+        }
+
+        return $this->fillable_fields;
     }
 }

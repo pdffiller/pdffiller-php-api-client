@@ -8,10 +8,10 @@ use PDFfiller\OAuth2\Client\Provider\Core\Object;
  * Class FillableField
  * @package PDFfiller\OAuth2\Client\Provider
  *
- * @property $name
- * @property $type
- * @property $format
- * @property $initial
+ * @property string $name
+ * @property string $type
+ * @property string $format
+ * @property mixed $initial
  * @property boolean $required
  */
 class FillableField extends Object

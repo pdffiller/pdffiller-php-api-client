@@ -11,6 +11,7 @@ use PDFfiller\OAuth2\Client\Provider\Exceptions\ValidationException;
 use PDFfiller\Validation\Rules;
 use PDFfiller\OAuth2\Client\Provider\PDFfiller;
 use Symfony\Component\Translation\Translator;
+use ReflectionClass;
 
 /**
  * Class Model
@@ -48,11 +49,28 @@ abstract class Model
 
     public function __construct($provider, $array = [])
     {
+        $this->initArrayFields();
         $this->client = $provider;
         $this->parseArray($array);
     }
 
-    public abstract  function attributes();
+    private function initArrayFields()
+    {
+        $reflection = new ReflectionClass(static::class);
+        $docs = ($reflection->getDocComment());
+        $docs = preg_replace("~[*/]+~", ' ', $docs);
+        preg_match_all("~@property\s+(array|mixed)\s+\\$(.*)\r?\n+~", $docs, $result);
+
+        if ($result) {
+            $fields = $result[2];
+
+            foreach ($fields as $index => $field) {
+                $this->{$field} = [];
+            }
+        }
+    }
+
+    public abstract function attributes();
 
     public function rules($key = null)
     {
@@ -153,7 +171,7 @@ abstract class Model
     public function validate($key = null)
     {
         $values = $this->toArray();
-        $rules = array_merge($this->rules($key), ['id' => 'integer']);
+        $rules = array_merge(['id' => 'integer'], $this->rules($key));
         $validator = $this->getValidator($values, $rules);
         $passes = $validator->passes();
         $this->validationErrors = $validator->errors();
@@ -278,9 +296,11 @@ abstract class Model
 
         $this->cacheFields($params);
         $object = $createResult;
+
         if (isset($createResult['items'])) {
             $object = $createResult['items'][0];
         }
+
         foreach($object as $name => $property) {
             $this->__set($name, $property);
         }
@@ -444,7 +464,7 @@ abstract class Model
     {
         if (in_array($name, $this->getAttributes()) && isset($this->{$name})) {
             return $this->{$name};
-        } elseif (method_exists($this, $method = 'get' . ucfirst($name))) {
+        } elseif (method_exists($this, $method = 'get' . $this->snakeToCamelCase($name))) {
             return $this->{$method}();
         }
 
@@ -455,8 +475,27 @@ abstract class Model
     {
         if (in_array($name, $this->getAttributes())) {
             $this->{$name} = $value;
-        } elseif (method_exists($this, $method = 'set' . ucfirst($name))) {
+        } elseif (method_exists($this, $method = 'set' . $this->snakeToCamelCase($name))) {
             $this->{$method}($value);
         }
+    }
+
+    /**
+     * Converts snake_cased string to camelCase
+     * @param string $string
+     * @param bool $smallFirst
+     * @return string
+     */
+    protected function snakeToCamelCase($string, $smallFirst = false)
+    {
+        $parts = explode('_', $string);
+
+        array_walk($parts, function(&$element) {
+           $element = ucfirst($element);
+        });
+
+        $result = implode('', $parts);
+
+        return $smallFirst ? lcfirst($result) : $result;
     }
 }

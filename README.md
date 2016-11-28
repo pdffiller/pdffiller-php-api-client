@@ -21,6 +21,30 @@ Most modern frameworks will include Composer out of the box, but ensure the foll
 // Include the Composer autoloader
 require 'vendor/autoload.php';
 ```
+## Troubleshooting
+
+If you have the following error:
+```
+[RuntimeException]
+ Could not load package pdffiller/pdffiller-php-api-client in http://packagi
+ st.org: [UnexpectedValueException] Could not parse version constraint ^5.2:
+  Invalid version string "^5.2"
+
+
+ [UnexpectedValueException]
+ Could not parse version constraint ^5.2: Invalid version string "^5.2"
+```
+Try run 
+```
+composer self-update 
+```
+It should help. If you have any problems feel free to contact us:
+- by issues page https://github.com/pdffiller/pdffiller-php-api-client/issues
+- via chat or phone at our tech site http://developers.pdffiller.com/
+
+### Validation package problem
+
+We are using validation package https://github.com/illuminate/validation at 5.2 version. Usually it's ok but if you have laravel 5.0 project it can became a problem. If you have such problem, please contact us and we will fix it.
 
 ## Quick getting started steps
 Install required libraries using composer
