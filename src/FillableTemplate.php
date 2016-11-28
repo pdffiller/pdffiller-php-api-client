@@ -16,6 +16,7 @@ class FillableTemplate extends Model
 
     protected static $entityUri = 'fillable_template';
     const DOWNLOAD = 'download';
+    const FILLED_DOCUMENTS = 'filled_document';
 
     public function attributes()
     {
@@ -50,6 +51,16 @@ class FillableTemplate extends Model
     public static function download($provider, $id)
     {
         return static::query($provider, [$id, self::DOWNLOAD]);
+    }
+
+    /**
+     * @param PDFfiller $provider
+     * @param $id
+     * @return mixed
+     */
+    public static function filledDocuments($provider, $id)
+    {
+        return static::query($provider, [$id, self::FILLED_DOCUMENTS]);
     }
 
     public function getFillableFields()
