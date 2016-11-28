@@ -17,6 +17,7 @@ class Document extends Model implements Uploadable
 {
     public static $entityUri = 'document';
     const DOWNLOAD = 'download';
+    const DOWNLOAD_SIGNATURES = 'download_signatures';
 
     public function attributes()
     {
@@ -31,6 +32,11 @@ class Document extends Model implements Uploadable
     public static function download($provider, $documentId)
     {
         return static::query($provider, [$documentId, self::DOWNLOAD]);
+    }
+
+    public static function downloadSignatures($provider, $documentId)
+    {
+        return static::query($provider, [$documentId, self::DOWNLOAD_SIGNATURES]);
     }
 
     public function getContent()
