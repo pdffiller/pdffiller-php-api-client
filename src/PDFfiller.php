@@ -2,7 +2,6 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
-use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodyException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodySourceException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidQueryException;
@@ -11,8 +10,6 @@ use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\TokenMissingException;
 use PDFfiller\OAuth2\Client\Provider\Grant\InternalGrant;
 use League\OAuth2\Client\Provider\GenericProvider;
-use League\Uri\Schemes\Http as HttpUri;
-use League\Uri\Modifiers\Resolve;
 use Psr\Http\Message\RequestInterface;
 use \GuzzleHttp\Psr7 as Psr7;
 use Psr\Http\Message\ResponseInterface;
@@ -52,10 +49,10 @@ class PDFfiller extends GenericProvider
 
     public function getAuthenticatedRequest($method, $url, $token, array $options = [])
     {
-        $baseUri     = HttpUri::createFromString($this->urlApiDomain);
-        $relativeUri = HttpUri::createFromString($url);
-        $modifier    = new Resolve($baseUri);
-        $newUri = $modifier->__invoke($relativeUri);
+        $baseUri = new Psr7\Uri($this->urlApiDomain);
+        $relativeUri = new Psr7\Uri($url);
+        $newUri = Psr7\Uri::resolve($baseUri, $relativeUri);
+
         return parent::getAuthenticatedRequest($method, $newUri, $token, $options);
     }
 
