@@ -8,7 +8,6 @@ use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidQueryException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\OptionsMissingException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\TokenMissingException;
-use PDFfiller\OAuth2\Client\Provider\Grant\InternalGrant;
 use League\OAuth2\Client\Provider\GenericProvider;
 use Psr\Http\Message\RequestInterface;
 use \GuzzleHttp\Psr7 as Psr7;
@@ -41,10 +40,8 @@ class PDFfiller extends GenericProvider
             'redirectUri'             => 'http://localhost/redirect_uri',
             'urlAuthorize'            => 'http://localhost/url_authorize',
             'urlResourceOwnerDetails' => 'http://localhost/url_resource_owner_details'], $options);
-        // init here
+
         parent::__construct($options, $collaborators);
-        // then init new grant
-        $this->getGrantFactory()->setGrant(InternalGrant::NAME, new InternalGrant());
     }
 
     public function getAuthenticatedRequest($method, $url, $token, array $options = [])
