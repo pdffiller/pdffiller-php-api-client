@@ -24,6 +24,8 @@ class SignatureRequest extends Model
     protected static $entityUri = 'signature_request';
     const CERTIFICATE = 'certificate';
     const SIGNED_DOCUMENT = 'signed_document';
+    const INBOX = 'inbox';
+    const DOWNLOAD = 'download';
 
     public function attributes()
     {
@@ -49,6 +51,16 @@ class SignatureRequest extends Model
         }
 
         parent::__construct($provider, $array);
+    }
+
+    public function getInbox($provider)
+    {
+        return self::query($provider, [self::INBOX]);
+    }
+
+    public function inboxDownload($provider, $params = [])
+    {
+        return self::query($provider, [self::INBOX, self::DOWNLOAD], $params);
     }
 
     protected function formRecipients($array)
