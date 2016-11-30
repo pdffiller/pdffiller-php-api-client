@@ -2,6 +2,7 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
+use League\OAuth2\Client\Token\AccessToken;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodyException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodySourceException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidQueryException;
@@ -20,7 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 class PDFfiller extends GenericProvider
 {
     private $urlApiDomain;
-    private $accessTokenHash;
+    private $accessToken;
     private $statusCode;
 
     public function __construct(array $options = [], array $collaborators = [])
@@ -165,17 +166,29 @@ class PDFfiller extends GenericProvider
         return $request;
     }
 
+    /**
+     * @param $method
+     * @param $url
+     * @param array $options
+     * @return array
+     * @throws TokenMissingException
+     */
     public function apiCall($method, $url, $options = []) {
 
-        if($this->accessTokenHash === null) {
+        if($this->accessToken === null) {
             throw new TokenMissingException();
         }
 
-        $request = $this->getAuthenticatedRequest($method, $url, $this->getAccessToken(), $options);
+        $request = $this->getAuthenticatedRequest($method, $url, $this->getAccessToken()->getToken(), $options);
         $request = $this->applyOptions($request, $options);
         return $this->getResponse($request);
     }
 
+    /**
+     * @param $url
+     * @param array $options
+     * @return array
+     */
     public function queryApiCall($url , $options = []) {
         return $this->apiCall('GET', $url, $options);
     }
@@ -206,7 +219,7 @@ class PDFfiller extends GenericProvider
      * {@inheritdoc}
      *
      * @param  RequestInterface $request
-     * @return mixed
+     * @return array
      */
     public function getResponse(RequestInterface $request)
     {
@@ -247,14 +260,17 @@ class PDFfiller extends GenericProvider
 
     public function getAccessToken($grant = 'client_credentials', array $options = [])
     {
-        if($this->accessTokenHash !== null) {
-            return $this->accessTokenHash;
+        if($this->accessToken !== null) {
+            return $this->accessToken;
         }
-        return parent::getAccessToken($grant, $options);
+
+        return $this->accessToken = parent::getAccessToken($grant, $options);
     }
 
-    public function setAccessTokenHash($value) {
-        $this->accessTokenHash = $value;
+    public function setAccessToken(AccessToken $value) {
+        $this->accessToken = $value;
+
+        return $this;
     }
 
     protected function checkResponse(ResponseInterface $response, $data)

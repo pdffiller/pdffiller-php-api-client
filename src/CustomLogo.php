@@ -32,18 +32,18 @@ class CustomLogo extends Model implements Uploadable
         ];
     }
 
-    public function save()
+    protected function create($options = [])
     {
-        throw new Exception("Can't save logo, use Uploader.");
+        throw new Exception("Can't create logo, use Uploader.");
     }
 
-    public function update()
+    protected function update($options = [])
     {
         throw new Exception("Can't update logo, delete old and upload new logo.");
     }
 
-    public function create()
+    public function save($newRecord = true, $options = [])
     {
-        throw new Exception("Can't create logo, use Uploader.");
+        throw new Exception("Can't save logo, use Uploader.");
     }
 }
