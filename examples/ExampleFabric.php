@@ -8,21 +8,14 @@ use AdammBalogh\KeyValueStore\Adapter\FileAdapter;
 use AdammBalogh\KeyValueStore\KeyValueStore;
 use Carbon\Carbon;
 
-class ExampleFabric {
+class ExampleFabric
+{
     const CLIENT_CRIDENTIALS_GRANT = 0;
     const PASSWORD_GRANT = 1;
-    const INTERNAL_GRANT = 2;
 
     protected static $names = [
         self::CLIENT_CRIDENTIALS_GRANT => 'client_credentials',
         self::PASSWORD_GRANT => 'password',
-        self::INTERNAL_GRANT => 'internal',
-    ];
-
-    protected static $consts = [
-        self::CLIENT_CRIDENTIALS_GRANT => ['clientId','clientSecret','urlAccessToken','urlApiDomain'],
-        self::PASSWORD_GRANT => ['username', 'password', 'clientId','clientSecret','urlAccessToken','urlApiDomain'],
-        self::INTERNAL_GRANT=> ['username', 'password', 'clientId','clientSecret','urlAccessToken','urlApiDomain']
     ];
 
     public static function getProvider($type, $params, $accessTokenParams = []) {
