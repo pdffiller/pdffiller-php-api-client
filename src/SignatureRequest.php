@@ -53,12 +53,25 @@ class SignatureRequest extends Model
         parent::__construct($provider, $array);
     }
 
-    public function getInbox($provider)
+    /**
+     * Return signatures request list in inbox
+     *
+     * @param $provider
+     * @return mixed
+     */
+    public static function getInbox($provider)
     {
         return self::query($provider, [self::INBOX]);
     }
 
-    public function inboxDownload($provider, $params = [])
+    /**
+     * Return zip-archive of s2s inbox documents
+     *
+     * @param $provider
+     * @param array $params
+     * @return string
+     */
+    public static function inboxDownload($provider, $params = [])
     {
         return self::query($provider, [self::INBOX, self::DOWNLOAD], $params);
     }
