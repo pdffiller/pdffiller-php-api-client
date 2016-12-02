@@ -34,6 +34,13 @@ class ExampleFabric
         $this->type = $grantType->getValue();
     }
 
+    /**
+     * Returns the provider ready to use
+     *
+     * @param array $accessTokenParams
+     * @param bool $useCache
+     * @return PDFfiller
+     */
     public function getProvider($accessTokenParams = [], $useCache = true)
     {
         if (!$useCache) {
@@ -44,6 +51,11 @@ class ExampleFabric
         return $this->provider->setAccessToken($this->getToken($accessTokenParams));
     }
 
+    /**
+     * Puts the given access token to the local cache
+     *
+     * @param AccessToken $accessToken
+     */
     private function cacheToken(AccessToken $accessToken)
     {
         $tz = self::TIME_ZONE;
@@ -56,6 +68,13 @@ class ExampleFabric
         $kvs->set(self::REFRESH_TOKEN_KEY, $accessToken->getRefreshToken());
     }
 
+    /**
+     * Gets the access token from the cache if it exists there
+     * or requests the new one with given credentials.
+     *
+     * @param $accessTokenParams
+     * @return AccessToken
+     */
     private function getToken($accessTokenParams)
     {
         $kvs = $this->getKeyValueStorage();
@@ -74,6 +93,11 @@ class ExampleFabric
         return $accessToken;
     }
 
+    /**
+     * Returns the local cache adapter
+     *
+     * @return KeyValueStore
+     */
     private function getKeyValueStorage()
     {
         $tmp_dir = sys_get_temp_dir() ?: ini_get('upload_tmp_dir');

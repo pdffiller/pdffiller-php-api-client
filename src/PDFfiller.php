@@ -2,6 +2,7 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodyException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodySourceException;
@@ -20,10 +21,16 @@ use Psr\Http\Message\ResponseInterface;
  */
 class PDFfiller extends GenericProvider
 {
+    /** @var   */
     private $urlApiDomain;
     private $accessToken;
     private $statusCode;
 
+    /**
+     * PDFfiller constructor.
+     * @param array $options
+     * @param array $collaborators
+     */
     public function __construct(array $options = [], array $collaborators = [])
     {
         $this->assertPdffillerOptions($options);
@@ -45,6 +52,14 @@ class PDFfiller extends GenericProvider
         parent::__construct($options, $collaborators);
     }
 
+    /**
+     * Returns request with authentication credentials
+     * @param string $method
+     * @param string $url
+     * @param AccessToken|string $token
+     * @param array $options
+     * @return RequestInterface
+     */
     public function getAuthenticatedRequest($method, $url, $token, array $options = [])
     {
         $baseUri = new Psr7\Uri($this->urlApiDomain);
@@ -185,6 +200,7 @@ class PDFfiller extends GenericProvider
     }
 
     /**
+     * Returns result of authorized GET request
      * @param $url
      * @param array $options
      * @return array
@@ -193,14 +209,32 @@ class PDFfiller extends GenericProvider
         return $this->apiCall('GET', $url, $options);
     }
 
+    /**
+     * Returns result of authorized POST request
+     * @param $url
+     * @param array $options
+     * @return array
+     */
     public function postApiCall($url , $options = []) {
         return $this->apiCall('POST', $url, $options);
     }
 
+    /**
+     * Returns result of authorized PUT request
+     * @param $url
+     * @param array $options
+     * @return array
+     */
     public function putApiCall($url , $options = []) {
         return $this->apiCall('PUT', $url, $options);
     }
 
+    /**
+     * Returns result of authorized DELETE request
+     * @param $url
+     * @param array $options
+     * @return array
+     */
     public function deleteApiCall($url , $options = []) {
         return $this->apiCall('DELETE', $url, $options);
     }
@@ -233,6 +267,7 @@ class PDFfiller extends GenericProvider
     }
 
     /**
+     * Returns an array of needed options
      * @return array
      */
     protected function getPdffillerOptions()
@@ -258,6 +293,13 @@ class PDFfiller extends GenericProvider
         }
     }
 
+    /**
+     * Returns an access token object
+     *
+     * @param string $grant
+     * @param array $options
+     * @return AccessToken
+     */
     public function getAccessToken($grant = 'client_credentials', array $options = [])
     {
         if($this->accessToken !== null) {
@@ -267,12 +309,27 @@ class PDFfiller extends GenericProvider
         return $this->accessToken = parent::getAccessToken($grant, $options);
     }
 
+    /**
+     * Sets an access token of current provider object
+     *
+     * @param AccessToken $value
+     * @return $this
+     */
     public function setAccessToken(AccessToken $value) {
         $this->accessToken = $value;
 
         return $this;
     }
 
+    /**
+     * Checks a provider response for errors.
+     *
+     * @throws IdentityProviderException
+     * @throws ResponseException
+     * @param  ResponseInterface $response
+     * @param  array|string $data Parsed response data
+     * @return void
+     */
     protected function checkResponse(ResponseInterface $response, $data)
     {
 
