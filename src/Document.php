@@ -19,6 +19,11 @@ class Document extends Model implements Uploadable
     const DOWNLOAD = 'download';
     const DOWNLOAD_SIGNATURES = 'download_signatures';
 
+    /**
+     * List response attributes
+     *
+     * @return array
+     */
     public function attributes()
     {
         return [
@@ -29,16 +34,35 @@ class Document extends Model implements Uploadable
         ];
     }
 
+    /**
+     * Return document content
+     *
+     * @param $provider
+     * @param $documentId
+     * @return string
+     */
     public static function download($provider, $documentId)
     {
         return static::query($provider, [$documentId, self::DOWNLOAD]);
     }
 
+    /**
+     * Return zip-archive of document signatures
+     *
+     * @param $provider
+     * @param $documentId
+     * @return string
+     */
     public static function downloadSignatures($provider, $documentId)
     {
         return static::query($provider, [$documentId, self::DOWNLOAD_SIGNATURES]);
     }
 
+    /**
+     * Return document content
+     *
+     * @return string
+     */
     public function getContent()
     {
         return self::download($this->client, $this->id);
