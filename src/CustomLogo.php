@@ -46,14 +46,4 @@ class CustomLogo extends Model implements Uploadable
     {
         throw new Exception("Can't create logo, use Uploader.");
     }
-
-    public static function getUrlKey()
-    {
-        return 'customLogoUrl';
-    }
-
-    public static function getMultipartKey()
-    {
-        return 'customLogoMultipart';
-    }
 }
