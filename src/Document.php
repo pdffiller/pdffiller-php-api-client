@@ -37,14 +37,4 @@ class Document extends Model implements Uploadable
     {
         return self::download($this->client, $this->id);
     }
-
-    public static function getUrlKey()
-    {
-        return 'documentUrl';
-    }
-
-    public static function getMultipartKey()
-    {
-        return 'documentMultipart';
-    }
 }

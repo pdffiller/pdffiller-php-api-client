@@ -10,6 +10,5 @@ namespace PDFfiller\OAuth2\Client\Provider\Core;
  */
 interface Uploadable
 {
-    public static function getUrlKey();
-    public static function getMultipartKey();
+
 }
