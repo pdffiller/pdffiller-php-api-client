@@ -87,6 +87,8 @@ abstract class Model
     }
 
     /**
+     * Returns array representation of an object
+     *
      * @param array $options can hold next options: only || except
      * @return array
      */

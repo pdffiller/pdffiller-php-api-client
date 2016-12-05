@@ -45,6 +45,17 @@ class FillableTemplate extends Model
     }
 
     /**
+     * Returns model instance.
+     * @param PDFfiller $provider
+     * @param $id
+     * @return static
+     */
+    public static function one($provider, $id)
+    {
+        return self::dictionary($provider, $id);
+    }
+
+    /**
      * @param PDFfiller $provider
      * @param $id
      * @return mixed
@@ -83,7 +94,7 @@ class FillableTemplate extends Model
      */
     public function getFieldsValues()
     {
-        return self::getValues($this->client, $this->id);
+        return self::getValues($this->client, $this->document_id);
     }
 
     /**
@@ -98,5 +109,20 @@ class FillableTemplate extends Model
         }
 
         return $this->fillable_fields;
+    }
+
+    /**
+     * Returns array representation of an object
+     *
+     * @param array $options
+     * @return array
+     */
+    public function toArray($options = [])
+    {
+        $options = array_merge_recursive($options, [
+            'except' => ['document_id']
+        ]);
+
+        return parent::toArray($options);
     }
 }
