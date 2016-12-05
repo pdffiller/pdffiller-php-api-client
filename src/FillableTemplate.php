@@ -79,13 +79,11 @@ class FillableTemplate extends Model
     /**
      * Return values of fillable template`s fields
      *
-     * @param PDFfiller $provider
-     * @param $id
      * @return mixed
      */
     public function getFieldsValues()
     {
-        return self::getValues($this->provider, $this->id);
+        return self::getValues($this->client, $this->id);
     }
 
     /**
