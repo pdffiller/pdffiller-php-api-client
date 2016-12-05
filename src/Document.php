@@ -59,6 +59,16 @@ class Document extends Model implements Uploadable
     }
 
     /**
+     * Return zip-archive of document signatures
+     *
+     * @return string
+     */
+    public function getDocumentSignatures()
+    {
+        return self::downloadSignatures($this->client, $this->id);
+    }
+
+    /**
      * Return document content
      *
      * @return string
