@@ -2,13 +2,10 @@
 
 namespace PDFfiller\OAuth2\Client\Provider\Core;
 
-use Illuminate\Validation\Validator;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\IdMissingException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidQueryException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidRequestException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
-use PDFfiller\OAuth2\Client\Provider\Exceptions\ValidationException;
-use PDFfiller\Validation\Rules;
 use PDFfiller\OAuth2\Client\Provider\PDFfiller;
 use Symfony\Component\Translation\Translator;
 use ReflectionClass;
@@ -21,7 +18,6 @@ use ReflectionClass;
  */
 abstract class Model
 {
-    const RULES_KEY = false;
     const USER_AGENT = 'pdffiller-php-api-client/1.1.0';
 
     protected static $entityUri = null;
@@ -44,8 +40,6 @@ abstract class Model
      * @var array attributes
      */
     protected $attributes = ['id'];
-
-    protected $validationErrors;
 
     public function __construct($provider, $array = [])
     {
@@ -72,19 +66,6 @@ abstract class Model
 
     public abstract function attributes();
 
-    public function rules($key = null)
-    {
-        if ($key) {
-            return Rules::get($key);
-        }
-
-        if (static::RULES_KEY) {
-            return Rules::get(static::RULES_KEY);
-        }
-
-        return [];
-    }
-
     protected static function getUri()
     {
         return static::getEntityUri() . '/';
@@ -95,14 +76,9 @@ abstract class Model
      * @param bool $validate
      * @param array $options
      * @return mixed
-     * @throws ValidationException
      */
-    public function save($newRecord = true, $validate = true, $options = [])
+    public function save($newRecord = true, $options = [])
     {
-        if ($validate && !$this->validate()) {
-            throw new ValidationException($this->validationErrors);
-        }
-
         if ($newRecord) {
             return $this->create($options);
         }
@@ -111,6 +87,8 @@ abstract class Model
     }
 
     /**
+     * Returns array representation of an object
+     *
      * @param array $options can hold next options: only || except
      * @return array
      */
@@ -166,28 +144,6 @@ abstract class Model
     protected function cacheFields($properties)
     {
         $this->oldValues = $properties;
-    }
-
-    public function validate($key = null)
-    {
-        $values = $this->toArray();
-        $rules = array_merge(['id' => 'integer'], $this->rules($key));
-        $validator = $this->getValidator($values, $rules);
-        $passes = $validator->passes();
-        $this->validationErrors = $validator->errors();
-
-        return $passes;
-    }
-
-    /**
-     * @param $values
-     * @param $rules
-     * @param $locale
-     * @return Validator
-     */
-    protected function getValidator($values, array $rules, $locale = 'en_US')
-    {
-        return new Validator(new Translator($locale), $values, $rules);
     }
 
     /**

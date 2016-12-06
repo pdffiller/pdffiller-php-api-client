@@ -17,7 +17,13 @@ class Document extends Model implements Uploadable
 {
     public static $entityUri = 'document';
     const DOWNLOAD = 'download';
+    const DOWNLOAD_SIGNATURES = 'download_signatures';
 
+    /**
+     * List response attributes
+     *
+     * @return array
+     */
     public function attributes()
     {
         return [
@@ -28,23 +34,47 @@ class Document extends Model implements Uploadable
         ];
     }
 
+    /**
+     * Return document content
+     *
+     * @param $provider
+     * @param $documentId
+     * @return string
+     */
     public static function download($provider, $documentId)
     {
         return static::query($provider, [$documentId, self::DOWNLOAD]);
     }
 
+    /**
+     * Return zip-archive of document signatures
+     *
+     * @param $provider
+     * @param $documentId
+     * @return string
+     */
+    public static function downloadSignatures($provider, $documentId)
+    {
+        return static::query($provider, [$documentId, self::DOWNLOAD_SIGNATURES]);
+    }
+
+    /**
+     * Return zip-archive of document signatures
+     *
+     * @return string
+     */
+    public function getDocumentSignatures()
+    {
+        return self::downloadSignatures($this->client, $this->id);
+    }
+
+    /**
+     * Return document content
+     *
+     * @return string
+     */
     public function getContent()
     {
         return self::download($this->client, $this->id);
-    }
-
-    public static function getUrlKey()
-    {
-        return 'documentUrl';
-    }
-
-    public static function getMultipartKey()
-    {
-        return 'documentMultipart';
     }
 }

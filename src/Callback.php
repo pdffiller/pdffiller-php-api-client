@@ -14,7 +14,6 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
  */
 class Callback extends Model
 {
-    const RULES_KEY = 'callback';
     protected static $entityUri = 'callback';
 
     public function attributes()

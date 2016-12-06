@@ -3,16 +3,14 @@
 namespace PDFfiller\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Token\AccessToken;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodyException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodySourceException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidQueryException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\OptionsMissingException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\TokenMissingException;
-use PDFfiller\OAuth2\Client\Provider\Grant\InternalGrant;
 use League\OAuth2\Client\Provider\GenericProvider;
-use League\Uri\Schemes\Http as HttpUri;
-use League\Uri\Modifiers\Resolve;
 use Psr\Http\Message\RequestInterface;
 use \GuzzleHttp\Psr7 as Psr7;
 use Psr\Http\Message\ResponseInterface;
@@ -23,10 +21,16 @@ use Psr\Http\Message\ResponseInterface;
  */
 class PDFfiller extends GenericProvider
 {
+    /** @var   */
     private $urlApiDomain;
-    private $accessTokenHash;
+    private $accessToken;
     private $statusCode;
 
+    /**
+     * PDFfiller constructor.
+     * @param array $options
+     * @param array $collaborators
+     */
     public function __construct(array $options = [], array $collaborators = [])
     {
         $this->assertPdffillerOptions($options);
@@ -44,18 +48,24 @@ class PDFfiller extends GenericProvider
             'redirectUri'             => 'http://localhost/redirect_uri',
             'urlAuthorize'            => 'http://localhost/url_authorize',
             'urlResourceOwnerDetails' => 'http://localhost/url_resource_owner_details'], $options);
-        // init here
+
         parent::__construct($options, $collaborators);
-        // then init new grant
-        $this->getGrantFactory()->setGrant(InternalGrant::NAME, new InternalGrant());
     }
 
+    /**
+     * Returns request with authentication credentials
+     * @param string $method
+     * @param string $url
+     * @param AccessToken|string $token
+     * @param array $options
+     * @return RequestInterface
+     */
     public function getAuthenticatedRequest($method, $url, $token, array $options = [])
     {
-        $baseUri     = HttpUri::createFromString($this->urlApiDomain);
-        $relativeUri = HttpUri::createFromString($url);
-        $modifier    = new Resolve($baseUri);
-        $newUri = $modifier->__invoke($relativeUri);
+        $baseUri = new Psr7\Uri($this->urlApiDomain);
+        $relativeUri = new Psr7\Uri($url);
+        $newUri = Psr7\Uri::resolve($baseUri, $relativeUri);
+
         return parent::getAuthenticatedRequest($method, $newUri, $token, $options);
     }
 
@@ -171,29 +181,60 @@ class PDFfiller extends GenericProvider
         return $request;
     }
 
+    /**
+     * @param $method
+     * @param $url
+     * @param array $options
+     * @return array
+     * @throws TokenMissingException
+     */
     public function apiCall($method, $url, $options = []) {
 
-        if($this->accessTokenHash === null) {
+        if($this->accessToken === null) {
             throw new TokenMissingException();
         }
 
-        $request = $this->getAuthenticatedRequest($method, $url, $this->getAccessToken(), $options);
+        $request = $this->getAuthenticatedRequest($method, $url, $this->getAccessToken()->getToken(), $options);
         $request = $this->applyOptions($request, $options);
         return $this->getResponse($request);
     }
 
+    /**
+     * Returns result of authorized GET request
+     * @param $url
+     * @param array $options
+     * @return array
+     */
     public function queryApiCall($url , $options = []) {
         return $this->apiCall('GET', $url, $options);
     }
 
+    /**
+     * Returns result of authorized POST request
+     * @param $url
+     * @param array $options
+     * @return array
+     */
     public function postApiCall($url , $options = []) {
         return $this->apiCall('POST', $url, $options);
     }
 
+    /**
+     * Returns result of authorized PUT request
+     * @param $url
+     * @param array $options
+     * @return array
+     */
     public function putApiCall($url , $options = []) {
         return $this->apiCall('PUT', $url, $options);
     }
 
+    /**
+     * Returns result of authorized DELETE request
+     * @param $url
+     * @param array $options
+     * @return array
+     */
     public function deleteApiCall($url , $options = []) {
         return $this->apiCall('DELETE', $url, $options);
     }
@@ -212,7 +253,7 @@ class PDFfiller extends GenericProvider
      * {@inheritdoc}
      *
      * @param  RequestInterface $request
-     * @return mixed
+     * @return array
      */
     public function getResponse(RequestInterface $request)
     {
@@ -226,6 +267,7 @@ class PDFfiller extends GenericProvider
     }
 
     /**
+     * Returns an array of needed options
      * @return array
      */
     protected function getPdffillerOptions()
@@ -251,18 +293,43 @@ class PDFfiller extends GenericProvider
         }
     }
 
+    /**
+     * Returns an access token object
+     *
+     * @param string $grant
+     * @param array $options
+     * @return AccessToken
+     */
     public function getAccessToken($grant = 'client_credentials', array $options = [])
     {
-        if($this->accessTokenHash !== null) {
-            return $this->accessTokenHash;
+        if($this->accessToken !== null) {
+            return $this->accessToken;
         }
-        return parent::getAccessToken($grant, $options);
+
+        return $this->accessToken = parent::getAccessToken($grant, $options);
     }
 
-    public function setAccessTokenHash($value) {
-        $this->accessTokenHash = $value;
+    /**
+     * Sets an access token of current provider object
+     *
+     * @param AccessToken $value
+     * @return $this
+     */
+    public function setAccessToken(AccessToken $value) {
+        $this->accessToken = $value;
+
+        return $this;
     }
 
+    /**
+     * Checks a provider response for errors.
+     *
+     * @throws IdentityProviderException
+     * @throws ResponseException
+     * @param  ResponseInterface $response
+     * @param  array|string $data Parsed response data
+     * @return void
+     */
     protected function checkResponse(ResponseInterface $response, $data)
     {
 

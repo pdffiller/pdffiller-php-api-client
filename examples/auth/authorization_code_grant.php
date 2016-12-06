@@ -1,17 +1,19 @@
 <?php
+use PDFfiller\OAuth2\Client\Provider\Core\GrantType;
 
 require_once __DIR__.'/../bootstrap/init.php';
 
-use PDFfiller\OAuth2\Client\Provider\Core\GrantType;
+$code = 'xKBlvLiudNtaY0LDGcBIHahWzRHXF2QXJIILh835';
+
 /** @var \PDFfiller\OAuth2\Client\Provider\PDFfiller $provider */
-$provider = (new Examples\ExampleFabric(new GrantType(GrantType::PASSWORD_GRANT), [
+$provider = (new Examples\ExampleFabric(new GrantType(GrantType::AUTHORIZATION_CODE_GRANT), [
     'clientId'       => getenv('CLIENT_ID'),
     'clientSecret'   => getenv('CLIENT_SECRET'),
+    'urlApiDomain'   => getenv('URL_API_DOMAIN'),
     'urlAccessToken' => getenv('URL_ACCESS_TOKEN'),
-    'urlApiDomain'   => getenv('URL_API_DOMAIN')
+    'redirectUri'    => getenv('REDIRECT_URI'),
 ]))->getProvider([
-    'username' => getenv('USER_EMAIL'),
-    'password' => getenv('PASSWORD')
+    'code'           => $code,
 ], false);
 
 dd($provider->queryApiCall('test'));

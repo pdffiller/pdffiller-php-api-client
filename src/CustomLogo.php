@@ -6,7 +6,6 @@ namespace PDFfiller\OAuth2\Client\Provider;
 use PDFfiller\OAuth2\Client\Provider\Core\Exception;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Core\Uploadable;
-use PDFfiller\Validation\Rules;
 
 /**
  * Class CustomLogo
@@ -33,28 +32,18 @@ class CustomLogo extends Model implements Uploadable
         ];
     }
 
-    public function save()
-    {
-        throw new Exception("Can't save logo, use Uploader.");
-    }
-
-    public function update()
-    {
-        throw new Exception("Can't update logo, delete old and upload new logo.");
-    }
-
-    public function create()
+    protected function create($options = [])
     {
         throw new Exception("Can't create logo, use Uploader.");
     }
 
-    public static function getUrlKey()
+    protected function update($options = [])
     {
-        return 'customLogoUrl';
+        throw new Exception("Can't update logo, delete old and upload new logo.");
     }
 
-    public static function getMultipartKey()
+    public function save($newRecord = true, $options = [])
     {
-        return 'customLogoMultipart';
+        throw new Exception("Can't save logo, use Uploader.");
     }
 }

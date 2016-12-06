@@ -2,26 +2,25 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
-
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 
 /**
- * Class Token
+ * Class Folder
  * @package PDFfiller\OAuth2\Client\Provider
- *
- * @property array $data
- * @property string $hash
+ * @property string $name
+ * @property string $type
+ * @property string $created
  */
-class Token extends Model
+class Folder extends Model
 {
+    public static $entityUri = 'folder';
 
-    protected static $entityUri = 'token';
     public function attributes()
     {
         return [
             'id',
-            'hash',
-            'data',
+            'name',
+            'document_count',
         ];
     }
 }
