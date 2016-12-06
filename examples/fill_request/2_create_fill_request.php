@@ -10,7 +10,12 @@ $fillRequestEntity->status = "public";
 $fillRequestEntity->email_required = true;
 $fillRequestEntity->name_required = true;
 $fillRequestEntity->custom_message = "Custom";
-$fillRequestEntity->notification_emails = [['name' => 'name', 'email' => 'email@email.com']];
+$fillRequestEntity->callback_url = "http://apicallbacks.pdffiller.com/handle?hash=l2f_php_client";
+$fillRequestEntity->notification_emails[] = ['name' => 'name', 'email' => 'email@email.com'];
+$fillRequestEntity->additional_documents[] = 'name1';
+$fillRequestEntity->additional_documents[] = 'name2';
+$fillRequestEntity->enforce_required_fields = true;
+$fillRequestEntity->welcome_screen = false;
 
 $e = $fillRequestEntity->save();
 
