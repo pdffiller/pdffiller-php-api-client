@@ -278,7 +278,7 @@ class PDFfiller extends GenericProvider
     }
 
     /**
-     * Verifies that all required options have been passed.
+     * Verifies that all required options are present in array.
      *
      * @param  array $options
      * @return void
@@ -322,7 +322,7 @@ class PDFfiller extends GenericProvider
     }
 
     /**
-     * Checks a provider response for errors.
+     * Checks a provider response on errors.
      *
      * @throws IdentityProviderException
      * @throws ResponseException

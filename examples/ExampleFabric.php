@@ -35,7 +35,7 @@ class ExampleFabric
     }
 
     /**
-     * Returns the provider ready to use
+     * Returns the ready for use provider.
      *
      * @param array $accessTokenParams
      * @param bool $useCache
@@ -70,7 +70,7 @@ class ExampleFabric
 
     /**
      * Gets the access token from the cache if it exists there
-     * or requests the new one with given credentials.
+     * or requests the new one with granted credentials.
      *
      * @param $accessTokenParams
      * @return AccessToken
