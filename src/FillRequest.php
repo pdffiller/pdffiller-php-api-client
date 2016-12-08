@@ -2,7 +2,9 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
+use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\Enums\FillRequestNotifications;
 
 /**
  * Class FillRequest
@@ -14,13 +16,13 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
  * @property boolean $email_required
  * @property boolean $name_required
  * @property string $custom_message
- * @property array $notification_emails
+ * @property ListObject $notification_emails
  * @property boolean $required_fields
  * @property int $active_logo_id
- * @property string $notifications
+ * @property FillRequestNotifications $notifications
  * @property boolean $reusable
- * @property array $additional_documents
- * @property array $callbacks
+ * @property ListObject $additional_documents
+ * @property ListObject $callbacks
  * @property string $callback_url
  * @property boolean $welcome_screen
  * @property boolean $enforce_required_fields
@@ -30,7 +32,19 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
 class FillRequest extends Model
 {
     protected static $entityUri = 'fill_request';
+
     const FORMS_URI = 'filled_form';
+
+    protected $casts =[
+        'notifications' => FillRequestNotifications::class,
+        'notification_emails' => 'list',
+        'additional_documents' => 'list',
+        'callbacks' => 'list',
+    ];
+
+    protected $readOnly = [
+        'callbacks'
+    ];
 
     public function attributes()
     {
@@ -79,5 +93,19 @@ class FillRequest extends Model
     {
         $params = static::query($this->client, [$this->id, self::FORMS_URI, $id]);
         return new FillRequestForm($this->client, $this->id, $params);
+    }
+
+    public function setNotificationsField($notifications)
+    {
+        if (! $notifications instanceof FillRequestNotifications) {
+            $notifications = new FillRequestNotifications($notifications);
+        }
+
+        $this->notifications = $notifications;
+    }
+
+    public function getNotificationsField()
+    {
+        return $this->fields['notifications']->getValue();
     }
 }

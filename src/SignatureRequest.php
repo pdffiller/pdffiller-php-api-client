@@ -3,14 +3,16 @@
 namespace PDFfiller\OAuth2\Client\Provider;
 
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
-use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
+use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestMethod;
+use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestStatus;
 
 /**
  * Class SignatureRequest
  * @package PDFfiller\OAuth2\Client\Provider
  *
  * @property string $document_id
- * @property string $method
+ * @property SignatureRequestMethod $method
+ * @property SignatureRequestStatus $status
  * @property string $envelope_name
  * @property string $security_pin
  * @property string $sign_in_order
@@ -26,6 +28,15 @@ class SignatureRequest extends Model
     const SIGNED_DOCUMENT = 'signed_document';
     const INBOX = 'inbox';
     const DOWNLOAD = 'download';
+
+    protected $casts = [
+        'method' => SignatureRequestMethod::class,
+        'status' => SignatureRequestStatus::class
+    ];
+
+    protected $readOnly = [
+        'status'
+    ];
 
     public function attributes()
     {
