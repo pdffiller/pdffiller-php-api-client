@@ -2,7 +2,7 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
-use PDFfiller\OAuth2\Client\Provider\Core\Object;
+use PDFfiller\OAuth2\Client\Provider\Core\AbstractObject;
 
 /**
  * Class FillableField
@@ -14,7 +14,7 @@ use PDFfiller\OAuth2\Client\Provider\Core\Object;
  * @property mixed $initial
  * @property boolean $required
  */
-class FillableField extends Object
+class FillableField extends AbstractObject
 {
     protected $attributes = [
         'name',

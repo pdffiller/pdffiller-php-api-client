@@ -3,7 +3,7 @@
 namespace Examples;
 
 use League\OAuth2\Client\Token\AccessToken;
-use PDFfiller\OAuth2\Client\Provider\Core\GrantType;
+use PDFfiller\OAuth2\Client\Provider\Enums\GrantType;
 use PDFfiller\OAuth2\Client\Provider\PDFfiller;
 use Flintstone\Flintstone;
 use AdammBalogh\KeyValueStore\Adapter\FileAdapter;

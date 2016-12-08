@@ -2,12 +2,13 @@
 
 namespace PDFfiller\OAuth2\Client\Provider\Core;
 
+use PDFfiller\OAuth2\Client\Provider\Contracts\Arrayable;
+use PDFfiller\OAuth2\Client\Provider\Contracts\Stringable;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\IdMissingException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidQueryException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidRequestException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 use PDFfiller\OAuth2\Client\Provider\PDFfiller;
-use Symfony\Component\Translation\Translator;
 use ReflectionClass;
 
 /**
@@ -16,7 +17,7 @@ use ReflectionClass;
  *
  * @property string $id
  */
-abstract class Model
+abstract class Model implements Arrayable
 {
     const USER_AGENT = 'pdffiller-php-api-client/1.1.0';
 
@@ -26,52 +27,69 @@ abstract class Model
      */
     protected $mapper = [];
 
+    /** @var string  */
     protected static $entityUri = null;
-    /**
-     * @var PDFfiller
-     */
+
+    /** @var PDFfiller */
     protected $client = null;
+
+    /** @var array cached attributes */
+    private $oldValues = [];
+
+    /** @var array attributes */
+    protected $attributes = ['id'];
+
+    /** @var array  */
+    protected $casts= [];
+
+    /** @var array  */
+    protected $fields = [];
+
+    /** @var array  */
+    protected $readOnly = [];
 
     /**
      * Model constructor.
+     * @param PDFfiller $provider
      * @param array $array
      */
-
-    /**
-     * @var array cached attributes
-     */
-    private $oldValues = [];
-
-    /**
-     * @var array attributes
-     */
-    protected $attributes = ['id'];
-
-    public function __construct($provider, $array = [])
+    public function __construct(PDFfiller $provider, $array = [])
     {
         $this->initArrayFields();
         $this->client = $provider;
         $this->parseArray($array);
     }
 
+    /**
+     * Initialize the object's arrays and lists.
+     */
     private function initArrayFields()
     {
         $reflection = new ReflectionClass(static::class);
         $docs = ($reflection->getDocComment());
         $docs = preg_replace("~[*/]+~", ' ', $docs);
-        preg_match_all("~@property\s+(array|mixed)\s+\\$(.*)\r?\n+~", $docs, $result);
+        preg_match_all("~@property\s+(array|mixed|ListObject)\s+\\$(.*)\r?\n+~", $docs, $result);
 
         if ($result) {
             $fields = $result[2];
 
             foreach ($fields as $index => $field) {
-                $this->{$field} = [];
+                $this->fields[$field] = new ListObject();
             }
         }
     }
 
+    /**
+     * Returns an array of allowed attributes
+     * @return mixed
+     */
     public abstract function attributes();
 
+    /**
+     * Returns an URL of current endpoint.
+     *
+     * @return string
+     */
     protected static function getUri()
     {
         return static::getEntityUri() . '/';
@@ -85,6 +103,12 @@ abstract class Model
      */
     public function save($newRecord = true, $options = [])
     {
+        if (!isset($options['except'])) {
+            $options['except'] = [];
+        }
+
+        $options['except'] = array_merge($options['except'], $this->readOnly);
+
         if ($newRecord) {
             return $this->create($options);
         }
@@ -101,30 +125,27 @@ abstract class Model
     public function toArray($options = [])
     {
         $allowed = $this->getAttributes();
-        $props = get_object_vars($this);
+//        $props = get_object_vars($this);
+        $props = $this->fields;
+
         !isset($options['except']) && $options['except'] = [];
 
         if (isset($options['only'])) {
-            foreach ($options['only'] as $ndx => $option) {
-                if (!in_array($option, $allowed)) {
-                    unset($options['only'][$ndx]);
-                }
-
-                $allowed = $options['only'];
-            }
+            $allowed = array_intersect($options['only'], $allowed);
         } else {
-            foreach ($allowed as $ndx => $value) {
-                if (in_array($value, $options['except'])) {
-                    unset($allowed[$ndx]);
-                }
-            }
+            $allowed = array_diff($allowed, $options['except']);
         }
 
         foreach ($props as $key => $value) {
             if (!in_array($key, $allowed)) {
                 unset($props[$key]);
-            } elseif (is_object($value) && method_exists($value, 'toArray')){
+                continue;
+            }
+
+            if ($value instanceof Arrayable) {
                 $props[$key] = $value->toArray();
+            } elseif ($value instanceof Stringable) {
+                $props[$key] = $value->__toString();
             }
         }
 
@@ -141,10 +162,53 @@ abstract class Model
         }
 
         foreach ($array as $key => $value) {
-            $this->{$key} = $value;
+            $this->fields[$key] = $this->castField($key, $value);
         }
 
         return $this;
+    }
+
+    private function castField($option, $value)
+    {
+        $casts = $this->casts;
+
+        if (!isset($casts[$option])) {
+            return $value;
+        }
+
+        $cast = $casts[$option];
+
+        if (is_null($value) || is_null($cast)) {
+            return $value;
+        }
+
+        switch ($cast) {
+            case 'int':
+            case 'integer':
+                return (int) $value;
+            case 'real':
+            case 'float':
+            case 'double':
+                return (float) $value;
+            case 'string':
+                return (string) $value;
+            case 'bool':
+            case 'boolean':
+                return (bool) $value;
+            case 'list':
+                return new ListObject((array)$value);
+            default:
+                return $this->castToObject($value, $cast);
+        }
+    }
+
+    private function castToObject($value, $class)
+    {
+        if (class_exists($class) && get_parent_class($class) === Enum::class) {
+            return new $class($value);
+        }
+
+        return $value;
     }
 
     protected function cacheFields($properties)
@@ -278,7 +342,7 @@ abstract class Model
     protected function update($options = [])
     {
         $params = $this->prepareFields($options);
-        $diff = $this->findDiff($this->oldValues, $params);
+        $diff = $this->findDiff($params);
         $uri = static::getUri() . $this->id;
 
         $updateResult = static::put($this->client, $uri, [
@@ -340,12 +404,13 @@ abstract class Model
      * Returns a list of entities
      * @param PDFfiller $provider
      * @param array $queryParams
-     * @return array entities list
+     * @return ModelsList entities list
      */
     public static function all($provider, array $queryParams = [])
     {
         $paramsArray = static::query($provider, null, $queryParams);
         $paramsArray['items'] = static::formItems($provider, $paramsArray);
+
         return new ModelsList($paramsArray);
     }
 
@@ -401,13 +466,14 @@ abstract class Model
     /**
      * Find changed properties.
      *
-     * @param array $old old values
      * @param array $new new values
      * @return array all new or changed values
      */
-    private function findDiff($old, $new)
+    private function findDiff($new)
     {
+        $old = $this->oldValues;
         $diff = [];
+
         foreach ($new as $key => $value) {
             if (!isset($old[$key]) || $old[$key] !== $new[$key]) {
                 $diff[$key] = $value;
@@ -422,23 +488,35 @@ abstract class Model
         return array_merge($this->attributes, $this->attributes());
     }
 
+    /**
+     * Magic method, gets the object fields.
+     *
+     * @param $name
+     * @return mixed|null
+     */
     public function __get($name)
     {
-        if (in_array($name, $this->getAttributes()) && isset($this->{$name})) {
-            return $this->{$name};
-        } elseif (method_exists($this, $method = 'get' . $this->snakeToCamelCase($name))) {
+        if (method_exists($this, $method = 'get' . $this->snakeToCamelCase($name). 'Field')) {
             return $this->{$method}();
+        } elseif (in_array($name, $this->getAttributes()) && isset($this->fields[$name])) {
+            return $this->fields[$name];
         }
 
         return null;
     }
 
+    /**
+     * Magic method, sets the object fields.
+     *
+     * @param $name
+     * @param $value
+     */
     public function __set($name, $value)
     {
-        if (in_array($name, $this->getAttributes())) {
-            $this->{$name} = $value;
-        } elseif (method_exists($this, $method = 'set' . $this->snakeToCamelCase($name))) {
+        if (method_exists($this, $method = 'set' . $this->snakeToCamelCase($name). 'Field')) {
             $this->{$method}($value);
+        } elseif (in_array($name, $this->getAttributes())) {
+            $this->fields[$name] = $this->castField($name, $value);
         }
     }
 
