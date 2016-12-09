@@ -12,10 +12,19 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
  * @property string $name
  * @property string $description
  * @property string $domain
+ * @property string $all_domains
+ * @property string $embedded_domain
  */
 class Application extends Model
 {
+
     protected static $entityUri = 'application';
+
+    protected $mapper = [
+        'all_domains' => 'all-domains',
+        'embedded_domain' => 'embedded-domain'
+    ];
+
     const RULES_KEY = 'application';
 
     public function attributes()
@@ -25,7 +34,10 @@ class Application extends Model
             'secret',
             'name',
             'description',
-            'domain'
+            'domain',
+            'redirect_uri',
+            'all_domains',
+            'embedded_domain',
         ];
     }
 }

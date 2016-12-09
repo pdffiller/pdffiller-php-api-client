@@ -1,8 +1,13 @@
 <?php
 use PDFfiller\OAuth2\Client\Provider\Application;
+use \PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 
 $provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
 $application = new Application($provider);
 
-$e = Application::all($provider);
-dd($e);
+try {
+    $response = Application::all($provider);
+    dd($response);
+} catch (ResponseException $e) {
+    dd($e);
+}

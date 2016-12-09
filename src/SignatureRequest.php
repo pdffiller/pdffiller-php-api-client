@@ -107,7 +107,7 @@ class SignatureRequest extends Model
      * @param SignatureRequestRecipient $recipient
      * @return array recipient creation result
      */
-    public function addRecipient(SignatureRequestRecipient &$recipient)
+    public function addRecipient(SignatureRequestRecipient $recipient)
     {
         $response = $recipient->create();
 

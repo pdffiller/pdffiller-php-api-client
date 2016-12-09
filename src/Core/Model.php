@@ -20,6 +20,12 @@ abstract class Model
 {
     const USER_AGENT = 'pdffiller-php-api-client/1.1.0';
 
+    /**
+     * Maps model field to request field
+     * @var array
+     */
+    protected $mapper = [];
+
     protected static $entityUri = null;
     /**
      * @var PDFfiller
@@ -180,7 +186,7 @@ abstract class Model
         $uri = static::getUri();
 
         if (!empty($entities)) {
-            if (is_array($entities)){
+            if (is_array($entities)) {
                 $entities = implode('/', $entities) . '/';
             }
 
@@ -240,7 +246,7 @@ abstract class Model
      */
     protected function create($options = [])
     {
-        $params = $this->toArray($options);
+        $params = $this->prepareFields($options);
         $uri = static::getUri();
         $createResult =  static::post($this->client, $uri, [
             'json' => $params,
@@ -271,7 +277,7 @@ abstract class Model
      */
     protected function update($options = [])
     {
-        $params = $this->toArray($options);
+        $params = $this->prepareFields($options);
         $diff = $this->findDiff($this->oldValues, $params);
         $uri = static::getUri() . $this->id;
 
@@ -453,5 +459,21 @@ abstract class Model
         $result = implode('', $parts);
 
         return $smallFirst ? lcfirst($result) : $result;
+    }
+
+    protected function prepareFields($options = [])
+    {
+        $params = $this->toArray($options);
+        if (empty($this->mapper)) {
+            return $params;
+        }
+
+        foreach ($this->mapper as $modelKey => $apiKey) {
+            if(array_key_exists($modelKey,$params)) {
+                $params[$apiKey] = $params[$modelKey];
+                unset($params[$modelKey]);
+            }
+        }
+        return $params;
     }
 }
