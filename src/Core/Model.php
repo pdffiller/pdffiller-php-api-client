@@ -204,7 +204,7 @@ abstract class Model implements Arrayable
 
     private function castToObject($value, $class)
     {
-        if (class_exists($class) && get_parent_class($class) === Enum::class) {
+        if (class_exists($class) && get_parent_class($class) === Enum::class && ! $value instanceof $class) {
             return new $class($value);
         }
 
@@ -544,6 +544,7 @@ abstract class Model implements Arrayable
     protected function prepareFields($options = [])
     {
         $params = $this->toArray($options);
+
         if (empty($this->mapper)) {
             return $params;
         }
