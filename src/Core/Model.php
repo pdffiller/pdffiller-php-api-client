@@ -498,7 +498,9 @@ abstract class Model implements Arrayable
     {
         if (method_exists($this, $method = 'get' . $this->snakeToCamelCase($name). 'Field')) {
             return $this->{$method}();
-        } elseif (in_array($name, $this->getAttributes()) && isset($this->fields[$name])) {
+        }
+
+        if (in_array($name, $this->getAttributes()) && isset($this->fields[$name])) {
             return $this->fields[$name];
         }
 

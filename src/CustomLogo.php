@@ -5,7 +5,7 @@ namespace PDFfiller\OAuth2\Client\Provider;
 
 use PDFfiller\OAuth2\Client\Provider\Core\Exception;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
-use PDFfiller\OAuth2\Client\Provider\Core\Uploadable;
+use PDFfiller\OAuth2\Client\Provider\Contracts\Uploadable;
 
 /**
  * Class CustomLogo
