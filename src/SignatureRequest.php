@@ -2,8 +2,10 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
+use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestMethod;
+use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestSecurityPin;
 use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestStatus;
 
 /**
@@ -14,9 +16,10 @@ use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestStatus;
  * @property SignatureRequestMethod $method
  * @property SignatureRequestStatus $status
  * @property string $envelope_name
- * @property string $security_pin
+ * @property SignatureRequestSecurityPin $security_pin
  * @property string $sign_in_order
- * @property array $recipients
+ * @property ListObject $recipients
+ * @property ListObject $callbacks
  */
 class SignatureRequest extends Model
 {
@@ -31,11 +34,17 @@ class SignatureRequest extends Model
 
     protected $casts = [
         'method' => SignatureRequestMethod::class,
-        'status' => SignatureRequestStatus::class
+        'status' => SignatureRequestStatus::class,
+        'security_pin' => SignatureRequestSecurityPin::class,
+        'callbacks' => 'list',
+        'recipients' => 'list',
     ];
 
     protected $readOnly = [
-        'status'
+        'status',
+        'date_signed',
+        'date_created',
+        'callbacks'
     ];
 
     public function attributes()
@@ -46,6 +55,7 @@ class SignatureRequest extends Model
             'envelope_name',
             'security_pin',
             'callback_url',
+            'callbacks',
             'recipients',
             'date_created',
             'date_signed',
@@ -124,11 +134,9 @@ class SignatureRequest extends Model
 
         if (isset($response['recipients'])) {
             $recipients = $this->formRecipients($response['recipients']);
-            $newRecipient = array_diff_key($recipients, $this->recipients);
+            $newRecipient = array_diff_key($recipients, $this->recipients->toArray());
             $this->recipients = $recipients;
-            $result = array_pop($newRecipient);
-            $recipient = $result;
-            return true;
+            return array_pop($newRecipient);
         }
 
         return $response;
