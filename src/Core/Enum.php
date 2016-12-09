@@ -1,12 +1,13 @@
 <?php
 
 namespace PDFfiller\OAuth2\Client\Provider\Core;
+use PDFfiller\OAuth2\Client\Provider\Contracts\Stringable;
 
 /**
  * Class Enum
  * @package PDFfiller\OAuth2\Client\Provider\Core
  */
-abstract class Enum
+abstract class Enum implements Stringable
 {
     const __default = null;
 
@@ -52,4 +53,16 @@ abstract class Enum
     {
         return $this->value;
     }
+
+    /**
+     * Returns string representation of given object
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getValue();
+    }
+
+
 }

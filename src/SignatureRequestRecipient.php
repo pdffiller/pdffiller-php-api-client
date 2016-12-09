@@ -4,6 +4,7 @@ namespace PDFfiller\OAuth2\Client\Provider;
 
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Core\Exception;
+use PDFfiller\OAuth2\Client\Provider\Enums\DocumentAccess;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 
 /**
@@ -17,7 +18,7 @@ use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
  * @property string $message_text
  * @property integer $date_created unix timestamp
  * @property integer $date_signed unix timestamp
- * @property string $access
+ * @property DocumentAccess $access
  * @property array $additional_documents
  * @property boolean $require_photo
  */

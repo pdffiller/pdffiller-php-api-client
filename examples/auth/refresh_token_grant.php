@@ -1,6 +1,6 @@
 <?php
 use Examples\ExampleFabric;
-use PDFfiller\OAuth2\Client\Provider\Core\GrantType;
+use PDFfiller\OAuth2\Client\Provider\Enums\GrantType;
 
 require_once __DIR__ . '/../bootstrap/init.php';
 

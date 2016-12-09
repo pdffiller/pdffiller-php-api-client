@@ -1,15 +1,16 @@
 <?php
 namespace PDFfiller\OAuth2\Client\Provider\Core;
 
-class ModelsList
+use PDFfiller\OAuth2\Client\Provider\Contracts\Arrayable;
+use PDFfiller\OAuth2\Client\Provider\Contracts\Stringable;
+
+class ModelsList extends ListObject
 {
     protected $total = 0;
     protected $current_page = 1;
     protected $per_page = 15;
     protected $prev_page_url = null;
     protected $next_page_url = null;
-
-    protected $items = [];
 
     /**
      * ModelsList constructor.
@@ -18,12 +19,16 @@ class ModelsList
     public function __construct($attributes = [])
     {
         foreach($attributes as $name => $attribute) {
+            if ($name == 'items') {
+                parent::__construct($attribute);
+                continue;
+            }
+
             if (property_exists($this, $name)) {
                 $this->{$name} = $attribute;
             }
         }
     }
-
 
     /**
      * @return int
@@ -111,13 +116,5 @@ class ModelsList
     public function getList()
     {
         return $this->items;
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        return $this->getList();
     }
 }

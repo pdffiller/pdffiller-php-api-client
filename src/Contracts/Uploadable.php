@@ -1,6 +1,6 @@
 <?php
 
-namespace PDFfiller\OAuth2\Client\Provider\Core;
+namespace PDFfiller\OAuth2\Client\Provider\Contracts;
 
 /**
  * Interface Uploadable

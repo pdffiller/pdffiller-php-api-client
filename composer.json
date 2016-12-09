@@ -2,6 +2,7 @@
     "name" : "pdffiller/pdffiller-php-api-client",
     "description": "PHP client for pdffiller.com REST API",
     "require": {
+        "php": ">=5.3.0",
         "league/oauth2-client": "^1.0",
         "symfony/translation": "^3.0"
     },

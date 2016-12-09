@@ -2,7 +2,7 @@
 
 require_once __DIR__.'/../bootstrap/init.php';
 
-use PDFfiller\OAuth2\Client\Provider\Core\GrantType;
+use PDFfiller\OAuth2\Client\Provider\Enums\GrantType;
 /** @var \PDFfiller\OAuth2\Client\Provider\PDFfiller $provider */
 $provider = (new Examples\ExampleFabric(new GrantType(GrantType::PASSWORD_GRANT), [
     'clientId'       => getenv('CLIENT_ID'),
