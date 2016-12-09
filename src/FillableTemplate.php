@@ -3,6 +3,7 @@
 namespace PDFfiller\OAuth2\Client\Provider;
 
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\DTO\FillableField;
 
 /**
  * Class FillableTemplate

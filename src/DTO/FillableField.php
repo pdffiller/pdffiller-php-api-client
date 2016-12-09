@@ -1,6 +1,6 @@
 <?php
 
-namespace PDFfiller\OAuth2\Client\Provider;
+namespace PDFfiller\OAuth2\Client\Provider\DTO;
 
 use PDFfiller\OAuth2\Client\Provider\Core\AbstractObject;
 

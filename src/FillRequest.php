@@ -4,15 +4,17 @@ namespace PDFfiller\OAuth2\Client\Provider;
 
 use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\Enums\DocumentAccess;
 use PDFfiller\OAuth2\Client\Provider\Enums\FillRequestNotifications;
+use PDFfiller\OAuth2\Client\Provider\Enums\FillRequestStatus;
 
 /**
  * Class FillRequest
  * @package PDFfiller\OAuth2\Client\Provider
  *
  * @property string $document_id
- * @property string $access
- * @property string $status
+ * @property DocumentAccess $access
+ * @property FillRequestStatus $status
  * @property boolean $email_required
  * @property boolean $name_required
  * @property string $custom_message
@@ -36,6 +38,8 @@ class FillRequest extends Model
     const FORMS_URI = 'filled_form';
 
     protected $casts =[
+        'access' => DocumentAccess::class,
+        'status' => FillRequestStatus::class,
         'notifications' => FillRequestNotifications::class,
         'notification_emails' => 'list',
         'additional_documents' => 'list',
