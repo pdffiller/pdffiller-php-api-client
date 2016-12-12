@@ -98,18 +98,4 @@ class FillRequest extends Model
         $params = static::query($this->client, [$this->id, self::FORMS_URI, $id]);
         return new FillRequestForm($this->client, $this->id, $params);
     }
-
-    public function setNotificationsField($notifications)
-    {
-        if (! $notifications instanceof FillRequestNotifications) {
-            $notifications = new FillRequestNotifications($notifications);
-        }
-
-        $this->notifications = $notifications;
-    }
-
-    public function getNotificationsField()
-    {
-        return $this->fields['notifications']->getValue();
-    }
 }
