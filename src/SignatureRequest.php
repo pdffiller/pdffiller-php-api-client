@@ -4,6 +4,7 @@ namespace PDFfiller\OAuth2\Client\Provider;
 
 use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\Core\ModelsList;
 use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestMethod;
 use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestSecurityPin;
 use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestStatus;
@@ -60,33 +61,42 @@ class SignatureRequest extends Model
             'date_created',
             'date_signed',
             'sign_in_order',
+            'status',
         ];
     }
 
     public function __construct($provider, $array = [])
     {
-        $this->client = $provider;
-
-        if (isset($array['recipients'])) {
-            $array['recipients'] = $this->formRecipients($array['recipients']);
-        }
-
+        $recipients = isset($array['recipients']) ? $array['recipients'] : [];
+        unset($array['recipients']);
         parent::__construct($provider, $array);
+        $recipients = self::formRecipients($recipients, $this->client, $this->id);
+        $this->recipients = new ListObject($recipients);
     }
 
     /**
      * Return signatures request list in inbox
      *
-     * @param $provider
-     * @return mixed
+     * @param PDFfiller $provider
+     * @return ModelsList
      */
-    public static function getInbox($provider)
+    public static function getInbox(PDFfiller $provider)
     {
-        return self::query($provider, [self::INBOX]);
+        $paramsArray =  self::query($provider, [self::INBOX]);
+        $paramsArray['items'] = array_map(function ($entry) {
+            $entry['recipients'] = [$entry['recipients']];
+
+            return $entry;
+        }, $paramsArray['items']);
+        $paramsArray['items'] = static::formItems($provider, $paramsArray);
+
+        return new ModelsList($paramsArray);
     }
 
     /**
-     * Return zip-archive of s2s inbox documents
+     * Return zip-archive of s2s inbox documents.
+     * Supports a filter parameters such as 'status', 'perpage', 'datefrom',
+     * 'dateto', 'order', 'orderby'. Status can be only 'signed', 'in_progress' and 'sent'
      *
      * @param $provider
      * @param array $params
@@ -94,15 +104,27 @@ class SignatureRequest extends Model
      */
     public static function inboxDownload($provider, $params = [])
     {
+        if (isset($params['status']) && $params['status'] instanceof SignatureRequestStatus) {
+            $params['status'] = mb_strtolower($params['status']->getValue());
+        }
+
         return self::query($provider, [self::INBOX, self::DOWNLOAD], $params);
     }
 
-    protected function formRecipients($array)
+    /**
+     * Prepares recipients array
+     *
+     * @param $inputRecipients
+     * @param PDFfiller $provider
+     * @param $signatureRequestId
+     * @return array
+     */
+    protected static function formRecipients($inputRecipients, PDFfiller $provider, $signatureRequestId)
     {
-
         $recipients = [];
-        foreach ($array as $recipient) {
-            $recipients[$recipient['id']] = new SignatureRequestRecipient($this->client, $this->id, $recipient);
+
+        foreach ($inputRecipients as $recipient) {
+            $recipients[$recipient['id']] = new SignatureRequestRecipient($provider, $signatureRequestId, $recipient);
         }
 
         return $recipients;
@@ -126,20 +148,13 @@ class SignatureRequest extends Model
 
     /**
      * @param SignatureRequestRecipient $recipient
-     * @return array recipient creation result
+     * @return SignatureRequestRecipient recipient creation result
      */
     public function addRecipient(SignatureRequestRecipient $recipient)
     {
-        $response = $recipient->create();
+        $this->recipients[] = $recipient->create();
 
-        if (isset($response['recipients'])) {
-            $recipients = $this->formRecipients($response['recipients']);
-            $newRecipient = array_diff_key($recipients, $this->recipients->toArray());
-            $this->recipients = $recipients;
-            return array_pop($newRecipient);
-        }
-
-        return $response;
+        return $recipient;
     }
 
     /**
@@ -162,5 +177,39 @@ class SignatureRequest extends Model
         }
 
         return null;
+    }
+
+    /**
+     * Returns current signature request recipient by id.
+     * @return ListObject
+     */
+    public function getRecipients()
+    {
+        if ($this->recipients) {
+            return $this->recipients;
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns current signature request recipient by id.
+     *
+     * @param PDFfiller $provider
+     * @param integer $signatureRequestId
+     * @return ListObject
+     */
+    public static function recipients(PDFfiller $provider, $signatureRequestId)
+    {
+        $recipients = self::query($provider, [$signatureRequestId, SignatureRequestRecipient::RECIPIENT]);
+
+        return new ListObject(self::formRecipients($recipients['items'], $provider, $signatureRequestId));
+    }
+
+    public static function recipient(PDFfiller $provider, $signatureRequestId, $recipientId)
+    {
+        $recipient = self::query($provider, [$signatureRequestId, SignatureRequestRecipient::RECIPIENT, $recipientId]);
+
+        return new SignatureRequestRecipient($provider, $signatureRequestId, $recipient);
     }
 }
