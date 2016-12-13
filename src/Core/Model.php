@@ -2,6 +2,7 @@
 
 namespace PDFfiller\OAuth2\Client\Provider\Core;
 
+use PDFfiller\OAuth2\Client\Provider\Traits\CastsTrait;
 use PDFfiller\OAuth2\Client\Provider\Contracts\Arrayable;
 use PDFfiller\OAuth2\Client\Provider\Contracts\Stringable;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\IdMissingException;
@@ -19,6 +20,8 @@ use ReflectionClass;
  */
 abstract class Model implements Arrayable
 {
+    use CastsTrait;
+
     const USER_AGENT = 'pdffiller-php-api-client/1.1.0';
 
     /**
@@ -40,10 +43,7 @@ abstract class Model implements Arrayable
     protected $attributes = ['id'];
 
     /** @var array  */
-    protected $casts= [];
-
-    /** @var array  */
-    protected $fields = [];
+    protected $properties = [];
 
     /** @var array  */
     protected $readOnly = [];
@@ -74,7 +74,7 @@ abstract class Model implements Arrayable
             $fields = $result[2];
 
             foreach ($fields as $index => $field) {
-                $this->fields[$field] = new ListObject();
+                $this->properties[$field] = new ListObject();
             }
         }
     }
@@ -97,7 +97,6 @@ abstract class Model implements Arrayable
 
     /**
      * @param bool $newRecord
-     * @param bool $validate
      * @param array $options
      * @return mixed
      */
@@ -126,7 +125,7 @@ abstract class Model implements Arrayable
     {
         $allowed = $this->getAttributes();
 //        $props = get_object_vars($this);
-        $props = $this->fields;
+        $props = $this->properties;
 
         !isset($options['except']) && $options['except'] = [];
 
@@ -162,55 +161,16 @@ abstract class Model implements Arrayable
         }
 
         foreach ($array as $key => $value) {
-            $this->fields[$key] = $this->castField($key, $value);
+            $this->properties[$key] = $this->castField($key, $value);
         }
 
         return $this;
     }
 
-    private function castField($option, $value)
-    {
-        $casts = $this->casts;
-
-        if (!isset($casts[$option])) {
-            return $value;
-        }
-
-        $cast = $casts[$option];
-
-        if (is_null($value) || is_null($cast)) {
-            return $value;
-        }
-
-        switch ($cast) {
-            case 'int':
-            case 'integer':
-                return (int) $value;
-            case 'real':
-            case 'float':
-            case 'double':
-                return (float) $value;
-            case 'string':
-                return (string) $value;
-            case 'bool':
-            case 'boolean':
-                return (bool) $value;
-            case 'list':
-                return new ListObject((array)$value);
-            default:
-                return $this->castToObject($value, $cast);
-        }
-    }
-
-    private function castToObject($value, $class)
-    {
-        if (class_exists($class) && get_parent_class($class) === Enum::class && ! $value instanceof $class) {
-            return new $class($value);
-        }
-
-        return $value;
-    }
-
+    /**
+     * Caches passed fields as old fields.
+     * @param $properties
+     */
     protected function cacheFields($properties)
     {
         $this->oldValues = $properties;
@@ -419,7 +379,7 @@ abstract class Model implements Arrayable
         $set = [];
 
         foreach ($array['items'] as $params) {
-            $instance = new static($provider, $params);
+            $instance = new static ($provider, $params);
             $instance->cacheFields($params);
             if (isset($instance->id)) {
                 $set[$instance->id] = $instance;
@@ -483,6 +443,11 @@ abstract class Model implements Arrayable
         return $diff;
     }
 
+    /**
+     * Merge and return available attributes of current model
+     *
+     * @return array
+     */
     private function getAttributes()
     {
         return array_merge($this->attributes, $this->attributes());
@@ -500,8 +465,8 @@ abstract class Model implements Arrayable
             return $this->{$method}();
         }
 
-        if (in_array($name, $this->getAttributes()) && isset($this->fields[$name])) {
-            return $this->fields[$name];
+        if (in_array($name, $this->getAttributes()) && isset($this->properties[$name])) {
+            return $this->properties[$name];
         }
 
         return null;
@@ -518,7 +483,7 @@ abstract class Model implements Arrayable
         if (method_exists($this, $method = 'set' . $this->snakeToCamelCase($name). 'Field')) {
             $this->{$method}($value);
         } elseif (in_array($name, $this->getAttributes())) {
-            $this->fields[$name] = $this->castField($name, $value);
+            $this->properties[$name] = $this->castField($name, $value);
         }
     }
 
