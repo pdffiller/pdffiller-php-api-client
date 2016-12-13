@@ -13,7 +13,8 @@ class ResponseException extends ErrorsException
     {
         $string = "";
         foreach ($this->errors as $error) {
-            $string .= trim($error['message'], '.') . '. ';
+            $message = isset($error['message']) ? $error['message'] : $error;
+            $string .= trim($message, '.') . '. ';
         }
         return parent::getDefaultMessage() . '.' . PHP_EOL . $string;
     }

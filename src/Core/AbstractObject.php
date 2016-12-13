@@ -3,10 +3,14 @@
 namespace PDFfiller\OAuth2\Client\Provider\Core;
 
 
+use PDFfiller\OAuth2\Client\Provider\Traits\CastsTrait;
 use PDFfiller\OAuth2\Client\Provider\Contracts\Arrayable;
+use PDFfiller\OAuth2\Client\Provider\Contracts\Stringable;
 
 abstract class AbstractObject implements Arrayable
 {
+    use CastsTrait;
+
     protected $attributes = [];
 
     /**
@@ -28,7 +32,7 @@ abstract class AbstractObject implements Arrayable
     {
         $attributes = $this->attributes;
         if (in_array($name, $attributes)) {
-            $this->{$name} = $value;
+            $this->{$name} = $this->castField($name, $value);
         }
     }
 
@@ -54,11 +58,22 @@ abstract class AbstractObject implements Arrayable
     public function toArray()
     {
         $array = [];
+        $attributes = array_intersect($this->attributes, array_keys(get_object_vars($this)));
 
-        foreach ($this->attributes as $attribute) {
-            if (isset($this->{$attribute})) {
-                $array[$attribute] = $this->{$attribute};
+        foreach ($attributes as $attribute) {
+            if (!isset($this->{$attribute})) {
+                continue;
             }
+
+            $value = $this->{$attribute};
+
+            if ($value instanceof Arrayable) {
+                $value = $value->toArray();
+            } elseif ($value instanceof Stringable) {
+                $value = $value->__toString();
+            }
+
+            $array[$attribute] = $value;
         }
 
         return $array;

@@ -9,7 +9,7 @@ $signatureRequest = SignatureRequest::one($provider, 19085);
 $recipient = $signatureRequest->createRecipient();
 
 //creating recipient as independent instance
-//$recipient = new SignatureRequestRecipient($provider, 130541);
+//$recipient = new SignatureRequestRecipient($provider, 334721);
 
 //filling recipient fields
 $recipient->email = 'new@recipient.com';
@@ -22,6 +22,4 @@ $recipient->additional_documents = [];
 $recipient->order = 1;
 //saving as independent instance
 $e = $signatureRequest->addRecipient($recipient);
-//saving by signature request
-//$e = $signatureRequest->addRecipient($recipient);
-dd($e, $recipient);
+dd($e->toArray(), $recipient->toArray(), $e == $recipient);

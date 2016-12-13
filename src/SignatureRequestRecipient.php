@@ -2,15 +2,20 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
+use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Core\Exception;
+use PDFfiller\OAuth2\Client\Provider\DTO\FieldsAccess;
 use PDFfiller\OAuth2\Client\Provider\Enums\DocumentAccess;
+use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestStatus;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 
 /**
  * Class SignatureRequestRecipient
  * @package PDFfiller\OAuth2\Client\Provider
  *
+ * @property integer $id
+ * @property integer $user_id
  * @property string $email
  * @property string $name
  * @property integer $order
@@ -19,8 +24,10 @@ use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
  * @property integer $date_created unix timestamp
  * @property integer $date_signed unix timestamp
  * @property DocumentAccess $access
- * @property array $additional_documents
+ * @property ListObject $additional_documents
  * @property boolean $require_photo
+ * @property SignatureRequestStatus $status
+ * @property FieldsAccess $fields
  */
 
 class SignatureRequestRecipient extends Model
@@ -33,6 +40,21 @@ class SignatureRequestRecipient extends Model
     protected static $entityUri = 'signature_request';
     const RECIPIENT = 'recipient';
     const REMIND = 'remind';
+
+    protected $casts = [
+        'status' => SignatureRequestStatus::class,
+        'access' => DocumentAccess::class,
+        'fields' => FieldsAccess::class,
+        'additional_documents' => 'list',
+    ];
+
+    protected $readOnly = [
+        'status',
+        'user_id',
+        'ip',
+        'date_signed',
+        'date_created',
+    ];
 
     public function attributes()
     {
@@ -50,6 +72,8 @@ class SignatureRequestRecipient extends Model
           'additional_documents',
           'require_photo',
           'ip',
+          'status',
+          'fields',
         ];
     }
 
@@ -61,8 +85,8 @@ class SignatureRequestRecipient extends Model
      */
     public function __construct($provider, $signatureRequestId, $array = [])
     {
-        $this->signatureRequestId = $signatureRequestId;
-//        static::setEntityUri(static::BASE_URI . '/' . $signatureRequestId . '/recipient' );
+        $this->setSignatureRequestId($signatureRequestId);
+
         parent::__construct($provider, $array);
     }
 
@@ -104,11 +128,16 @@ class SignatureRequestRecipient extends Model
         $createResult =  static::post($this->client, $uri, [
             'json' => $recipients,
         ]);
+
         if (isset($createResult['errors'])) {
             throw new ResponseException($createResult['errors']);
         }
 
-        return $createResult;
+        $recipientData = array_filter($createResult['recipients'], function ($recipient) use ($params) {
+            return $recipient['email'] == $params['email'];
+        });
+
+        return $this->parseArray(array_pop($recipientData));
     }
 
     public static function all($provider = null, array $params = [])
