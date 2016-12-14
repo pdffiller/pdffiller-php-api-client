@@ -1,24 +1,26 @@
 <?php
-use Examples\ExampleFabric;
+
+require_once __DIR__.'/../bootstrap/init.php';
+
 use PDFfiller\OAuth2\Client\Provider\Enums\GrantType;
+use \PDFfiller\OAuth2\Client\Provider\PDFfiller;
 
-require_once __DIR__ . '/../bootstrap/init.php';
-
-$params = [
+$provider = new PDFfiller([
     'clientId'       => getenv('CLIENT_ID'),
     'clientSecret'   => getenv('CLIENT_SECRET'),
     'urlAccessToken' => getenv('URL_ACCESS_TOKEN'),
     'urlApiDomain'   => getenv('URL_API_DOMAIN')
-];
-/** @var \PDFfiller\OAuth2\Client\Provider\PDFfiller $provider */
-$provider = (new ExampleFabric(new GrantType(GrantType::PASSWORD_GRANT), $params))->getProvider([
+]);
+
+$provider->getAccessToken(new GrantType(GrantType::PASSWORD_GRANT), [
     'username' => getenv('USER_EMAIL'),
     'password' => getenv('PASSWORD')
-], false);
+]);
 
-/** @var \PDFfiller\OAuth2\Client\Provider\PDFfiller $provider */
-$provider = (new ExampleFabric(new GrantType(GrantType::REFRESH_TOKEN_GRANT), $params))->getProvider([
+$token = $provider->issueAccessToken(new GrantType(GrantType::REFRESH_TOKEN_GRANT), [
     'refresh_token' => $provider->getAccessToken()->getRefreshToken()
-], false);
+]);
+
+$provider->setAccessToken($token);
 
 dd($provider->queryApiCall('test'));

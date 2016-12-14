@@ -4,6 +4,7 @@ namespace PDFfiller\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
+use PDFfiller\OAuth2\Client\Provider\Enums\GrantType;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodyException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodySourceException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidQueryException;
@@ -21,6 +22,9 @@ use Psr\Http\Message\ResponseInterface;
  */
 class PDFfiller extends GenericProvider
 {
+    const USER_AGENT = 'PDFfiller Rest-API PHP-Client';
+    const VERSION = '2.0.0';
+
     /** @var   */
     private $urlApiDomain;
     private $accessToken;
@@ -194,6 +198,7 @@ class PDFfiller extends GenericProvider
             throw new TokenMissingException();
         }
 
+        $options['headers']['User-Agent'] = self::USER_AGENT . '/' . self::VERSION;
         $request = $this->getAuthenticatedRequest($method, $url, $this->getAccessToken()->getToken(), $options);
         $request = $this->applyOptions($request, $options);
         return $this->getResponse($request);
@@ -306,7 +311,23 @@ class PDFfiller extends GenericProvider
             return $this->accessToken;
         }
 
-        return $this->accessToken = parent::getAccessToken($grant, $options);
+        return $this->accessToken = $this->issueAccessToken($grant, $options);
+    }
+
+    /**
+     * Requests a new access token
+     *
+     * @param $grant
+     * @param array $options
+     * @return AccessToken
+     */
+    public function issueAccessToken($grant, array $options = [])
+    {
+        if ($grant instanceof GrantType) {
+            $grant = $grant->getValue();
+        }
+
+        return parent::getAccessToken($grant, $options);
     }
 
     /**
