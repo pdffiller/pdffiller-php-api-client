@@ -1,10 +1,17 @@
 {
     "name" : "pdffiller/pdffiller-php-api-client",
     "description": "PHP client for pdffiller.com REST API",
+    "keywords": ["pdffiller", "api", "rest", "client"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "API Team",
+            "email": "integrations@pdffiller.com"
+        }
+    ],
     "require": {
-        "php": ">=5.3.0",
-        "league/oauth2-client": "^1.0",
-        "symfony/translation": "^3.0"
+        "php": ">=5.5.9",
+        "league/oauth2-client": "^1.0"
     },
     "require-dev": {
         "adammbalogh/key-value-store-file": "^0.5.3",

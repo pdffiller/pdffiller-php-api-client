@@ -1,10 +1,8 @@
-# Pdffiller PHP Client
+# PDFfiller API PHP Client
 
-[![Join the chat at https://gitter.im/pdffiller/pdffiller-php-api-client](https://badges.gitter.im/pdffiller/pdffiller-php-api-client.svg)](https://gitter.im/pdffiller/pdffiller-php-api-client?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[PDFfiller API](https://api.pdffiller.com)
 
-API client for [Pdffiller API](https://api.pdffiller.com).
-
-System Requirements
+## System Requirements
 * PHP >= 5.5.9 but the latest stable version of PHP is recommended;
 * `mbstring` extension;
 * `intl` extension;
@@ -44,10 +42,6 @@ It should help. If you have any problems feel free to contact us:
 - by issues page https://github.com/pdffiller/pdffiller-php-api-client/issues
 - via chat or phone at our tech site http://developers.pdffiller.com/
 
-### Validation package problem
-
-We are using validation package https://github.com/illuminate/validation at 5.2 version. Usually it's ok but if you have laravel 5.0 project it can became a problem. If you have such problem, please contact us and we will fix it.
-
 ## Quick getting started steps
 Install required libraries using composer
 ```
@@ -55,7 +49,8 @@ cd pdffiller-php-api-client/
 composer install
 ```
 
-Edit .env file in examples dir to set client_id and client_secret
+Edit `.env` file in examples directory setting client_id, client_secret, username and password 
+(for authorization via `password_grant`)
 ```
 cd examples/ 
 cp .env.example .env
@@ -70,11 +65,11 @@ php 1_get_signature_request_list.php
 
 ## Usage
 
-Usage examples available at [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/master/examples) dir
+Usage examples available at [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/2.0.0/examples) dir
 
 ## LICENSE
 
-This software is licensed under following MIT [license](https://github.com/pdffiller/pdffiller-php-api-client/blob/master/LICENSE)
+This software is licensed under following MIT [license](https://github.com/pdffiller/pdffiller-php-api-client/blob/2.0.0/LICENSE)
 
 ## Author
-Alex Pekhota (pekhota.alex@pdffiller.com)
+API Team (integrations@pdffiller.com)
