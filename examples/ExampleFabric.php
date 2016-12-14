@@ -31,7 +31,7 @@ class ExampleFabric
     public function __construct(GrantType $grantType, $params = [])
     {
         $this->provider = new PDFfiller($params);
-        $this->type = $grantType->getValue();
+        $this->type = $grantType;
     }
 
     /**
