@@ -22,8 +22,6 @@ abstract class Model implements Arrayable
 {
     use CastsTrait;
 
-    const USER_AGENT = 'pdffiller-php-api-client/1.1.0';
-
     /**
      * Maps model field to request field
      * @var array
@@ -187,7 +185,6 @@ abstract class Model implements Arrayable
      */
     protected static function apiCall($provider, $method, $uri, $params = [])
     {
-        $params['headers']['User-Agent'] = self::USER_AGENT;
         $methodName = $method . 'ApiCall';
         if (method_exists($provider, $methodName)) {
             return $provider->{$methodName}($uri, $params);
