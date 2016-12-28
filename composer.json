@@ -11,7 +11,8 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "league/oauth2-client": "^1.0"
+        "league/oauth2-client": "^1.0",
+        "phpunit/phpunit": "^5.7"
     },
     "require-dev": {
         "adammbalogh/key-value-store-file": "^0.5.3",
@@ -21,7 +22,8 @@
     },
     "autoload": {
         "psr-4": {
-            "PDFfiller\\OAuth2\\Client\\Provider\\": "src/"
+            "PDFfiller\\OAuth2\\Client\\Provider\\": "src/",
+            "PDFfiller\\OAuth2\\Client\\Tests\\Support\\": "tests/_support/"
         }
     },
     "autoload-dev": {

@@ -63,6 +63,4 @@ abstract class Enum implements Stringable
     {
         return $this->getValue();
     }
-
-
 }

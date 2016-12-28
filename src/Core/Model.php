@@ -122,7 +122,6 @@ abstract class Model implements Arrayable
     public function toArray($options = [])
     {
         $allowed = $this->getAttributes();
-//        $props = get_object_vars($this);
         $props = $this->properties;
 
         !isset($options['except']) && $options['except'] = [];
