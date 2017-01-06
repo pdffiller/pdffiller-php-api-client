@@ -78,7 +78,7 @@ php 1_get_signature_request_list.php
 
 ## Usage
 
-Access token authomatically sets up when it successfully retrieved, from the given user's credentials (after `getAccessToken($grant_type, $options)` method), according to the example below:
+Access token authomatically sets up when it successfully retrieved, from the given user's credentials (after `PDFfiller\OAuth2\Client\Provider\PDFfiller::getAccessToken($grant_type, $options)` method), according to the example below:
 
 ```
 <?php
@@ -103,46 +103,46 @@ $passwordGrantCredentials = [
 $provider = new PDFfiller($oauthParams);
 
 $access_token = $provider->getAccessToken(GrantType::PASSWORD_GRANT, $passwordGrantCredentials);
-print_r_($access_token);
+print_r($access_token);
 ```
 
-When authorization is ok. You can use provider for retrieving, creating, updating of destroying information from your profile.
-Retrieving list of all application can be done by static method `all(PDFfiller $provider)`:
+When authorization is successful you can use provider for retrieving, creating, updating of destroying information from your profile.
+Retrieving list of all application can be done by static method `PDFfiller\OAuth2\Client\Provider\Core\Model::all(PDFfiller $provider)`:
 ```
 $list = Application::all($provider);
-print_r_($list);
+print_r($list);
 ```
 
-If you want to create new one, you must create new Application object with needed information and save it by using method `save($newRecord = true)`.
+If you want to create new one, you must create new Application object with needed information and save it by using method `PDFfiller\OAuth2\Client\Provider\Core\Model::save($newRecord = true)`.
 ```
 $application = new Application($provider);
 
 $application->name = 'App name';
 $application->description = 'Some application description';
 $application->domain = 'http://some.domain.com';
-print_r_($application->save());
+print_r($application->save());
 ```
-For retrieving information about one application, just call static `one(PDFfiller $provider, $client_id)`:
+For retrieving information about one application, just call static `PDFfiller\OAuth2\Client\Provider\Core\Model::one(PDFfiller $provider, $client_id)`:
 ```
 $application = Application::one($provider, 'app_client_id');
-print_r_($application);
+print_r($application);
 ```
 
-Updating information is preety easy by using `save($newRecord = true)` method:
+Updating information is pretty easy by using `PDFfiller\OAuth2\Client\Provider\Core\Model::save($newRecord = true)` method:
 ```
 $application = Application::one($provider, '547d2b9c2d3b902a');
 
 $application->name = 'Updated App name';
 $application->description = 'Some changed application description';
 $result = $application->save(false);
-print_r_($result);
+print_r($result);
 ```
 
-I you wish to remove application, use `remove()` method
+If you wish to remove application, use `PDFfiller\OAuth2\Client\Provider\Core\Model::remove()` method
 ```
 $application = Application::one($provider, '547d2b9c2d3b902a');
 $result = $application->remove();
-print_r_($result);
+print_r($result);
 ```
 
 All examples with other endpoits available at [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/master/examples) folder
@@ -152,4 +152,4 @@ All examples with other endpoits available at [examples](https://github.com/pdff
 This software is licensed under following MIT [license](https://github.com/pdffiller/pdffiller-php-api-client/blob/master/LICENSE)
 
 ## Author
-Alex Pekhota (pekhota.alex@pdffiller.com)
+API Team (integrations@pdffiller.com)
