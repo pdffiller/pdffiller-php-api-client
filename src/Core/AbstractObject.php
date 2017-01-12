@@ -2,15 +2,22 @@
 
 namespace PDFfiller\OAuth2\Client\Provider\Core;
 
-
 use PDFfiller\OAuth2\Client\Provider\Traits\CastsTrait;
 use PDFfiller\OAuth2\Client\Provider\Contracts\Arrayable;
 use PDFfiller\OAuth2\Client\Provider\Contracts\Stringable;
 
+/**
+ * Class AbstractObject
+ *
+ * Basic data transfer class
+ *
+ * @package PDFfiller\OAuth2\Client\Provider\Core
+ */
 abstract class AbstractObject implements Arrayable
 {
     use CastsTrait;
 
+    /** @var array */
     protected $attributes = [];
 
     /**
@@ -51,9 +58,7 @@ abstract class AbstractObject implements Arrayable
     }
 
     /**
-     * Returns array representation of an object.
-     *
-     * @return array
+     * @inheritdoc
      */
     public function toArray()
     {

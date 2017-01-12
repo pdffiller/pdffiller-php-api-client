@@ -24,8 +24,7 @@ class ListObject implements ArrayAccess, Arrayable
     }
 
     /**
-     * Returns array representation of an object.
-     * @return array
+     * @inheritdoc
      */
     public function toArray()
     {
@@ -39,10 +38,7 @@ class ListObject implements ArrayAccess, Arrayable
     }
 
     /**
-     * Checks if the element with given key exists
-     *
-     * @param mixed $offset
-     * @return bool
+     * @inheritdoc
      */
     public function offsetExists($offset)
     {
@@ -50,11 +46,7 @@ class ListObject implements ArrayAccess, Arrayable
     }
 
     /**
-     * Returns the element by given key.
-     * Returns null if value does not exist.
-     *
-     * @param mixed $offset
-     * @return mixed|null
+     * @inheritdoc
      */
     public function offsetGet($offset)
     {
@@ -66,10 +58,7 @@ class ListObject implements ArrayAccess, Arrayable
     }
 
     /**
-     * Sets the element on given key.
-     *
-     * @param mixed $offset
-     * @param mixed $value
+     * @inheritdoc
      */
     public function offsetSet($offset, $value)
     {
@@ -81,9 +70,7 @@ class ListObject implements ArrayAccess, Arrayable
     }
 
     /**
-     * Removes element from list
-     *
-     * @param mixed $offset
+     * @inheritdoc
      */
     public function offsetUnset($offset)
     {

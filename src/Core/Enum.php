@@ -55,14 +55,10 @@ abstract class Enum implements Stringable
     }
 
     /**
-     * Returns string representation of given object
-     *
-     * @return string
+     * @inheritdoc
      */
     public function __toString()
     {
         return $this->getValue();
     }
-
-
 }

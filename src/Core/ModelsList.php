@@ -1,15 +1,26 @@
 <?php
+
 namespace PDFfiller\OAuth2\Client\Provider\Core;
 
-use PDFfiller\OAuth2\Client\Provider\Contracts\Arrayable;
-use PDFfiller\OAuth2\Client\Provider\Contracts\Stringable;
-
+/**
+ * Class ModelsList
+ * @package PDFfiller\OAuth2\Client\Provider\Core
+ */
 class ModelsList extends ListObject
 {
+    /** @var int */
     protected $total = 0;
+
+    /** @var int */
     protected $current_page = 1;
+
+    /** @var int */
     protected $per_page = 15;
+
+    /** @var string */
     protected $prev_page_url = null;
+
+    /** @var string */
     protected $next_page_url = null;
 
     /**

@@ -2,7 +2,6 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
-
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 
 /**
@@ -17,9 +16,10 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
  */
 class Application extends Model
 {
-
+    /** @var string */
     protected static $entityUri = 'application';
 
+    /** @var array */
     protected $mapper = [
         'all_domains' => 'all-domains',
         'embedded_domain' => 'embedded-domain'
@@ -27,6 +27,9 @@ class Application extends Model
 
     const RULES_KEY = 'application';
 
+    /**
+     * @inheritdoc
+     */
     public function attributes()
     {
         return [
