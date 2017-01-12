@@ -24,15 +24,17 @@ use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestStatus;
  */
 class SignatureRequest extends Model
 {
-    /**
-     * @var string
-     */
-    protected static $entityUri = 'signature_request';
     const CERTIFICATE = 'certificate';
     const SIGNED_DOCUMENT = 'signed_document';
     const INBOX = 'inbox';
     const DOWNLOAD = 'download';
 
+    /**
+     * @var string
+     */
+    protected static $entityUri = 'signature_request';
+
+    /** @var array */
     protected $casts = [
         'method' => SignatureRequestMethod::class,
         'status' => SignatureRequestStatus::class,
@@ -41,6 +43,7 @@ class SignatureRequest extends Model
         'recipients' => 'list',
     ];
 
+    /** @var array */
     protected $readOnly = [
         'status',
         'date_signed',
@@ -48,6 +51,9 @@ class SignatureRequest extends Model
         'callbacks'
     ];
 
+    /**
+     * @inheritdoc
+     */
     public function attributes()
     {
         return [
@@ -65,6 +71,11 @@ class SignatureRequest extends Model
         ];
     }
 
+    /**
+     * SignatureRequest constructor.
+     * @param PDFfiller $provider
+     * @param array $array
+     */
     public function __construct($provider, $array = [])
     {
         $recipients = isset($array['recipients']) ? $array['recipients'] : [];
@@ -94,7 +105,7 @@ class SignatureRequest extends Model
     }
 
     /**
-     * Return zip-archive of s2s inbox documents.
+     * Returns zip-archive of SendToSign inbox documents.
      * Supports a filter parameters such as 'status', 'perpage', 'datefrom',
      * 'dateto', 'order', 'orderby'. Status can be only 'signed', 'in_progress' and 'sent'
      *
@@ -147,6 +158,8 @@ class SignatureRequest extends Model
     }
 
     /**
+     * Add recipient
+     *
      * @param SignatureRequestRecipient $recipient
      * @return SignatureRequestRecipient recipient creation result
      */
@@ -158,6 +171,8 @@ class SignatureRequest extends Model
     }
 
     /**
+     * Creates and returns new recipient
+     *
      * @return SignatureRequestRecipient SignatureRequestRecipient
      */
     public function createRecipient()
@@ -180,7 +195,7 @@ class SignatureRequest extends Model
     }
 
     /**
-     * Returns current signature request recipient by id.
+     * Returns signature request recipients list.
      * @return ListObject
      */
     public function getRecipients()
@@ -193,7 +208,7 @@ class SignatureRequest extends Model
     }
 
     /**
-     * Returns current signature request recipient by id.
+     * Returns signature request recipients list.
      *
      * @param PDFfiller $provider
      * @param integer $signatureRequestId
@@ -206,6 +221,14 @@ class SignatureRequest extends Model
         return new ListObject(self::formRecipients($recipients['items'], $provider, $signatureRequestId));
     }
 
+    /**
+     * Returns current signature request recipient by id.
+     *
+     * @param PDFfiller $provider
+     * @param $signatureRequestId
+     * @param $recipientId
+     * @return SignatureRequestRecipient
+     */
     public static function recipient(PDFfiller $provider, $signatureRequestId, $recipientId)
     {
         $recipient = self::query($provider, [$signatureRequestId, SignatureRequestRecipient::RECIPIENT, $recipientId]);

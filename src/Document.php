@@ -20,9 +20,7 @@ class Document extends Model implements Uploadable
     const DOWNLOAD_SIGNATURES = 'download_signatures';
 
     /**
-     * List response attributes
-     *
-     * @return array
+     * @inheritdoc
      */
     public function attributes()
     {

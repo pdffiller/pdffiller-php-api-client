@@ -33,10 +33,12 @@ use PDFfiller\OAuth2\Client\Provider\Enums\FillRequestStatus;
  */
 class FillRequest extends Model
 {
-    protected static $entityUri = 'fill_request';
-
     const FORMS_URI = 'filled_form';
 
+    /** @var string */
+    protected static $entityUri = 'fill_request';
+
+    /** @var array */
     protected $casts =[
         'access' => DocumentAccess::class,
         'status' => FillRequestStatus::class,
@@ -46,10 +48,14 @@ class FillRequest extends Model
         'callbacks' => 'list',
     ];
 
+    /** @var array */
     protected $readOnly = [
         'callbacks'
     ];
 
+    /**
+     * @inheritdoc
+     */
     public function attributes()
     {
         return [
@@ -75,6 +81,11 @@ class FillRequest extends Model
         ];
     }
 
+    /**
+     * Returns filled forms
+     *
+     * @return array
+     */
     public function forms()
     {
         $response = static::query($this->client, [$this->id, self::FORMS_URI]);

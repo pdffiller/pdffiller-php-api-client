@@ -32,15 +32,16 @@ use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 
 class SignatureRequestRecipient extends Model
 {
-    /**
-     * @var int
-     */
-    protected $signatureRequestId = null;
-
-    protected static $entityUri = 'signature_request';
     const RECIPIENT = 'recipient';
     const REMIND = 'remind';
 
+    /** @var int */
+    protected $signatureRequestId = null;
+
+    /** @var string */
+    protected static $entityUri = 'signature_request';
+
+    /** @var array */
     protected $casts = [
         'status' => SignatureRequestStatus::class,
         'access' => DocumentAccess::class,
@@ -48,6 +49,7 @@ class SignatureRequestRecipient extends Model
         'additional_documents' => 'list',
     ];
 
+    /** @var array */
     protected $readOnly = [
         'status',
         'user_id',
@@ -56,6 +58,9 @@ class SignatureRequestRecipient extends Model
         'date_created',
     ];
 
+    /**
+     * @inheritdoc
+     */
     public function attributes()
     {
         return [
@@ -90,22 +95,40 @@ class SignatureRequestRecipient extends Model
         parent::__construct($provider, $array);
     }
 
+    /**
+     * Returns request URI
+     *
+     * @return string
+     */
     protected function uri()
     {
         return static::getUri() . $this->signatureRequestId . '/' . self::RECIPIENT . '/';
     }
+
+    /**
+     * Send the remind email to recipient
+     * @return mixed
+     */
     public function remind()
     {
         $uri = $this->uri() . $this->id . '/' . self::REMIND;
+
         return static::put($this->client, $uri);
     }
 
+    /**
+     * Returns the SendToSign id
+     *
+     * @return int
+     */
     public function getSignatureRequestId()
     {
         return $this->signatureRequestId;
     }
 
     /**
+     * Sets the signature request id
+     *
      * @param int $signatureRequestId
      */
     public function setSignatureRequestId($signatureRequestId)
@@ -140,25 +163,35 @@ class SignatureRequestRecipient extends Model
         return $this->parseArray(array_pop($recipientData));
     }
 
-    public static function all($provider = null, array $params = [])
-    {
-        throw new Exception("Getting list of this items isn't supported.");
-    }
-
-    public static function one($provider = null, $id = null)
-    {
-        throw new Exception("Getting instance of this items isn't supported. Use SignatureRequest class.");
-    }
-
+    /**
+     * @inheritdoc
+     */
     public function update($options = [])
     {
         throw new Exception("Updating instance of this items isn't supported.");
     }
 
+    /**
+     * @inheritdoc
+     */
+    public static function all($provider = null, array $params = [])
+    {
+        throw new Exception("Getting list of this items isn't supported.");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function one($provider = null, $id = null)
+    {
+        throw new Exception("Getting instance of this items isn't supported. Use SignatureRequest class.");
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function save($new = true, $options = null)
     {
         throw new Exception("Saving instance of this items isn't supported. Use SignatureRequest::addRecipient().");
     }
-
 }
-

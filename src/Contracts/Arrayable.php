@@ -11,7 +11,7 @@ interface Arrayable
     /**
      * Returns array representation of given object
      *
-     * @return mixed
+     * @return array
      */
     public function toArray();
 }

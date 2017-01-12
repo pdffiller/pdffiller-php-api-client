@@ -11,6 +11,13 @@ trait CastsTrait
     /** @var array  */
     protected $casts= [];
 
+    /**
+     * Casts the field
+     *
+     * @param $option
+     * @param $value
+     * @return bool|float|mixed|ListObject|string
+     */
     private function castField($option, $value)
     {
         $casts = $this->casts;

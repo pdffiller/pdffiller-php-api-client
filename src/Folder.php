@@ -13,8 +13,12 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
  */
 class Folder extends Model
 {
+    /** @var string */
     public static $entityUri = 'folder';
 
+    /**
+     * @inheritdoc
+     */
     public function attributes()
     {
         return [

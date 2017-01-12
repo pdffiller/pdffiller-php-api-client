@@ -14,12 +14,16 @@ use PDFfiller\OAuth2\Client\Provider\DTO\FillableField;
  */
 class FillableTemplate extends Model
 {
-
-    protected static $entityUri = 'fillable_template';
     const DOWNLOAD = 'download';
     const FILLED_DOCUMENTS = 'filled_document';
     const VALUES = 'values';
 
+    /** @var string */
+    protected static $entityUri = 'fillable_template';
+
+    /**
+     * @inheritdoc
+     */
     public function attributes()
     {
         return [
@@ -46,10 +50,7 @@ class FillableTemplate extends Model
     }
 
     /**
-     * Returns model instance.
-     * @param PDFfiller $provider
-     * @param $id
-     * @return static
+     * @inheritdoc
      */
     public static function one($provider, $id)
     {
@@ -113,10 +114,7 @@ class FillableTemplate extends Model
     }
 
     /**
-     * Returns array representation of an object
-     *
-     * @param array $options
-     * @return array
+     * @inheritdoc
      */
     public function toArray($options = [])
     {
