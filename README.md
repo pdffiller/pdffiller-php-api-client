@@ -11,13 +11,13 @@
 
 ## Install
 
-The library is available on Packagist and should be installed using Composer. This can be done by running the following command on a composer installed box:
+The library is available on Packagist and can be installed using Composer. This is done by running the following command on a composer installed box:
 
 ```
 $ composer require pdffiller/pdffiller-php-api-client
 ```
 
-Most modern frameworks will include Composer out of the box, but ensure the following file is included:
+Most modern frameworks include Composer out of the box, but ensure that the following file is included:
 
 ```php
 // Include the Composer autoloader
@@ -36,20 +36,20 @@ If you have the following error:
  [UnexpectedValueException]
  Could not parse version constraint ^5.2: Invalid version string "^5.2"
 ```
-Try run 
+Try running 
 ```
 composer self-update 
 ```
-Also you can got something like this:
+Also you might got something like this:
 ```
 Warning: require_once(../../vendor/autoload.php): failed to open stream: No such file or directory
 ```
-This issue fixes easily by installing composer dependencies:
+This issue is easily fixed by installing composer dependencies:
 ```
 composer install
 ```
 If you have any problems feel free to contact us:
-- by issues page https://github.com/pdffiller/pdffiller-php-api-client/issues
+- On our issues page https://github.com/pdffiller/pdffiller-php-api-client/issues
 - via chat or phone at our tech site http://developers.pdffiller.com/
 
 ## Quick getting started steps
@@ -76,7 +76,7 @@ php 1_get_signature_request_list.php
 ## Usage
 
 Usage examples available at [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/2.0.0/examples) dir
-Access token authomatically sets up when it successfully retrieved, from the given user's credentials (after `PDFfiller\OAuth2\Client\Provider\PDFfiller::getAccessToken($grant_type, $options)` method), according to the example below:
+Access token authomatically sets up when it is successfully retrieved, from the given user's credentials (after `PDFfiller\OAuth2\Client\Provider\PDFfiller::getAccessToken($grant_type, $options)` method), according to the example below:
 
 ```
 <?php
@@ -104,14 +104,14 @@ $access_token = $provider->getAccessToken(GrantType::PASSWORD_GRANT, $passwordGr
 print_r($access_token);
 ```
 
-When authorization is successful you can use provider for retrieving, creating, updating of destroying information from your profile.
-Retrieving list of all application can be done by static method `PDFfiller\OAuth2\Client\Provider\Core\Model::all(PDFfiller $provider)`:
+When authorization is successful you can use provider for retrieving, creating, updating or deleting information from your profile.
+Retrieving the list of all applications can be done via a static method `PDFfiller\OAuth2\Client\Provider\Core\Model::all(PDFfiller $provider)`:
 ```
 $list = Application::all($provider);
 print_r($list);
 ```
 
-If you want to create new one, you must create new Application object with needed information and save it by using method `PDFfiller\OAuth2\Client\Provider\Core\Model::save($newRecord = true)`.
+If you want to create a new one, you must create a new Application object with the needed information and save it by using this method `PDFfiller\OAuth2\Client\Provider\Core\Model::save($newRecord = true)`.
 ```
 $application = new Application($provider);
 
@@ -120,13 +120,13 @@ $application->description = 'Some application description';
 $application->domain = 'http://some.domain.com';
 print_r($application->save());
 ```
-For retrieving information about one application, just call static `PDFfiller\OAuth2\Client\Provider\Core\Model::one(PDFfiller $provider, $client_id)`:
+For retrieving information about one application, call static `PDFfiller\OAuth2\Client\Provider\Core\Model::one(PDFfiller $provider, $client_id)`:
 ```
 $application = Application::one($provider, 'app_client_id');
 print_r($application);
 ```
 
-Updating information is pretty easy by using `PDFfiller\OAuth2\Client\Provider\Core\Model::save($newRecord = true)` method:
+Updating information is easy by using `PDFfiller\OAuth2\Client\Provider\Core\Model::save($newRecord = true)` method:
 ```
 $application = Application::one($provider, '547d2b9c2d3b902a');
 
@@ -136,18 +136,18 @@ $result = $application->save(false);
 print_r($result);
 ```
 
-If you wish to remove application, use `PDFfiller\OAuth2\Client\Provider\Core\Model::remove()` method
+If you wish to remove an application, use `PDFfiller\OAuth2\Client\Provider\Core\Model::remove()` method
 ```
 $application = Application::one($provider, '547d2b9c2d3b902a');
 $result = $application->remove();
 print_r($result);
 ```
 
-All examples with other endpoits available at [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/master/examples) folder
+All examples with other endpoints are available in the [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/master/examples) folder
 
 ## LICENSE
 
-This software is licensed under following MIT [license](https://github.com/pdffiller/pdffiller-php-api-client/blob/2.0.0/LICENSE)
+This software is licensed under the following MIT [license](https://github.com/pdffiller/pdffiller-php-api-client/blob/2.0.0/LICENSE)
 
 ## Author
 API Team (integrations@pdffiller.com)
