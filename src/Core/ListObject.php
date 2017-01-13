@@ -4,12 +4,13 @@ namespace PDFfiller\OAuth2\Client\Provider\Core;
 
 use PDFfiller\OAuth2\Client\Provider\Contracts\Arrayable;
 use ArrayAccess;
+use Iterator;
 
 /**
  * Class ListObject
  * @package PDFfiller\OAuth2\Client\Provider\Core
  */
-class ListObject implements ArrayAccess, Arrayable
+class ListObject implements ArrayAccess, Arrayable, Iterator
 {
     /** @var array */
     protected $items = [];
@@ -75,5 +76,45 @@ class ListObject implements ArrayAccess, Arrayable
     public function offsetUnset($offset)
     {
         unset($this->items[$offset]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function current()
+    {
+        return current($this->items);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function next()
+    {
+        return next($this->items);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function key()
+    {
+        return key($this->items);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function valid()
+    {
+        return key($this->items) !== null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rewind()
+    {
+        return reset($this->items);
     }
 }

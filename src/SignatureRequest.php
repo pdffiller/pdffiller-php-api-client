@@ -39,8 +39,8 @@ class SignatureRequest extends Model
         'method' => SignatureRequestMethod::class,
         'status' => SignatureRequestStatus::class,
         'security_pin' => SignatureRequestSecurityPin::class,
-        'callbacks' => 'list',
-        'recipients' => 'list',
+        'callbacks' => ['list_of', Callback::class],
+        'recipients' => ['list_of', SignatureRequestRecipient::class],
     ];
 
     /** @var array */
