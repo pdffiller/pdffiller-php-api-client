@@ -16,4 +16,19 @@ class AdditionalDocument extends AbstractObject
     protected $attributes = [
         'name',
     ];
+
+    /**
+     * AdditionalDocument constructor.
+     * @param $properties
+     */
+    public function __construct($properties)
+    {
+        if (is_string($properties)) {
+            $properties = [
+                'name' => $properties
+            ];
+        }
+
+        parent::__construct($properties);
+    }
 }

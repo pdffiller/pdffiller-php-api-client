@@ -18,7 +18,7 @@ $e->recipients[] = [
     'email' => 'test@test.com',
     'name' => 'Test user',
     'access' => 'full',
-    'require_photo' => true,
+    'require_photo' => false,
     'message_subject' => 'subject',
     'message_text' => 'message',
 ];

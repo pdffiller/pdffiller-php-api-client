@@ -43,6 +43,9 @@ abstract class Model implements Arrayable
     /** @var array  */
     protected $readOnly = [];
 
+    /** @var bool */
+    private $exists = false;
+
     /**
      * Model constructor.
      * @param PDFfiller $provider
@@ -50,9 +53,15 @@ abstract class Model implements Arrayable
      */
     public function __construct(PDFfiller $provider, $array = [])
     {
+        if (isset($array['exists'])) {
+            $this->exists = $array['exists'];
+            unset($array['exists']);
+        }
+
         $this->initArrayFields();
         $this->client = $provider;
         $this->parseArray($array);
+
     }
 
     /**
@@ -92,11 +101,11 @@ abstract class Model implements Arrayable
     /**
      * Creates or updates model
      *
-     * @param bool $newRecord
      * @param array $options
      * @return mixed
+     * @internal param bool $newRecord
      */
-    public function save($newRecord = true, $options = [])
+    public function save($options = [])
     {
         if (!isset($options['except'])) {
             $options['except'] = [];
@@ -104,7 +113,7 @@ abstract class Model implements Arrayable
 
         $options['except'] = array_merge($options['except'], $this->readOnly);
 
-        if ($newRecord) {
+        if (!$this->exists) {
             return $this->create($options);
         }
 
@@ -281,6 +290,7 @@ abstract class Model implements Arrayable
         }
 
         $this->cacheFields($params);
+        $this->exists = true;
         $object = $createResult;
 
         if (isset($createResult['items'])) {
@@ -326,7 +336,7 @@ abstract class Model implements Arrayable
      */
     public function remove()
     {
-        if (property_exists($this, 'id')) {
+        if (isset($this->properties['id'])) {
             return static::deleteOne($this->client, $this->id);
         }
 
@@ -342,6 +352,7 @@ abstract class Model implements Arrayable
     public static function deleteOne($provider, $id)
     {
         $uri = static::getUri() . $id;
+
         return static::delete($provider, $uri);
     }
 
@@ -354,7 +365,7 @@ abstract class Model implements Arrayable
     public static function one($provider, $id)
     {
         $params = static::query($provider, $id);
-        $instance = new static($provider, $params);
+        $instance = new static($provider, array_merge($params, ['exists' => true]));
         $instance->cacheFields($params);
 
         return $instance;
@@ -386,7 +397,7 @@ abstract class Model implements Arrayable
         $set = [];
 
         foreach ($array['items'] as $params) {
-            $instance = new static ($provider, $params);
+            $instance = new static ($provider, array_merge($params, ['exists' => true]));
             $instance->cacheFields($params);
             if (isset($instance->id)) {
                 $set[$instance->id] = $instance;

@@ -11,7 +11,7 @@ try {
     $application->description = 'Some changed application description';
     $application->all_domains = true;
 
-    $response = $application->save(false);
+    $response = $application->save();
     dd($response);
 } catch (ResponseException $e) {
     dd($e->getMessage());

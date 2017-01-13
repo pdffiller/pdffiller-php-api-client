@@ -4,6 +4,9 @@ namespace PDFfiller\OAuth2\Client\Provider;
 
 use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\Core\ModelsList;
+use PDFfiller\OAuth2\Client\Provider\DTO\AdditionalDocument;
+use PDFfiller\OAuth2\Client\Provider\DTO\NotificationEmail;
 use PDFfiller\OAuth2\Client\Provider\Enums\DocumentAccess;
 use PDFfiller\OAuth2\Client\Provider\Enums\FillRequestNotifications;
 use PDFfiller\OAuth2\Client\Provider\Enums\FillRequestStatus;
@@ -43,9 +46,9 @@ class FillRequest extends Model
         'access' => DocumentAccess::class,
         'status' => FillRequestStatus::class,
         'notifications' => FillRequestNotifications::class,
-        'notification_emails' => 'list',
-        'additional_documents' => 'list',
-        'callbacks' => 'list',
+        'notification_emails' => ['list_of', NotificationEmail::class],
+        'additional_documents' => ['list_of', AdditionalDocument::class],
+        'callbacks' => ['list_of', Callback::class],
     ];
 
     /** @var array */
@@ -89,7 +92,7 @@ class FillRequest extends Model
     public function forms()
     {
         $response = static::query($this->client, [$this->id, self::FORMS_URI]);
-        $forms = [];
+        $forms = new ModelsList();
 
         if (isset($response['items'])) {
             foreach ($response['items'] as $item) {
@@ -108,5 +111,19 @@ class FillRequest extends Model
     {
         $params = static::query($this->client, [$this->id, self::FORMS_URI, $id]);
         return new FillRequestForm($this->client, $this->id, $params);
+    }
+
+    public function toArray($options = [])
+    {
+        $options['except'] = ['additional_documents'];
+        $result = parent::toArray($options);
+
+        foreach ($this->additional_documents as $document) {
+            /** @var AdditionalDocument $document */
+            $array = $document->toArray();
+            $result['additional_documents'][] = $array['name'];
+        }
+
+        return $result;
     }
 }

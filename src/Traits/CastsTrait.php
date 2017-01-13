@@ -5,6 +5,7 @@ namespace PDFfiller\OAuth2\Client\Provider\Traits;
 use PDFfiller\OAuth2\Client\Provider\Core\AbstractObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Enum;
 use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
+use PDFfiller\OAuth2\Client\Provider\Core\Model;
 
 trait CastsTrait
 {
@@ -32,6 +33,10 @@ trait CastsTrait
             return $value;
         }
 
+        if (is_array($cast)) {
+            return $this->complexListCast($value, $cast);
+        }
+
         switch ($cast) {
             case 'int':
             case 'integer':
@@ -52,6 +57,26 @@ trait CastsTrait
         }
     }
 
+    private function complexListCast($value, $castInfo)
+    {
+        if (count($castInfo) < 2) {
+            return $this->castToList($value);
+        }
+
+        if ($castInfo[0] !== 'list_of' || !is_array($value)) {
+            return $value;
+        }
+
+        $class = $castInfo[1];
+        $result = new ListObject();
+
+        foreach ($value as $entry) {
+            $result[] = $this->castToObject($entry, $class);
+        }
+
+        return $result;
+    }
+
     /**
      * Casts value to the given class
      *
@@ -69,6 +94,10 @@ trait CastsTrait
 
         if (in_array(Enum::class, $parentClasses) || in_array(AbstractObject::class, $parentClasses)) {
             return new $class($value);
+        }
+
+        if (in_array(Model::class, $parentClasses)) {
+            return new $class($this->getClient(), $value);
         }
 
         return $value;
