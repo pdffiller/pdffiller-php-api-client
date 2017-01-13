@@ -19,8 +19,12 @@ use PDFfiller\OAuth2\Client\Provider\Contracts\Uploadable;
  */
 class CustomLogo extends Model implements Uploadable
 {
+    /** @var string */
     protected static $entityUri = 'custom_logo';
 
+    /**
+     * @inheritdoc
+     */
     public function attributes()
     {
         return [
@@ -32,16 +36,25 @@ class CustomLogo extends Model implements Uploadable
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function create($options = [])
     {
         throw new Exception("Can't create logo, use Uploader.");
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function update($options = [])
     {
         throw new Exception("Can't update logo, delete old and upload new logo.");
     }
 
+    /**
+     * @inheritdoc
+     */
     public function save($newRecord = true, $options = [])
     {
         throw new Exception("Can't save logo, use Uploader.");

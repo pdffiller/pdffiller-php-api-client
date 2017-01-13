@@ -14,16 +14,22 @@ use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
  */
 class FieldsAccess extends AbstractObject
 {
+    /** @var array */
     protected $casts = [
         'allow' => 'list',
         'deny' => 'list',
     ];
 
+    /** @var array */
     protected $attributes = [
         'allow',
         'deny'
     ];
 
+    /**
+     * FieldsAccess constructor.
+     * @param $properties
+     */
     public function __construct($properties)
     {
         $properties = array_merge([

@@ -15,12 +15,17 @@ use PDFfiller\OAuth2\Client\Provider\Enums\CallbackEvent;
  */
 class Callback extends Model
 {
+    /** @var string */
     protected static $entityUri = 'callback';
 
+    /** @var array */
     protected $casts = [
         'event_id' => CallbackEvent::class,
     ];
 
+    /**
+     * @inheritdoc
+     */
     public function attributes()
     {
         return [

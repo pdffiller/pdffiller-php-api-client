@@ -186,6 +186,8 @@ class PDFfiller extends GenericProvider
     }
 
     /**
+     * Performs a request and returns the response
+     *
      * @param $method
      * @param $url
      * @param array $options
@@ -245,7 +247,7 @@ class PDFfiller extends GenericProvider
     }
 
     /**
-     * Gets status code
+     * Returns status code
      *
      * @return int|null
      */
@@ -255,10 +257,7 @@ class PDFfiller extends GenericProvider
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @param  RequestInterface $request
-     * @return array
+     * @inheritdoc
      */
     public function getResponse(RequestInterface $request)
     {

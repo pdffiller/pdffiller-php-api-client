@@ -2,24 +2,68 @@
 
 namespace PDFfiller\OAuth2\Client\Provider\Core;
 
-
-abstract class ExceptionsMessages
+/**
+ * Class ExceptionsMessages
+ *
+ * @package PDFfiller\OAuth2\Client\Provider\Core
+ */
+class ExceptionsMessages
 {
-    public static function getMessage($exception, $locale = "en")
-    {
-        $messages = self::getMessages($locale);
+    /** @var Exception */
+    private $exception;
 
-        return $messages[$exception] ?: (ucfirst($exception) . "Exception");
+    public function __construct(Exception $exception)
+    {
+        $this->setException($exception);
     }
 
-    protected static function getMessages($locale = "en")
+    /**
+     * @return Exception
+     */
+    public function getException(): Exception
+    {
+        return $this->exception;
+    }
+
+    /**
+     * @param Exception $exception
+     */
+    public function setException(Exception $exception)
+    {
+        $this->exception = $exception;
+    }
+
+    /**
+     * @param string $locale
+     * @return string
+     */
+    public function getMessage($locale = "en")
+    {
+        $className = (new \ReflectionClass($this->exception))->getShortName();
+        $class = substr($className, 0, strpos($className, 'Exception'));
+        $class = lcfirst($class) ?: "default";
+
+        $messages = self::getMessages($locale);
+
+        return $messages[$class] ?: (ucfirst($class) . "Exception");
+    }
+
+    /**
+     * Returns an array of possible exceptions messages
+     *
+     * @param string $locale
+     * @return array
+     */
+    protected function getMessages($locale = "en")
     {
         $path = __DIR__ . "/../Messages/" . $locale . "/messages.json";
+
         if (file_exists($path)) {
             $jsonMessages = file_get_contents($path);
+
             return json_decode($jsonMessages, true);
         }
 
-        return null;
+        return [];
     }
 }

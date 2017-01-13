@@ -14,8 +14,12 @@ use PDFfiller\OAuth2\Client\Provider\Core\Model;
  */
 class Token extends Model
 {
-
+    /** @var string */
     protected static $entityUri = 'token';
+
+    /**
+     * @inheritdoc
+     */
     public function attributes()
     {
         return [

@@ -12,6 +12,7 @@ use PDFfiller\OAuth2\Client\Provider\Core\AbstractObject;
  */
 class AdditionalDocument extends AbstractObject
 {
+    /** @var array */
     protected $attributes = [
         'name',
     ];

@@ -2,12 +2,10 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
-
 use PDFfiller\OAuth2\Client\Provider\Core\Exception;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Contracts\Uploadable;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\TypeException;
-use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * Class Uploader
@@ -18,20 +16,31 @@ use Symfony\Component\HttpFoundation\File\File;
  */
 class Uploader extends Model
 {
-    protected static $entityUri = 'document';
     const TYPE_URL = "url";
     const TYPE_MULTIPART = "multipart";
-    /**
-     * @var Model|null
-     */
+
+    /** @var string */
+    protected static $entityUri = 'document';
+
+    /** @var array|null */
     protected $class = null;
 
+    /** @var array */
     protected $attributes = [
         'file',
+        'type'
     ];
 
+    /** @var array */
     protected $attributesAdditional = [];
 
+    /**
+     * Uploader constructor.
+     * @param PDFfiller $provider
+     * @param array $class
+     * @param array $array
+     * @throws Exception
+     */
     public function __construct($provider, $class, array $array = [])
     {
         if (!in_array(Uploadable::class, class_implements($class))) {
@@ -46,46 +55,75 @@ class Uploader extends Model
         parent::__construct($provider, $array);
     }
 
+    /**
+     * Sets additional attributes
+     *
+     * @param $attributes
+     */
     public function setAdditionalAttributes($attributes) {
         $this->attributesAdditional = $attributes;
     }
 
+    /**
+     * Returns additional attributes
+     *
+     * @return array
+     */
     public function getAdditionalAttributes() {
         return $this->attributesAdditional;
     }
 
-    public function getUploadParams($dataType)
+    /**
+     * Prepares upload request parameters
+     *
+     * @return array|null
+     */
+    public function getUploadParams()
     {
-        $params =[];
-        switch ( $dataType ) {
-            case 'json':
-                $params = array_merge( $this->getAdditionalAttributes(), [ 'file' => $this->file ] );
-                break;
-
-            case 'multipart':
-                $params[] = [
-                    'name' => 'file',
-                    'contents' => fopen($this->file, 'r'),
-                ];
-                foreach( $this->getAdditionalAttributes() as $key => $value ) {
-                    $params[] = [
-                        'name' => $key,
-                        'contents' => $value,
-                    ];
-                }
-                break;
+        if ($this->type === self::TYPE_URL) {
+            return [
+                'json' => array_merge($this->getAdditionalAttributes(), ['file' => $this->file]),
+            ];
         }
-        return $params;
+
+        if ($this->type === self::TYPE_MULTIPART) {
+            $params[] = [
+                'name' => 'file',
+                'contents' => fopen($this->file, 'r'),
+            ];
+
+            foreach ($this->getAdditionalAttributes() as $key => $value) {
+                $params[] = [
+                    'name' => $key,
+                    'contents' => $value,
+                ];
+            }
+
+            return [
+                'multipart' => $params
+            ];
+        }
+
+        return null;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function attributes()
     {
         return $this->attributes;
     }
 
+    /**
+     * Uploads file and returns the model
+     *
+     * @return null|Model
+     */
     public function upload()
     {
-        $params = $this->checkUploadType();
+        $params = $this->getUploadParams();
+
         if ($params) {
             $class = $this->class;
             $uri = $class::getUri();
@@ -95,27 +133,6 @@ class Uploader extends Model
             $instance = new $this->class($this->client, $document);
             $instance->cacheFields($document);
             return $instance;
-        }
-
-        return null;
-    }
-
-    /** Checks upload types and returns request array
-     * @return array
-     */
-    private function checkUploadType()
-    {
-        $class = $this->class;
-        if ($this->type == self::TYPE_URL) {
-            return [
-                'json' => $this->getUploadParams('json'),
-            ];
-        }
-
-        if ($this->type == self::TYPE_MULTIPART) {
-            return [
-                'multipart' => $this->getUploadParams('multipart'),
-            ];
         }
 
         return null;
@@ -132,16 +149,5 @@ class Uploader extends Model
         }
 
         $this->type = $type;
-    }
-
-    public function toArray($options = [])
-    {
-        $array = parent::toArray($options);
-
-        if ($this->type === self::TYPE_MULTIPART) {
-            $array['file'] = new File($this->file);
-        }
-
-        return $array;
     }
 }

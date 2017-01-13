@@ -22,10 +22,7 @@ abstract class Model implements Arrayable
 {
     use CastsTrait;
 
-    /**
-     * Maps model field to request field
-     * @var array
-     */
+    /** @var array */
     protected $mapper = [];
 
     /** @var string  */
@@ -59,7 +56,7 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Initialize the object's arrays and lists.
+     * Initializes the object's arrays and lists
      */
     private function initArrayFields()
     {
@@ -78,13 +75,12 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Returns an array of allowed attributes
-     * @return mixed
+     * @inheritdoc
      */
     public abstract function attributes();
 
     /**
-     * Returns an URL of current endpoint.
+     * Returns an URL of current endpoint
      *
      * @return string
      */
@@ -94,6 +90,8 @@ abstract class Model implements Arrayable
     }
 
     /**
+     * Creates or updates model
+     *
      * @param bool $newRecord
      * @param array $options
      * @return mixed
@@ -114,15 +112,11 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Returns array representation of an object
-     *
-     * @param array $options can hold next options: only || except
-     * @return array
+     * @inheritdoc
      */
     public function toArray($options = [])
     {
         $allowed = $this->getAttributes();
-//        $props = get_object_vars($this);
         $props = $this->properties;
 
         !isset($options['except']) && $options['except'] = [];
@@ -149,6 +143,13 @@ abstract class Model implements Arrayable
         return $props;
     }
 
+    /**
+     * Extracts properties from array
+     *
+     * @param $array
+     * @param array $options
+     * @return $this
+     */
     public function parseArray($array, $options = [])
     {
         // default options
@@ -166,7 +167,7 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Caches passed fields as old fields.
+     * Caches passed fields as old fields
      * @param $properties
      */
     protected function cacheFields($properties)
@@ -175,7 +176,7 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Sends request by given type, uri and options.
+     * Sends request by given type, uri and options
      * @param PDFfiller $provider
      * @param $method
      * @param $uri
@@ -195,7 +196,7 @@ abstract class Model implements Arrayable
     /**
      * Returns entity properties as a result of get request.
      * @param PDFfiller $provider
-     * @param array $entities entities items for request:
+     * @param array $entities request URI path entities:
      * ['entity1', 'entity2'] becomes {request_uri}/entity1/entity2/
      * @param array $params query parameters
      * ['param1' => 'val1', 'param2' => 'val2'] becomes ?param1=val1&param2=val2
@@ -226,7 +227,7 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Returns a result of post request.
+     * Returns a result of post request
      * @param PDFfiller $provider
      * @param $uri
      * @param array $params
@@ -238,7 +239,7 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Returns a result of put request.
+     * Returns a result of put request
      * @param PDFfiller $provider
      * @param $uri
      * @param array $params
@@ -250,7 +251,7 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Returns a result of delete request.
+     * Returns a result of delete request
      * @param PDFfiller $provider
      * @param $uri
      * @return mixed
@@ -261,6 +262,8 @@ abstract class Model implements Arrayable
     }
 
     /**
+     * Creates model
+     *
      * @param array $options
      * @return mixed
      * @throws ResponseException
@@ -292,7 +295,7 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Updates instance changed fields.
+     * Updates instance/ Only changed fields will be updated
      * @param array $options supports 'only' or 'except' options
      * @return mixed
      */
@@ -317,7 +320,7 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Removes current instance entity if it has an id property.
+     * Removes current instance entity if it has an id property
      * @return mixed
      * @throws IdMissingException if object has no id
      */
@@ -331,7 +334,7 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Removes entity by id.
+     * Removes entity by id
      * @param PDFfiller $provider
      * @param $id
      * @return mixed deletion result
@@ -343,7 +346,7 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Returns model instance.
+     * Returns model instance
      * @param PDFfiller $provider
      * @param $id
      * @return static
@@ -371,6 +374,13 @@ abstract class Model implements Arrayable
         return new ModelsList($paramsArray);
     }
 
+    /**
+     * Unwrap the instances from response
+     *
+     * @param $provider
+     * @param $array
+     * @return array
+     */
     protected static function formItems($provider, $array)
     {
         $set = [];
@@ -421,7 +431,7 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Find changed properties.
+     * Find changed properties
      *
      * @param array $new new values
      * @return array all new or changed values
@@ -503,6 +513,12 @@ abstract class Model implements Arrayable
         return $smallFirst ? lcfirst($result) : $result;
     }
 
+    /**
+     * Prepares fields with incorrect property name format
+     *
+     * @param array $options
+     * @return array
+     */
     protected function prepareFields($options = [])
     {
         $params = $this->toArray($options);
@@ -517,6 +533,7 @@ abstract class Model implements Arrayable
                 unset($params[$modelKey]);
             }
         }
+
         return $params;
     }
 }

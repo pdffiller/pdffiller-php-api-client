@@ -6,7 +6,7 @@ use PDFfiller\OAuth2\Client\Provider\Core\Exception;
 
 /**
  * Class InvalidBodySourceException
- * Handle multiple request body sources.
+ * Handle case with multiple request body sources.
  * @package PDFfiller\OAuth2\Client\Provider\Exceptions
  */
 class InvalidBodySourceException extends Exception
