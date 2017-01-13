@@ -2,7 +2,9 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
+use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\Core\ModelsList;
 use PDFfiller\OAuth2\Client\Provider\DTO\FillableField;
 
 /**
@@ -21,7 +23,12 @@ class FillableTemplate extends Model
     /** @var string */
     protected static $entityUri = 'fillable_template';
 
-    /**
+    protected $casts = [
+        'fillable_fields' => ['list_of', FillableField::class],
+    ];
+
+
+        /**
      * @inheritdoc
      */
     public function attributes()
@@ -29,6 +36,7 @@ class FillableTemplate extends Model
         return [
             'document_id',
             'fillable_fields',
+            'created',
         ];
     }
 
@@ -39,13 +47,8 @@ class FillableTemplate extends Model
     public static function dictionary($provider, $id)
     {
         $fields = static::query($provider, $id);
-        $fillableFields = [];
+        $params = ['document_id' => $id, 'fillable_fields' => $fields];
 
-        foreach ($fields as $fieldProperties) {
-            $fillableFields[] = new FillableField($fieldProperties);
-        }
-
-        $params = ['document_id' => $id, 'fillable_fields' => $fillableFields];
         return new static($provider, $params);
     }
 
@@ -74,7 +77,10 @@ class FillableTemplate extends Model
      */
     public static function filledDocuments($provider, $id)
     {
-        return static::query($provider, [$id, self::FILLED_DOCUMENTS]);
+        $documents = static::query($provider, [$id, self::FILLED_DOCUMENTS]);
+        $documents['items'] = static::formItems($provider, $documents);
+
+        return new ModelsList($documents);
     }
 
     /**
@@ -111,17 +117,5 @@ class FillableTemplate extends Model
         }
 
         return $this->fillable_fields;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function toArray($options = [])
-    {
-        $options = array_merge_recursive($options, [
-            'except' => ['document_id']
-        ]);
-
-        return parent::toArray($options);
     }
 }

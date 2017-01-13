@@ -55,7 +55,7 @@ class CustomLogo extends Model implements Uploadable
     /**
      * @inheritdoc
      */
-    public function save($newRecord = true, $options = [])
+    public function save($options = [])
     {
         throw new Exception("Can't save logo, use Uploader.");
     }

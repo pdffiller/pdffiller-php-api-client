@@ -5,14 +5,14 @@ use PDFfiller\OAuth2\Client\Provider\SignatureRequest;
 $provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
 
 //creating recipient by the signature request
-$signatureRequest = SignatureRequest::one($provider, 19085);
+$signatureRequest = SignatureRequest::one($provider, 337731);
 $recipient = $signatureRequest->createRecipient();
 
 //creating recipient as independent instance
 //$recipient = new SignatureRequestRecipient($provider, 334721);
 
 //filling recipient fields
-$recipient->email = 'new@recipient.com';
+$recipient->email = 'srg.kas+2@gmail.com';
 $recipient->name = 'New Recipient';
 $recipient->access = 'full';
 $recipient->require_photo = false;
@@ -22,4 +22,4 @@ $recipient->additional_documents = [];
 $recipient->order = 1;
 //saving as independent instance
 $e = $signatureRequest->addRecipient($recipient);
-dd($e->toArray(), $recipient->toArray(), $e == $recipient);
+dd($e->toArray(), $signatureRequest->recipients, $e == $recipient);

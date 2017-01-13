@@ -190,7 +190,7 @@ class SignatureRequestRecipient extends Model
     /**
      * @inheritdoc
      */
-    public function save($new = true, $options = null)
+    public function save($options = [])
     {
         throw new Exception("Saving instance of this items isn't supported. Use SignatureRequest::addRecipient().");
     }
