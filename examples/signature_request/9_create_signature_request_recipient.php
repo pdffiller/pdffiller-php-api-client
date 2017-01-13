@@ -12,7 +12,7 @@ $recipient = $signatureRequest->createRecipient();
 //$recipient = new SignatureRequestRecipient($provider, 334721);
 
 //filling recipient fields
-$recipient->email = 'srg.kas+2@gmail.com';
+$recipient->email = 'new@recipient.com';
 $recipient->name = 'New Recipient';
 $recipient->access = 'full';
 $recipient->require_photo = false;

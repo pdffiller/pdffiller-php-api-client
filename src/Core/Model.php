@@ -297,9 +297,10 @@ abstract class Model implements Arrayable
             $object = $createResult['items'][0];
         }
 
-        foreach($object as $name => $property) {
-            $this->__set($name, $property);
-        }
+        $this->parseArray($object);
+//        foreach($object as $name => $property) {
+//            $this->__set($name, $property);
+//        }
 
         return $createResult;
     }
@@ -337,6 +338,7 @@ abstract class Model implements Arrayable
     public function remove()
     {
         if (isset($this->properties['id'])) {
+            $this->exists = false;
             return static::deleteOne($this->client, $this->id);
         }
 
