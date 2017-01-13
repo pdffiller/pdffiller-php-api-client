@@ -135,7 +135,7 @@ class SignatureRequest extends Model
         $recipients = [];
 
         foreach ($inputRecipients as $recipient) {
-            $recipients[$recipient['id']] = new SignatureRequestRecipient($provider, $signatureRequestId, $recipient);
+            $recipients[$recipient['id']] = new SignatureRequestRecipient($provider, $recipient, $signatureRequestId);
         }
 
         return $recipients;
@@ -177,7 +177,7 @@ class SignatureRequest extends Model
      */
     public function createRecipient()
     {
-        return new SignatureRequestRecipient($this->client, $this->id);
+        return new SignatureRequestRecipient($this->client, [], $this->id);
     }
 
     /**
@@ -233,6 +233,6 @@ class SignatureRequest extends Model
     {
         $recipient = self::query($provider, [$signatureRequestId, SignatureRequestRecipient::RECIPIENT, $recipientId]);
 
-        return new SignatureRequestRecipient($provider, $signatureRequestId, $recipient);
+        return new SignatureRequestRecipient($provider, $recipient, $signatureRequestId);
     }
 }

@@ -5,6 +5,7 @@ namespace PDFfiller\OAuth2\Client\Provider;
 use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Core\Exception;
+use PDFfiller\OAuth2\Client\Provider\DTO\AdditionalDocument;
 use PDFfiller\OAuth2\Client\Provider\DTO\FieldsAccess;
 use PDFfiller\OAuth2\Client\Provider\Enums\DocumentAccess;
 use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestStatus;
@@ -46,7 +47,7 @@ class SignatureRequestRecipient extends Model
         'status' => SignatureRequestStatus::class,
         'access' => DocumentAccess::class,
         'fields' => FieldsAccess::class,
-        'additional_documents' => 'list',
+        'additional_documents' => ['list_of', AdditionalDocument::class],
     ];
 
     /** @var array */
@@ -84,13 +85,15 @@ class SignatureRequestRecipient extends Model
 
     /**
      * SignatureRequestRecipient constructor.
-     * @param $provider
-     * @param integer|string $signatureRequestId
+     * @param PDFfiller $provider
      * @param array $array
+     * @param integer|string $signatureRequestId
      */
-    public function __construct($provider, $signatureRequestId, $array = [])
+    public function __construct($provider, $array = [], $signatureRequestId = null)
     {
-        $this->setSignatureRequestId($signatureRequestId);
+        if (!is_null($signatureRequestId)) {
+            $this->setSignatureRequestId($signatureRequestId);
+        }
 
         parent::__construct($provider, $array);
     }

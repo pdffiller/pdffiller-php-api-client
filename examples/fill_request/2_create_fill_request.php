@@ -6,7 +6,13 @@ use PDFfiller\OAuth2\Client\Provider\DTO\AdditionalDocument;
 
 $provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
 
-$fillRequestEntity = new FillRequest($provider);
+$fillRequestEntity = new FillRequest($provider, [
+    'additional_documents' => [
+        'name',
+        'name2'
+    ]
+]);
+
 $fillRequestEntity->document_id = 86707463;
 $fillRequestEntity->access = "full";
 $fillRequestEntity->status = "public";
