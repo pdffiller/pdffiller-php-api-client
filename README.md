@@ -116,7 +116,7 @@ $application = Application::one($provider, 'app_client_id');
 print_r($application);
 ```
 
-If you want to create a new one, you must create a new Application object with the needed information and save it by using this method `PDFfiller\OAuth2\Client\Provider\Core\Model::save($newRecord = true)`.
+If you want to create a new one, you must create a new Application object with the needed information and save it by using this method `PDFfiller\OAuth2\Client\Provider\Core\Model::save()`.
 ```
 $application = new Application($provider);
 
@@ -125,7 +125,7 @@ $application->description = 'Some application description';
 $application->domain = 'http://some.domain.com';
 print_r($application->save());
 ```
-If you want to update an instance, you must retrieve an Application object and save it by using this method `PDFfiller\OAuth2\Client\Provider\Core\Model::save($newRecord = true)`.
+If you want to update an instance, you must retrieve an Application object and save it by using this method `PDFfiller\OAuth2\Client\Provider\Core\Model::save()`.
 
 ```
 $application = Application::one($provider, '547d2b9c2d3b902a');
