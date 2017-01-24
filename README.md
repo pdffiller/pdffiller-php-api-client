@@ -82,14 +82,14 @@ Access token authomatically sets up when it is successfully retrieved, from the 
 <?php
 require_once __DIR__.'/vendor/autoload.php';
 
-use \PDFfiller\OAuth2\Client\Provider\Core\GrantType;
+use PDFfiller\OAuth2\Client\Provider\Enums\GrantType;
 use \PDFfiller\OAuth2\Client\Provider\PDFfiller;
 
 $oauthParams = [
     'clientId'       => 'YOUR_CLIENT_ID',
     'clientSecret'   => 'YOUR_CLIENT_SECRET',
     'urlAccessToken' => 'https://api.pdffiller.com/v1/oauth/access_token',
-    'urlApiDomain'   => 'https://apidev8.pdffiller.com/v1/'
+    'urlApiDomain'   => 'https://api.pdffiller.com/v1/'
 ];
 
 $passwordGrantCredentials = [
