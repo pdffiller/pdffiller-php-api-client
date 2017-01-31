@@ -110,19 +110,4 @@ class FillableTemplate extends Model
 
         return $this->fillable_fields;
     }
-
-    /**
-     * Returns array representation of an object
-     *
-     * @param array $options
-     * @return array
-     */
-    public function toArray($options = [])
-    {
-        $options = array_merge_recursive($options, [
-            'except' => ['document_id']
-        ]);
-
-        return parent::toArray($options);
-    }
 }
