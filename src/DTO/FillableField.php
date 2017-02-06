@@ -3,6 +3,7 @@
 namespace PDFfiller\OAuth2\Client\Provider\DTO;
 
 use PDFfiller\OAuth2\Client\Provider\Core\AbstractObject;
+use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 
 /**
  * Class FillableField
@@ -13,6 +14,9 @@ use PDFfiller\OAuth2\Client\Provider\Core\AbstractObject;
  * @property string $format
  * @property mixed $initial
  * @property boolean $required
+ * @property string $maxChars
+ * @property string $maxLines
+ * @property ListObject $list
  */
 class FillableField extends AbstractObject
 {
@@ -23,5 +27,12 @@ class FillableField extends AbstractObject
         'format',
         'initial',
         'required',
+        'maxChars',
+        'maxLines',
+        'list',
+    ];
+
+    protected $casts = [
+        'list' => 'list'
     ];
 }
