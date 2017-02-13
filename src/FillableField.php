@@ -13,6 +13,10 @@ use PDFfiller\OAuth2\Client\Provider\Core\Object;
  * @property string $format
  * @property mixed $initial
  * @property boolean $required
+ * @property string $maxChars
+ * @property string $maxLines
+ * @property array $list
+ * @property bool $allowCustomText
  */
 class FillableField extends Object
 {
@@ -22,5 +26,9 @@ class FillableField extends Object
         'format',
         'initial',
         'required',
+        'maxChars',
+        'maxLines',
+        'list',
+        'allowCustomText'
     ];
 }
