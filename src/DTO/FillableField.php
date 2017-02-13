@@ -17,6 +17,7 @@ use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
  * @property string $maxChars
  * @property string $maxLines
  * @property ListObject $list
+ * @property ListObject $allowCustomText
  */
 class FillableField extends AbstractObject
 {
@@ -30,6 +31,7 @@ class FillableField extends AbstractObject
         'maxChars',
         'maxLines',
         'list',
+        'allowCustomText'
     ];
 
     protected $casts = [
