@@ -31,7 +31,9 @@ class FillableField extends AbstractObject
         'maxChars',
         'maxLines',
         'list',
-        'allowCustomText'
+        'radioGroup',
+        'allowCustomText',
+        'value',
     ];
 
     protected $casts = [

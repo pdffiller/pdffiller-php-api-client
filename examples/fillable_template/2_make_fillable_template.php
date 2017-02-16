@@ -10,5 +10,12 @@ $fillableTemplate->fillable_fields['Number_1'] = '2017';
 $fillableTemplate->fillable_fields['Checkbox_1'] = '1';
 $fillableTemplate->fillable_fields['Date_1'] = '01/13/2017';
 
+//$fillableTemplate->fillable_fields = [
+//    'Text_1' => 'Fillable field text',
+//    'Number_1' => '2017',
+//    'Checkbox_1' => '1',
+//    'Date_1' => '01/13/2017',
+//];
+
 $e = $fillableTemplate->save();
 dd($e);

@@ -12,7 +12,7 @@ use PDFfiller\OAuth2\Client\Provider\DTO\FillableField;
  * @package PDFfiller\OAuth2\Client\Provider
  *
  * @property int $document_id
- * @property array $fillable_fields
+ * @property ListObject $fillable_fields
  */
 class FillableTemplate extends Model
 {
@@ -117,5 +117,52 @@ class FillableTemplate extends Model
         }
 
         return $this->fillable_fields;
+    }
+
+    /**
+     * Fillable fields mass assignment
+     * @param array $fillableFields
+     */
+    public function setFillableFieldsField($fillableFields = [])
+    {
+        $fields = [];
+
+        foreach ($fillableFields as $name => $value) {
+            $fields[] = new FillableField([
+                'name' => $name,
+                'value' => $value,
+            ]);
+        }
+
+        $this->properties['fillable_fields'] = new ListObject($fields);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function save($options = [])
+    {
+        $this->exists = false;
+        $fields = $this->fillable_fields->toArray();
+
+        foreach ($fields as $index => $field) {
+            if (!is_array($field)) {
+                continue;
+            }
+
+            unset($fields[$index]);
+
+            if (!isset($field['name']) || !isset($field['value'])) {
+                continue;
+            }
+
+            $name = $field['name'];
+            $value = $field['value'];
+            $fields[$name] = $value;
+        }
+
+        $this->properties['fillable_fields'] = $fields;
+
+        return parent::save($options);
     }
 }

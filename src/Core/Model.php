@@ -44,7 +44,7 @@ abstract class Model implements Arrayable
     protected $readOnly = [];
 
     /** @var bool */
-    private $exists = false;
+    public $exists = false;
 
     /**
      * Model constructor.
