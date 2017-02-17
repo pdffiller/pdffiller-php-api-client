@@ -3,6 +3,7 @@
 namespace PDFfiller\OAuth2\Client\Provider;
 
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\Enums\FilledFormExportFormat;
 
 /**
  * Class FillRequestForm
@@ -28,7 +29,7 @@ class FillRequestForm extends Model
     /**
      * FillRequestForm constructor.
      * @param PDFfiller $provider
-     * @param array $fillRequestId
+     * @param int $fillRequestId
      * @param array $array
      */
     public function __construct($provider, $fillRequestId, $array = [])
@@ -71,11 +72,16 @@ class FillRequestForm extends Model
     /**
      * Exports form
      *
+     * @param string|FilledFormExportFormat $format
      * @return mixed
      */
-    public function export()
+    public function export($format = FilledFormExportFormat::JSON)
     {
-        return static::query($this->client, [$this->id, self::EXPORT]);
+        if (! $format instanceof FilledFormExportFormat) {
+            $format = new FilledFormExportFormat($format);
+        }
+
+        return static::query($this->client, [$this->id, self::EXPORT], ['format' => $format->getValue()]);
     }
 
     /**
