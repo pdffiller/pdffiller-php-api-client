@@ -117,12 +117,9 @@ class FillRequest extends Model
     {
         $options['except'] = ['additional_documents'];
         $result = parent::toArray($options);
-
-        foreach ($this->additional_documents as $document) {
-            /** @var AdditionalDocument $document */
-            $array = $document->toArray();
-            $result['additional_documents'][] = $array['name'];
-        }
+        $result['additional_documents'] = array_map(function ($document) use (&$result) {
+            return $document['name'];
+        }, $this->additional_documents->toArray());
 
         return $result;
     }
