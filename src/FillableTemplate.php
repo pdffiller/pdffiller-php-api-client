@@ -55,7 +55,7 @@ class FillableTemplate extends Model
     /**
      * @inheritdoc
      */
-    public static function one($provider, $id)
+    public static function one(PDFfiller $provider, $id)
     {
         return self::dictionary($provider, $id);
     }
@@ -65,7 +65,7 @@ class FillableTemplate extends Model
      * @param $id
      * @return mixed
      */
-    public static function download($provider, $id)
+    public static function download(PDFfiller $provider, $id)
     {
         return static::query($provider, [$id, self::DOWNLOAD]);
     }
@@ -75,7 +75,7 @@ class FillableTemplate extends Model
      * @param $id
      * @return mixed
      */
-    public static function filledDocuments($provider, $id)
+    public static function filledDocuments(PDFfiller $provider, $id)
     {
         $documents = static::query($provider, [$id, self::FILLED_DOCUMENTS]);
         $documents['items'] = static::formItems($provider, $documents);
@@ -90,7 +90,7 @@ class FillableTemplate extends Model
      * @param $id
      * @return mixed
      */
-    public static function getValues($provider, $id)
+    public static function getValues(PDFfiller $provider, $id)
     {
         return static::query($provider, [$id, self::VALUES]);
     }

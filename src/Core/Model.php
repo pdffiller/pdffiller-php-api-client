@@ -203,16 +203,14 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Returns entity properties as a result of get request.
-     * @param PDFfiller $provider
-     * @param array $entities request URI path entities:
-     * ['entity1', 'entity2'] becomes {request_uri}/entity1/entity2/
-     * @param array $params query parameters
-     * ['param1' => 'val1', 'param2' => 'val2'] becomes ?param1=val1&param2=val2
-     * @return mixed entity parameters
+     * Builds
+     *
+     * @param array $entities
+     * @param array $params
+     * @return string
      * @throws InvalidQueryException
      */
-    protected static function query($provider, $entities = [], $params = [])
+    protected static function resolveFullUrl($entities = [], $params = [])
     {
         $uri = static::getUri();
 
@@ -232,7 +230,24 @@ abstract class Model implements Arrayable
             $uri .= '?' . http_build_query($params);
         }
 
-        return static::apiCall($provider, 'query', $uri);
+        return $uri;
+    }
+
+    /**
+     * Returns entity properties as a result of get request.
+     * @param PDFfiller $provider
+     * @param array $entities request URI path entities:
+     * ['entity1', 'entity2'] becomes {request_uri}/entity1/entity2/
+     * @param array $params query parameters
+     * ['param1' => 'val1', 'param2' => 'val2'] becomes ?param1=val1&param2=val2
+     * @return mixed entity parameters
+     * @throws InvalidQueryException
+     */
+    public static function query($provider, $entities = [], $params = [])
+    {
+        $url = self::resolveFullUrl($entities, $params);
+
+        return static::apiCall($provider, 'query', $url);
     }
 
     /**
@@ -364,7 +379,7 @@ abstract class Model implements Arrayable
      * @param $id
      * @return static
      */
-    public static function one($provider, $id)
+    public static function one(PDFfiller $provider, $id)
     {
         $params = static::query($provider, $id);
         $instance = new static($provider, array_merge($params, ['exists' => true]));
@@ -379,7 +394,7 @@ abstract class Model implements Arrayable
      * @param array $queryParams
      * @return ModelsList entities list
      */
-    public static function all($provider, array $queryParams = [])
+    public static function all(PDFfiller $provider, array $queryParams = [])
     {
         $paramsArray = static::query($provider, null, $queryParams);
         $paramsArray['items'] = static::formItems($provider, $paramsArray);

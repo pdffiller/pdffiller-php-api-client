@@ -2,7 +2,7 @@
 use PDFfiller\OAuth2\Client\Provider\FillRequest;
 use PDFfiller\OAuth2\Client\Provider\Enums\FillRequestNotifications;
 use PDFfiller\OAuth2\Client\Provider\DTO\NotificationEmail;
-use PDFfiller\OAuth2\Client\Provider\DTO\AdditionalDocument;
+use PDFfiller\OAuth2\Client\Provider\AdditionalDocument;
 
 $provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
 

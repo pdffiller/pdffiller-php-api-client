@@ -37,6 +37,7 @@ use PDFfiller\OAuth2\Client\Provider\Enums\FillRequestStatus;
 class FillRequest extends Model
 {
     const FORMS_URI = 'filled_form';
+    const DOWNLOAD_URI = 'download';
 
     /** @var string */
     protected static $entityUri = 'fill_request';
@@ -113,6 +114,28 @@ class FillRequest extends Model
         return new FillRequestForm($this->client, $this->id, $params);
     }
 
+    /**
+     * Downloads filled forms as a ZIP archive
+     *
+     * @param string $callback
+     * @return mixed
+     */
+    public function download($callback = "")
+    {
+        $parameters = [];
+
+        if (!empty($callback) && is_string($callback)) {
+            $parameters['callback_url'] = $callback;
+        }
+
+        $url = self::resolveFullUrl([$this->id, self::DOWNLOAD_URI]);
+
+        return static::post($this->client, $url, $parameters);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function toArray($options = [])
     {
         $options['except'] = ['additional_documents'];
