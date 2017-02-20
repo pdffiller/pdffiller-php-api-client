@@ -169,7 +169,8 @@ abstract class Model implements Arrayable
         }
 
         foreach ($array as $key => $value) {
-            $this->properties[$key] = $this->castField($key, $value);
+//            $this->properties[$key] = $this->castField($key, $value);
+            $this->{$key} = $value;
         }
 
         return $this;
@@ -485,7 +486,7 @@ abstract class Model implements Arrayable
             return $this->{$method}();
         }
 
-        if (in_array($name, $this->getAttributes()) && isset($this->properties[$name])) {
+        if (isset($this->properties[$name])) {
             return $this->properties[$name];
         }
 
@@ -502,7 +503,7 @@ abstract class Model implements Arrayable
     {
         if (method_exists($this, $method = 'set' . $this->snakeToCamelCase($name). 'Field')) {
             $this->{$method}($value);
-        } elseif (in_array($name, $this->getAttributes())) {
+        } else {
             $this->properties[$name] = $this->castField($name, $value);
         }
     }

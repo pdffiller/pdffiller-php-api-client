@@ -34,6 +34,7 @@ class FillableField extends AbstractObject
         'radioGroup',
         'allowCustomText',
         'value',
+        'label',
     ];
 
     protected $casts = [
