@@ -169,8 +169,7 @@ abstract class Model implements Arrayable
         }
 
         foreach ($array as $key => $value) {
-//            $this->properties[$key] = $this->castField($key, $value);
-            $this->{$key} = $value;
+            $this->properties[$key] = $this->castField($key, $value);
         }
 
         return $this;
