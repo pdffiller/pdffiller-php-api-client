@@ -17,6 +17,7 @@ use PDFfiller\OAuth2\Client\Provider\Exceptions\MethodNotSupportedException;
 abstract class AdditionalDocument extends Model
 {
     const DOWNLOAD = 'download';
+    const ADDITIONAL_DOCUMENT = 'additional_document';
 
     /**
      * FillRequestId or SignatureRequestId
@@ -62,6 +63,13 @@ abstract class AdditionalDocument extends Model
         $this->requestId = $requestId;
         $this->resourceId = $resourceId;
         parent::__construct($provider, $properties);
+        static::setEntityUri(implode('/', [
+            static::getEntityUri(),
+            $this->requestId,
+            $this->getResourceIdentifier(),
+            $this->resourceId,
+            self::ADDITIONAL_DOCUMENT,
+        ]));
     }
 
     /**
@@ -74,10 +82,8 @@ abstract class AdditionalDocument extends Model
         return self::query(
             $this->client,
             [
-                $this->requestId,
-                $this->getResourceIdentifier(),
-                $this->resourceId,
-                self::DOWNLOAD
+                $this->id,
+                self::DOWNLOAD,
             ],
             $parameters
         );

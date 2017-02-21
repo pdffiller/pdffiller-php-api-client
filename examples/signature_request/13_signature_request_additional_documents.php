@@ -1,19 +1,24 @@
 <?php
-use PDFfiller\OAuth2\Client\Provider\FillRequestForm;
+use PDFfiller\OAuth2\Client\Provider\SignatureRequestRecipient;
 
 
 $provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
-$fillRequestForm = new FillRequestForm($provider, 90818604, ['id' => 382897]);
+$recipient = new SignatureRequestRecipient($provider, ['id' => 612251], 383338);
 // Getting the list of additional documents
-//$list = $fillRequestForm->additionalDocuments();
+//$list = $recipient->additionalDocuments();
 //dd($list->toArray());
 
 // Getting the additional documents by ID
-//$document = $fillRequestForm->additionalDocument(20782);
+//$document = $recipient->additionalDocument(747272);
 //dd($document);
 
 // Downloading the additional documents by ID
-//$document = $fillRequestForm->additionalDocument(20782);
+//$document = $recipient->additionalDocument(747272);
 //dd($document->download());
 
-dd($fillRequestForm->downloadAdditionalDocuments());
+do {
+    $response = $recipient->downloadAdditionalDocuments();
+    sleep(2);
+} while(isset($response['message']));
+
+dd($response);

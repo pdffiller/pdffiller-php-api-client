@@ -204,7 +204,12 @@ class SignatureRequestRecipient extends Model implements IAdditionalDocuments
      */
     public function additionalDocuments($parameters = [])
     {
-        $response = static::query($this->client, [$this->id, self::ADDITIONAL_DOCUMENTS], $parameters);
+        $response = static::query($this->client, [
+            $this->signatureRequestId,
+            self::RECIPIENT,
+            $this->id,
+            self::ADDITIONAL_DOCUMENTS
+        ], $parameters);
         $response['items'] = array_map(function ($document) {
             return new SignatureRequestAdditionalDocument($this->client, $this->signatureRequestId, $this->id, $document);
         }, $response['items']);
@@ -217,7 +222,13 @@ class SignatureRequestRecipient extends Model implements IAdditionalDocuments
      */
     public function additionalDocument($documentId, $parameters = [])
     {
-        $response = static::query($this->client, [$this->id, self::ADDITIONAL_DOCUMENTS, $documentId], $parameters);
+        $response = static::query($this->client, [
+            $this->signatureRequestId,
+            self::RECIPIENT,
+            $this->id,
+            self::ADDITIONAL_DOCUMENTS,
+            $documentId,
+        ], $parameters);
 
         return new SignatureRequestAdditionalDocument($this->client, $this->signatureRequestId, $this->id, $response);
     }
@@ -227,7 +238,14 @@ class SignatureRequestRecipient extends Model implements IAdditionalDocuments
      */
     public function downloadAdditionalDocuments($parameters = [])
     {
-        return self::query($this->client, [$this->signatureRequestId, self::ADDITIONAL_DOCUMENTS_ALL, $this->id], $parameters);
+        return self::query($this->client, [
+            $this->signatureRequestId,
+            self::RECIPIENT,
+            $this->id,
+            self::ADDITIONAL_DOCUMENTS,
+            self::ADDITIONAL_DOCUMENTS_ALL,
+            self::ADDITIONAL_DOCUMENTS_DOWNLOAD,
+        ], $parameters);
     }
 
     /**

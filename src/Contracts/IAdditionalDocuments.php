@@ -12,6 +12,7 @@ interface IAdditionalDocuments
 {
     const ADDITIONAL_DOCUMENTS = 'additional_document';
     const ADDITIONAL_DOCUMENTS_ALL = 'all';
+    const ADDITIONAL_DOCUMENTS_DOWNLOAD = 'download';
 
     /**
      * Returns the list of additional documents

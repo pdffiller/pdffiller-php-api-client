@@ -134,7 +134,7 @@ class FillRequestForm extends Model implements IAdditionalDocuments
             $this->id,
             self::ADDITIONAL_DOCUMENTS,
             self::ADDITIONAL_DOCUMENTS_ALL,
-            self::DOWNLOAD,
+            self::ADDITIONAL_DOCUMENTS_DOWNLOAD,
         ], $parameters);
     }
 
