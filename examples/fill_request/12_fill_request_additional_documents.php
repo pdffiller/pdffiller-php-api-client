@@ -16,4 +16,9 @@ $fillRequestForm = new FillRequestForm($provider, 90818604, ['id' => 382897]);
 //$document = $fillRequestForm->additionalDocument(20782);
 //dd($document->download());
 
-dd($fillRequestForm->downloadAdditionalDocuments());
+do {
+    $response = $fillRequestForm->downloadAdditionalDocuments();
+    sleep(2);
+} while(isset($response['message']));
+
+dd($response);
