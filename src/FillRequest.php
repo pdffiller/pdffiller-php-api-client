@@ -82,6 +82,7 @@ class FillRequest extends Model
             'callbacks',
             'callback_url',
             'additional_documents',
+            'filled_forms_count',
         ];
     }
 
