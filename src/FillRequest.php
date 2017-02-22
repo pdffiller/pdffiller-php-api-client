@@ -121,7 +121,7 @@ class FillRequest extends Model
         foreach ($this->additional_documents as $document) {
             /** @var AdditionalDocument $document */
             $array = $document->toArray();
-            $result['additional_documents'][] = $array['name'];
+            $result['additional_documents'][] = $array['document_request_notification'];
         }
 
         return $result;

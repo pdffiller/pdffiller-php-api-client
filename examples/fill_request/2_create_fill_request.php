@@ -22,7 +22,7 @@ $fillRequestEntity->custom_message = "Custom";
 $fillRequestEntity->callback_url = "http://apicallbacks.pdffiller.com/handle?hash=l2f_php_client";
 $fillRequestEntity->notification_emails[] = new NotificationEmail(['name' => 'name', 'email' => 'email@email.com']);
 $fillRequestEntity->additional_documents[] = new AdditionalDocument('name1');
-$fillRequestEntity->additional_documents[] = new AdditionalDocument('name2');
+$fillRequestEntity->additional_documents[] = new AdditionalDocument('name3');
 //$fillRequestEntity->additional_documents = [new AdditionalDocument(['name' => 'name1']), new AdditionalDocument(['name' => 'name 1'])];
 $fillRequestEntity->enforce_required_fields = true;
 $fillRequestEntity->welcome_screen = false;

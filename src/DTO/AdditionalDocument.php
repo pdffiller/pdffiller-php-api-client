@@ -8,13 +8,13 @@ use PDFfiller\OAuth2\Client\Provider\Core\AbstractObject;
  * Class AdditionalDocument
  * @package PDFfiller\OAuth2\Client\DTO
  *
- * @property string $name
+ * @property string $document_request_notification
  */
 class AdditionalDocument extends AbstractObject
 {
     /** @var array */
     protected $attributes = [
-        'name',
+        'document_request_notification',
     ];
 
     /**
@@ -25,7 +25,7 @@ class AdditionalDocument extends AbstractObject
     {
         if (is_string($properties)) {
             $properties = [
-                'name' => $properties
+                'document_request_notification' => $properties
             ];
         }
 
