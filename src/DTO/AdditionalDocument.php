@@ -9,12 +9,14 @@ use PDFfiller\OAuth2\Client\Provider\Core\AbstractObject;
  * @package PDFfiller\OAuth2\Client\DTO
  *
  * @property string $document_request_notification
+ * @property string $name
  */
 class AdditionalDocument extends AbstractObject
 {
     /** @var array */
     protected $attributes = [
         'document_request_notification',
+        'name',
     ];
 
     /**
