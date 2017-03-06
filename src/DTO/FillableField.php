@@ -18,6 +18,9 @@ use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
  * @property string $maxLines
  * @property ListObject $list
  * @property ListObject $allowCustomText
+ * @property string $label
+ * @property string $radioGroup
+ * @property string $value
  */
 class FillableField extends AbstractObject
 {
