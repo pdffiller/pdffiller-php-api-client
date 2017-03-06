@@ -6,27 +6,28 @@ use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Core\ModelsList;
 use PDFfiller\OAuth2\Client\Provider\DTO\FillableField;
+use PDFfiller\OAuth2\Client\Provider\DTO\FillableFieldsList;
 
 /**
  * Class FillableTemplate
  * @package PDFfiller\OAuth2\Client\Provider
  *
  * @property int $document_id
- * @property ListObject $fillable_fields
+ * @property FillableFieldsList $fillable_fields
  */
 class FillableTemplate extends Model
 {
     const DOWNLOAD = 'download';
     const FILLED_DOCUMENTS = 'filled_document';
     const VALUES = 'values';
+    const TYPE_CHECKBOX = 'checkmark';
 
     /** @var string */
     protected static $entityUri = 'fillable_template';
 
     protected $casts = [
-        'fillable_fields' => ['list_of', FillableField::class],
+        'fillable_fields' => FillableFieldsList::class,
     ];
-
 
         /**
      * @inheritdoc
@@ -106,25 +107,17 @@ class FillableTemplate extends Model
     }
 
     /**
-     * Return list of fillable fields
-     *
-     * @return array
-     */
-    public function getFillableFields()
-    {
-        if (!isset($this->fillable_fields) || empty($this->fillable_fields)) {
-            $this->fillable_fields = [];
-        }
-
-        return $this->fillable_fields;
-    }
-
-    /**
      * Fillable fields mass assignment
      * @param array $fillableFields
      */
     public function setFillableFieldsField($fillableFields = [])
     {
+        if ($fillableFields instanceof FillableFieldsList) {
+            $this->properties['fillable_fields'] = $fillableFields;
+
+            return;
+        }
+
         $fields = [];
 
         foreach ($fillableFields as $name => $value) {
@@ -134,7 +127,7 @@ class FillableTemplate extends Model
             ]);
         }
 
-        $this->properties['fillable_fields'] = new ListObject($fields);
+        $this->properties['fillable_fields'] = new FillableFieldsList($fields);
     }
 
     /**
@@ -158,6 +151,12 @@ class FillableTemplate extends Model
 
             $name = $field['name'];
             $value = $field['value'];
+            $type = isset($field['type']) ? $field['type'] : '';
+
+            if ($type === self::TYPE_CHECKBOX) {
+                $value = intval(boolval($value));
+            }
+
             $fields[$name] = $value;
         }
 

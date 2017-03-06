@@ -72,7 +72,7 @@ abstract class Model implements Arrayable
         $reflection = new ReflectionClass(static::class);
         $docs = ($reflection->getDocComment());
         $docs = preg_replace("~[*/]+~", ' ', $docs);
-        preg_match_all("~@property\s+(array|mixed|ListObject)\s+\\$(.*)\r?\n+~", $docs, $result);
+        preg_match_all("~@property\s+(array|mixed|ListObject|FillableFieldsList)\s+\\$(.*)\r?\n+~", $docs, $result);
 
         if ($result) {
             $fields = $result[2];
