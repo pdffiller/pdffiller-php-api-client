@@ -7,9 +7,10 @@ use PDFfiller\OAuth2\Client\Provider\Exceptions\MethodNotSupportedException;
 
 /**
  * Class AdditionalDocument
- * @package PDFfiller\OAuth2\Client\DTO
+ * @package PDFfiller\OAuth2\Client\Provider
  *
  * @property string $name
+ * @property string $document_request_notification
  * @property string $filename
  * @property string $ip
  * @property int $date_created
@@ -42,6 +43,7 @@ abstract class AdditionalDocument extends Model
             'id',
             'ip',
             'date_created',
+            'document_request_notification',
         ];
     }
 
@@ -56,7 +58,7 @@ abstract class AdditionalDocument extends Model
     {
         if (is_string($properties)) {
             $properties = [
-                'name' => $properties
+                'document_request_notification' => $properties
             ];
         }
 
