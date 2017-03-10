@@ -65,21 +65,22 @@ class SignatureRequestRecipient extends Model
     public function attributes()
     {
         return [
-          'email',
-          'user_id',
-          'status',
-          'name',
-          'order',
-          'message_subject',
-          'message_text',
-          'date_created',
-          'date_signed',
-          'access',
-          'additional_documents',
-          'require_photo',
-          'ip',
-          'status',
-          'fields',
+            'email',
+            'user_id',
+            'status',
+            'name',
+            'order',
+            'message_subject',
+            'message_text',
+            'date_created',
+            'date_signed',
+            'access',
+            'additional_documents',
+            'require_photo',
+            'ip',
+            'status',
+            'fields',
+            'phone_authenticate',
         ];
     }
 
