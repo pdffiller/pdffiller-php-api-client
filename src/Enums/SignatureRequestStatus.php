@@ -15,4 +15,6 @@ class SignatureRequestStatus extends Enum
     const SENT = 'SENT';
     const SIGNED = 'SIGNED';
     const COMPLETED = 'COMPLETED';
+    const DECLINE = 'DECLINE';
+    const UNSUPPORTED_STATUS_VALUE = 'UNSUPPORTED_STATUS_VALUE';
 }
