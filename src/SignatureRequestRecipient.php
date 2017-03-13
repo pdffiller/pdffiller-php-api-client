@@ -58,6 +58,7 @@ class SignatureRequestRecipient extends Model implements IAdditionalDocuments
         'ip',
         'date_signed',
         'date_created',
+        'access',
     ];
 
     /**
