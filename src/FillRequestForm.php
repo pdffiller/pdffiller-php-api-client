@@ -2,7 +2,9 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
+use PDFfiller\OAuth2\Client\Provider\Contracts\IAdditionalDocuments;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
+use PDFfiller\OAuth2\Client\Provider\Core\ModelsList;
 use PDFfiller\OAuth2\Client\Provider\Enums\FilledFormExportFormat;
 
 /**
@@ -15,7 +17,7 @@ use PDFfiller\OAuth2\Client\Provider\Enums\FilledFormExportFormat;
  * @property string $date
  * @property integer $id
  */
-class FillRequestForm extends Model
+class FillRequestForm extends Model implements IAdditionalDocuments
 {
     const DOWNLOAD = 'download';
     const EXPORT = 'export';
@@ -25,6 +27,10 @@ class FillRequestForm extends Model
 
     /** @var string */
     protected static $baseUri = 'fill_request';
+
+    protected $casts = [
+        'additional_documents' => ['list_of', FillRequestAdditionalDocument::class]
+    ];
 
     /**
      * FillRequestForm constructor.
@@ -50,6 +56,8 @@ class FillRequestForm extends Model
             'email',
             'date',
             'ip',
+            'token',
+            'additional_documents',
         ];
     }
 
@@ -92,5 +100,49 @@ class FillRequestForm extends Model
     public function download()
     {
         return static::query($this->client, [$this->id, self::DOWNLOAD]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function additionalDocuments($parameters = [])
+    {
+        $response = static::query($this->client, [$this->id, self::ADDITIONAL_DOCUMENTS], $parameters);
+        $response['items'] = array_map(function ($document) {
+            return $this->createAdditionalDocument($document);
+        }, $response['items']);
+
+        return new ModelsList($response);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function additionalDocument($documentId, $parameters = [])
+    {
+        $response = static::query($this->client, [$this->id, self::ADDITIONAL_DOCUMENTS, $documentId], $parameters);
+
+        return $this->createAdditionalDocument($response);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function downloadAdditionalDocuments($parameters = [])
+    {
+        return self::query($this->client, [
+            $this->id,
+            self::ADDITIONAL_DOCUMENTS,
+            self::ADDITIONAL_DOCUMENTS_ALL,
+            self::ADDITIONAL_DOCUMENTS_DOWNLOAD,
+        ], $parameters);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createAdditionalDocument($parameters = [])
+    {
+        return new FillRequestAdditionalDocument($this->client, $this->fillRequestId, $this->id, $parameters);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace PDFfiller\OAuth2\Client\Provider\Traits;
 
+use PDFfiller\OAuth2\Client\Provider\AdditionalDocument;
+use PDFfiller\OAuth2\Client\Provider\Contracts\IAdditionalDocuments;
 use PDFfiller\OAuth2\Client\Provider\Core\AbstractObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Enum;
 use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
@@ -95,6 +97,10 @@ trait CastsTrait
 
         if (in_array(Enum::class, $parentClasses) || in_array(AbstractObject::class, $parentClasses)) {
             return new $class($value);
+        }
+
+        if (in_array(AdditionalDocument::class, $parentClasses) && $this instanceof IAdditionalDocuments) {
+            return $this->createAdditionalDocument($value);
         }
 
         if (in_array(Model::class, $parentClasses)) {

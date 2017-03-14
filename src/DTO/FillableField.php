@@ -20,6 +20,7 @@ use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
  * @property bool $allowCustomText
  * @property string $value
  * @property string $label
+ * @property string $radioGroup
  */
 class FillableField extends AbstractObject
 {
