@@ -44,6 +44,8 @@ class FillableFieldsList extends ListObject
         foreach ($this->items as $name => $field) {
             if (is_array($field) && isset($field['name'])) {
                 $fields[] = $field['name'];
+            } else if ($field instanceof FillableField){
+                $fields[] = $field->name;
             } else if (is_string($name)){
                 $fields[] = $name;
             } else {
