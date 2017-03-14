@@ -58,7 +58,8 @@ abstract class Model implements Arrayable
             unset($array['exists']);
         }
 
-        $this->initArrayFields();
+        $except = isset($array['except']) && is_array($array['except']) ? $array['except'] : [];
+        $this->initArrayFields($except);
         $this->client = $provider;
         $this->parseArray($array);
 
@@ -66,8 +67,9 @@ abstract class Model implements Arrayable
 
     /**
      * Initializes the object's arrays and lists
+     * @param array $except
      */
-    private function initArrayFields()
+    protected function initArrayFields($except = [])
     {
         $reflection = new ReflectionClass(static::class);
         $docs = ($reflection->getDocComment());
@@ -75,9 +77,9 @@ abstract class Model implements Arrayable
         preg_match_all("~@property\s+(array|mixed|ListObject|FillableFieldsList)\s+\\$(.*)\r?\n+~", $docs, $result);
 
         if ($result) {
-            $fields = $result[2];
+            $fields = array_diff($result[2], $except);
 
-            foreach ($fields as $index => $field) {
+            foreach ($fields as $field) {
                 $this->properties[$field] = new ListObject();
             }
         }

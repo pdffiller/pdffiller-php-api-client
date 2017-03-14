@@ -8,6 +8,7 @@ use PDFfiller\OAuth2\Client\Provider\Core\ModelsList;
 use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestMethod;
 use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestSecurityPin;
 use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestStatus;
+use ReflectionClass;
 
 /**
  * Class SignatureRequest
@@ -96,6 +97,7 @@ class SignatureRequest extends Model
         $paramsArray =  self::query($provider, [self::INBOX]);
         $paramsArray['items'] = array_map(function ($entry) {
             $entry['recipients'] = [$entry['recipients']];
+            $entry['except'] = ['callbacks'];
 
             return $entry;
         }, $paramsArray['items']);
