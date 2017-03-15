@@ -3,6 +3,8 @@
 namespace PDFfiller\OAuth2\Client\Provider\DTO;
 
 use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
+use Closure;
+use InvalidArgumentException;
 
 class FillableFieldsList extends ListObject
 {
@@ -87,27 +89,32 @@ class FillableFieldsList extends ListObject
      */
     public function offsetSet($offset, $value)
     {
-        if (is_array($value) || $value instanceof FillableField) {
-            return parent::offsetSet($offset, $value);
+        if ($value instanceof FillableField) {
+            $offset = !is_null($value->name) ? $value->name : $offset;
+        } else if (is_array($value)) {
+            $value = new FillableField($value);
+        } else if (is_scalar($value)) {
+            $value = new FillableField(['name' => $offset, 'value' => $value]);
+        }
+
+        if (! $value instanceof FillableField) {
+            throw new InvalidArgumentException('The value must be scalar, array or FillableField');
+        }
+
+        if (is_null($value->name) && !is_null($offset)) {
+            $value->name = $offset;
         }
 
         $fields = array_flip($this->getFields());
-        $key = null;
 
-        if (!isset($fields[$offset])) {
-            $this->items[] = new FillableField(['name' => $offset, 'value' => $value]);
+        if (!isset($fields[$offset]) || is_null($offset)) {
+            $this->items[] = $value;
 
             return true;
         }
 
         $key = $fields[$offset];
-        $current = $this->items[$key];
-
-        if (is_array($this->items[$key])) {
-            $this->items[$key]['value'] = $value;
-        } else if ($current instanceof FillableField) {
-            $current->value = $value;
-        }
+        $this->items[$key] = $value;
 
         return true;
     }
@@ -121,5 +128,38 @@ class FillableFieldsList extends ListObject
         $key = isset($fields[$offset]) ? $fields[$offset] : $offset;
 
         parent::offsetUnset($key);
+    }
+
+    /**
+     * Walks through the list and calls the closure on each field that can be filled.
+     *
+     * @param Closure $closure
+     */
+    public function eachFillable(Closure $closure)
+    {
+        /** @var FillableField $item */
+        foreach ($this->items as $item) {
+            if ($item->fillable) {
+                $closure($item);
+            }
+        }
+    }
+
+    /**
+     * Returns a new list containing only fields that can be filled
+     *
+     * @return FillableFieldsList
+     */
+    public function getOnlyFillable()
+    {
+        $list = [];
+
+        foreach ($this->items as $item) {
+            if ($item->fillable) {
+                $list[] = $item;
+            }
+        }
+
+        return new static($list);
     }
 }

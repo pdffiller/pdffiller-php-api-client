@@ -21,6 +21,7 @@ use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
  * @property string $value
  * @property string $label
  * @property string $radioGroup
+ * @property bool $fillable
  */
 class FillableField extends AbstractObject
 {
@@ -38,10 +39,12 @@ class FillableField extends AbstractObject
         'allowCustomText',
         'value',
         'label',
+        'fillable',
     ];
 
     protected $casts = [
         'list' => 'list',
         'allowCustomText' => 'bool',
+        'fillable' => 'bool',
     ];
 }
