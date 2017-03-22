@@ -75,21 +75,22 @@ php 1_get_signature_request_list.php
 
 ## Usage
 
-Usage examples available at [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/2.0.0/examples) dir
-Access token authomatically sets up when it is successfully retrieved, from the given user's credentials (after `PDFfiller\OAuth2\Client\Provider\PDFfiller::getAccessToken($grant_type, $options)` method), according to the example below:
+_Note:_ Usage examples available at [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/2.0.0/examples) directory.
+
+Access token automatically sets up when it is successfully retrieved, from the given user's credentials (after `PDFfiller\OAuth2\Client\Provider\PDFfiller::getAccessToken($grant_type, $options)` method), according to the example below:
 
 ```
 <?php
 require_once __DIR__.'/vendor/autoload.php';
 
-use PDFfiller\OAuth2\Client\Provider\Enums\GrantType;
+use \PDFfiller\OAuth2\Client\Provider\Core\GrantType;
 use \PDFfiller\OAuth2\Client\Provider\PDFfiller;
 
 $oauthParams = [
     'clientId'       => 'YOUR_CLIENT_ID',
     'clientSecret'   => 'YOUR_CLIENT_SECRET',
     'urlAccessToken' => 'https://api.pdffiller.com/v1/oauth/access_token',
-    'urlApiDomain'   => 'https://api.pdffiller.com/v1/'
+    'urlApiDomain'   => 'https://apidev8.pdffiller.com/v1/'
 ];
 
 $passwordGrantCredentials = [
@@ -116,7 +117,7 @@ $application = Application::one($provider, 'app_client_id');
 print_r($application);
 ```
 
-If you want to create a new one, you must create a new Application object with the needed information and save it by using this method `PDFfiller\OAuth2\Client\Provider\Core\Model::save()`.
+If you want to create a new one, you must create a new Application object with the needed information and save it by using this method `PDFfiller\OAuth2\Client\Provider\Core\Model::save($newRecord = true)`.
 ```
 $application = new Application($provider);
 
@@ -125,7 +126,7 @@ $application->description = 'Some application description';
 $application->domain = 'http://some.domain.com';
 print_r($application->save());
 ```
-If you want to update an instance, you must retrieve an Application object and save it by using this method `PDFfiller\OAuth2\Client\Provider\Core\Model::save()`.
+If you want to update an instance, you must retrieve an Application object and save it by using this method `PDFfiller\OAuth2\Client\Provider\Core\Model::save($newRecord = true)`.
 
 ```
 $application = Application::one($provider, '547d2b9c2d3b902a');

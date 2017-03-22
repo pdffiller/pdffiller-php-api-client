@@ -21,6 +21,7 @@ use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestStatus;
  * @property string $sign_in_order
  * @property ListObject $recipients
  * @property ListObject $callbacks
+ * @property string $owner
  */
 class SignatureRequest extends Model
 {
@@ -68,6 +69,7 @@ class SignatureRequest extends Model
             'date_signed',
             'sign_in_order',
             'status',
+            'owner',
         ];
     }
 
@@ -89,13 +91,15 @@ class SignatureRequest extends Model
      * Return signatures request list in inbox
      *
      * @param PDFfiller $provider
+     * @param array $parameters
      * @return ModelsList
      */
-    public static function getInbox(PDFfiller $provider)
+    public static function getInbox(PDFfiller $provider, $parameters = [])
     {
-        $paramsArray =  self::query($provider, [self::INBOX]);
+        $paramsArray =  self::query($provider, [self::INBOX], $parameters);
         $paramsArray['items'] = array_map(function ($entry) {
             $entry['recipients'] = [$entry['recipients']];
+            $entry['except'] = ['callbacks'];
 
             return $entry;
         }, $paramsArray['items']);

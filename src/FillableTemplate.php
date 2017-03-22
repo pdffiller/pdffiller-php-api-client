@@ -6,27 +6,28 @@ use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Core\ModelsList;
 use PDFfiller\OAuth2\Client\Provider\DTO\FillableField;
+use PDFfiller\OAuth2\Client\Provider\DTO\FillableFieldsList;
 
 /**
  * Class FillableTemplate
  * @package PDFfiller\OAuth2\Client\Provider
  *
  * @property int $document_id
- * @property array $fillable_fields
+ * @property FillableFieldsList $fillable_fields
  */
 class FillableTemplate extends Model
 {
     const DOWNLOAD = 'download';
     const FILLED_DOCUMENTS = 'filled_document';
     const VALUES = 'values';
+    const TYPE_CHECKBOX = 'checkmark';
 
     /** @var string */
     protected static $entityUri = 'fillable_template';
 
     protected $casts = [
-        'fillable_fields' => ['list_of', FillableField::class],
+        'fillable_fields' => FillableFieldsList::class,
     ];
-
 
         /**
      * @inheritdoc
@@ -55,7 +56,7 @@ class FillableTemplate extends Model
     /**
      * @inheritdoc
      */
-    public static function one($provider, $id)
+    public static function one(PDFfiller $provider, $id)
     {
         return self::dictionary($provider, $id);
     }
@@ -65,7 +66,7 @@ class FillableTemplate extends Model
      * @param $id
      * @return mixed
      */
-    public static function download($provider, $id)
+    public static function download(PDFfiller $provider, $id)
     {
         return static::query($provider, [$id, self::DOWNLOAD]);
     }
@@ -75,7 +76,7 @@ class FillableTemplate extends Model
      * @param $id
      * @return mixed
      */
-    public static function filledDocuments($provider, $id)
+    public static function filledDocuments(PDFfiller $provider, $id)
     {
         $documents = static::query($provider, [$id, self::FILLED_DOCUMENTS]);
         $documents['items'] = static::formItems($provider, $documents);
@@ -90,7 +91,7 @@ class FillableTemplate extends Model
      * @param $id
      * @return mixed
      */
-    public static function getValues($provider, $id)
+    public static function getValues(PDFfiller $provider, $id)
     {
         return static::query($provider, [$id, self::VALUES]);
     }
@@ -106,16 +107,61 @@ class FillableTemplate extends Model
     }
 
     /**
-     * Return list of fillable fields
-     *
-     * @return array
+     * Fillable fields mass assignment
+     * @param array $fillableFields
      */
-    public function getFillableFields()
+    public function setFillableFieldsField($fillableFields = [])
     {
-        if (!isset($this->fillable_fields) || empty($this->fillable_fields)) {
-            $this->fillable_fields = [];
+        if ($fillableFields instanceof FillableFieldsList) {
+            $this->properties['fillable_fields'] = $fillableFields;
+
+            return;
         }
 
-        return $this->fillable_fields;
+        $fields = [];
+
+        foreach ($fillableFields as $name => $value) {
+            $fields[] = new FillableField([
+                'name' => $name,
+                'value' => $value,
+            ]);
+        }
+
+        $this->properties['fillable_fields'] = new FillableFieldsList($fields);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function save($options = [])
+    {
+        $this->exists = false;
+        $fields = $this->fillable_fields->toArray();
+
+        foreach ($fields as $index => $field) {
+            if (!is_array($field)) {
+                continue;
+            }
+
+            unset($fields[$index]);
+
+            if (!isset($field['name']) || !isset($field['value'])) {
+                continue;
+            }
+
+            $name = $field['name'];
+            $value = $field['value'];
+            $type = isset($field['type']) ? $field['type'] : '';
+
+            if ($type === self::TYPE_CHECKBOX) {
+                $value = intval(boolval($value));
+            }
+
+            $fields[$name] = $value;
+        }
+
+        $this->properties['fillable_fields'] = $fields;
+
+        return parent::save($options);
     }
 }

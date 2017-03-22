@@ -131,6 +131,7 @@ class Uploader extends Model
 
             /** @var Model $instance */
             $instance = new $this->class($this->client, $document);
+            $instance->exists = true;
             $instance->cacheFields($document);
             return $instance;
         }
