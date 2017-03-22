@@ -11,4 +11,5 @@ class CallbackEvent extends Enum
 {
     const FILL_REQUEST_DONE = 'fill_request.done';
     const SIGNATURE_REQUEST_DONE = 'signature_request.done';
+    const CONSTRUCTOR_DONE = 'constructor.done';
 }

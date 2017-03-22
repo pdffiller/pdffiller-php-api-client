@@ -7,7 +7,7 @@ $application = new Application($provider);
 
 try {
     $response = Application::all($provider);
-    dd($response);
+    dd($response->toArray());
 } catch (ResponseException $e) {
     dd($e);
 }

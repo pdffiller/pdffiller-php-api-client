@@ -2,10 +2,11 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
+use PDFfiller\OAuth2\Client\Provider\Contracts\IAdditionalDocuments;
 use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Core\Exception;
-use PDFfiller\OAuth2\Client\Provider\DTO\AdditionalDocument;
+use PDFfiller\OAuth2\Client\Provider\Core\ModelsList;
 use PDFfiller\OAuth2\Client\Provider\DTO\FieldsAccess;
 use PDFfiller\OAuth2\Client\Provider\Enums\DocumentAccess;
 use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestStatus;
@@ -31,7 +32,7 @@ use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
  * @property FieldsAccess $fields
  */
 
-class SignatureRequestRecipient extends Model
+class SignatureRequestRecipient extends Model implements IAdditionalDocuments
 {
     const RECIPIENT = 'recipient';
     const REMIND = 'remind';
@@ -47,7 +48,7 @@ class SignatureRequestRecipient extends Model
         'status' => SignatureRequestStatus::class,
         'access' => DocumentAccess::class,
         'fields' => FieldsAccess::class,
-        'additional_documents' => ['list_of', AdditionalDocument::class],
+        'additional_documents' => ['list_of', SignatureRequestAdditionalDocument::class],
     ];
 
     /** @var array */
@@ -57,6 +58,7 @@ class SignatureRequestRecipient extends Model
         'ip',
         'date_signed',
         'date_created',
+        'access',
     ];
 
     /**
@@ -65,21 +67,22 @@ class SignatureRequestRecipient extends Model
     public function attributes()
     {
         return [
-          'email',
-          'user_id',
-          'status',
-          'name',
-          'order',
-          'message_subject',
-          'message_text',
-          'date_created',
-          'date_signed',
-          'access',
-          'additional_documents',
-          'require_photo',
-          'ip',
-          'status',
-          'fields',
+            'email',
+            'user_id',
+            'status',
+            'name',
+            'order',
+            'message_subject',
+            'message_text',
+            'date_created',
+            'date_signed',
+            'access',
+            'additional_documents',
+            'require_photo',
+            'ip',
+            'status',
+            'fields',
+            'phone_authenticate',
         ];
     }
 
@@ -177,7 +180,7 @@ class SignatureRequestRecipient extends Model
     /**
      * @inheritdoc
      */
-    public static function all($provider = null, array $params = [])
+    public static function all(PDFfiller $provider = null, array $params = [])
     {
         throw new Exception("Getting list of this items isn't supported.");
     }
@@ -185,7 +188,7 @@ class SignatureRequestRecipient extends Model
     /**
      * @inheritdoc
      */
-    public static function one($provider = null, $id = null)
+    public static function one(PDFfiller $provider = null, $id = null)
     {
         throw new Exception("Getting instance of this items isn't supported. Use SignatureRequest class.");
     }
@@ -196,5 +199,62 @@ class SignatureRequestRecipient extends Model
     public function save($options = [])
     {
         throw new Exception("Saving instance of this items isn't supported. Use SignatureRequest::addRecipient().");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function additionalDocuments($parameters = [])
+    {
+        $response = static::query($this->client, [
+            $this->signatureRequestId,
+            self::RECIPIENT,
+            $this->id,
+            self::ADDITIONAL_DOCUMENTS
+        ], $parameters);
+        $response['items'] = array_map(function ($document) {
+            return new SignatureRequestAdditionalDocument($this->client, $this->signatureRequestId, $this->id, $document);
+        }, $response['items']);
+
+        return new ModelsList($response);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function additionalDocument($documentId, $parameters = [])
+    {
+        $response = static::query($this->client, [
+            $this->signatureRequestId,
+            self::RECIPIENT,
+            $this->id,
+            self::ADDITIONAL_DOCUMENTS,
+            $documentId,
+        ], $parameters);
+
+        return new SignatureRequestAdditionalDocument($this->client, $this->signatureRequestId, $this->id, $response);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function downloadAdditionalDocuments($parameters = [])
+    {
+        return self::query($this->client, [
+            $this->signatureRequestId,
+            self::RECIPIENT,
+            $this->id,
+            self::ADDITIONAL_DOCUMENTS,
+            self::ADDITIONAL_DOCUMENTS_ALL,
+            self::ADDITIONAL_DOCUMENTS_DOWNLOAD,
+        ], $parameters);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createAdditionalDocument($parameters = [])
+    {
+        return new SignatureRequestAdditionalDocument($this->client, $this->signatureRequestId, $this->id, $parameters);
     }
 }

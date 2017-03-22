@@ -75,8 +75,9 @@ php 1_get_signature_request_list.php
 
 ## Usage
 
-Usage examples available at [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/2.0.0/examples) dir
-Access token authomatically sets up when it is successfully retrieved, from the given user's credentials (after `PDFfiller\OAuth2\Client\Provider\PDFfiller::getAccessToken($grant_type, $options)` method), according to the example below:
+_Note:_ Usage examples available at [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/2.0.0/examples) directory.
+
+Access token automatically sets up when it is successfully retrieved, from the given user's credentials (after `PDFfiller\OAuth2\Client\Provider\PDFfiller::getAccessToken($grant_type, $options)` method), according to the example below:
 
 ```
 <?php

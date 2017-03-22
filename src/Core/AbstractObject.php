@@ -50,7 +50,7 @@ abstract class AbstractObject implements Arrayable
     public function __get($name)
     {
         $attributes = $this->attributes;
-        if (in_array($name, $attributes)) {
+        if (in_array($name, $attributes) && isset($this->{$name})) {
             return $this->{$name};
         }
 
