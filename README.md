@@ -94,8 +94,8 @@ $passwordGrantCredentials = [
 /** @var \PDFfiller\OAuth2\Client\Provider\PDFfiller $provider */
 $provider = new PDFfiller($oauthParams);
 
-$access_token = $provider->getAccessToken(GrantType::PASSWORD_GRANT, $passwordGrantCredentials);
-print_r($access_token);
+$accessToken = $provider->getAccessToken(GrantType::PASSWORD_GRANT, $passwordGrantCredentials);
+print_r($accessToken);
 ````
 
 When your authorization has been completed successfully you can use the provider for retrieving, creating, updating or deleting information from your profile.
