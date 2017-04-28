@@ -76,7 +76,7 @@ Access tokens automatically initialize when they’re successfully retrieved fro
 <?php
 require_once __DIR__.'/vendor/autoload.php';
 
-use \PDFfiller\OAuth2\Client\Provider\Core\GrantType;
+use \PDFfiller\OAuth2\Client\Provider\Enums\GrantType;
 use \PDFfiller\OAuth2\Client\Provider\PDFfiller;
 
 $oauthParams = [
