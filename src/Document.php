@@ -75,4 +75,26 @@ class Document extends Model implements Uploadable
     {
         return self::download($this->client, $this->id);
     }
+
+
+    public function createConstructor()
+    {
+        $url = self::resolveFullUrl([$this->id, 'constructor']);
+        return static::post($this->client, $url);
+    }
+
+    public function getConstructorList()
+    {
+        return static::query($this->client, [$this->id, 'constructor']);
+    }
+
+    public function deleteConstructor($hash = null)
+    {
+        $url = self::resolveFullUrl([$this->id, 'constructor']);
+        if (isset($hash)) {
+            $url = self::resolveFullUrl([$this->id, 'constructor', $hash]);
+        }
+
+        return static::delete($this->client, $url);
+    }
 }
