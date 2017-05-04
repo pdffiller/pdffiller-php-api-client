@@ -75,4 +75,44 @@ class Document extends Model implements Uploadable
     {
         return self::download($this->client, $this->id);
     }
+
+    /**
+     * Create link to edit a specific document
+     *
+     * @param int $expire |5
+     * @return array
+     */
+    public function createConstructor($expire = 5)
+    {
+        $url = self::resolveFullUrl([$this->id, 'constructor'], ['expire' => $expire]);
+
+        return static::post($this->client, $url);
+    }
+
+    /**
+     * Retrieve a list of url's and hash's for a specific document
+     *
+     * @return array
+     */
+    public function getConstructorList()
+    {
+        return static::query($this->client, [$this->id, 'constructor']);
+    }
+
+    /**
+     *  Removing one (if hash is specified) or all shared link('s) to document
+     *
+     * @param $hash |null
+     * @return array
+     */
+    public function deleteConstructor($hash = null)
+    {
+        $url = self::resolveFullUrl([$this->id, 'constructor']);
+
+        if (isset($hash)) {
+            $url = self::resolveFullUrl([$this->id, 'constructor', $hash]);
+        }
+
+        return static::delete($this->client, $url);
+    }
 }
