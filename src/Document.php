@@ -77,7 +77,7 @@ class Document extends Model implements Uploadable
     }
 
     /**
-     * Create link to edit specify document
+     * Create link to edit a specific document
      *
      * @param int $expire |5
      * @return array
@@ -90,7 +90,7 @@ class Document extends Model implements Uploadable
     }
 
     /**
-     * Retrieve a list of url's and hash's for specified document
+     * Retrieve a list of url's and hash's for a specific document
      *
      * @return array
      */
@@ -100,7 +100,7 @@ class Document extends Model implements Uploadable
     }
 
     /**
-     *  Removing one (if hash is specified) or all shared link to document
+     *  Removing one (if hash is specified) or all shared link('s) to document
      *
      * @param $hash |null
      * @return array
