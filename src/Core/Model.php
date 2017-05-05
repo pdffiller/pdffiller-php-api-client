@@ -205,7 +205,7 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * Builds
+     * Builds the full url
      *
      * @param array $entities
      * @param array $params

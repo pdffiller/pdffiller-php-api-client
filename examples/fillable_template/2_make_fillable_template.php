@@ -11,6 +11,7 @@ $fields['fillable_fields'] = [
 ];
 $fillableTemplate = new FillableTemplate($provider, $fields);
 $fillableTemplate->document_id = 67158068;
+//different ways to change the list of fillable fields
 //$fillableTemplate->fillable_fields = [
 //    'Text_1' => 'Updated text',
 //    'Number_1' => '123',

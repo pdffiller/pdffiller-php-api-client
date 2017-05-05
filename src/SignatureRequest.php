@@ -8,7 +8,6 @@ use PDFfiller\OAuth2\Client\Provider\Core\ModelsList;
 use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestMethod;
 use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestSecurityPin;
 use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestStatus;
-use ReflectionClass;
 
 /**
  * Class SignatureRequest

@@ -8,7 +8,6 @@ use PDFfiller\OAuth2\Client\Provider\Core\AbstractObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Enum;
 use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
-use PDFfiller\OAuth2\Client\Provider\DTO\FillableFieldsList;
 
 trait CastsTrait
 {
