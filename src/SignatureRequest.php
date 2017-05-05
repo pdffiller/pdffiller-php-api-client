@@ -19,6 +19,7 @@ use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestStatus;
  * @property string $envelope_name
  * @property SignatureRequestSecurityPin $security_pin
  * @property string $sign_in_order
+ * @property string $pin
  * @property ListObject $recipients
  * @property ListObject $callbacks
  * @property string $owner
@@ -62,6 +63,7 @@ class SignatureRequest extends Model
             'method',
             'envelope_name',
             'security_pin',
+            'pin',
             'callback_url',
             'callbacks',
             'recipients',
