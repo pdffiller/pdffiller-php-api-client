@@ -49,10 +49,6 @@ class Application extends Model
             'redirect_uri',
             'all_domains',
             'embedded_domain',
-            'domain',
-            'redirect_uri',
-            'all_domains',
-            'embedded_domain',
             'logo',
             'embedded_client'
         ];
