@@ -16,7 +16,7 @@ class OptionsMissingException extends Exception
 
     /**
      * OptionsMissingException constructor.
-     * @param string $options
+     * @param array $options
      * @param int $code
      * @param Exception|null $previous
      */

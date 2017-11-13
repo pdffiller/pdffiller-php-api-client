@@ -3,7 +3,6 @@
 namespace PDFfiller\OAuth2\Client\Provider\DTO;
 
 use PDFfiller\OAuth2\Client\Provider\Core\AbstractObject;
-use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 
 /**
  * Class FieldsAccess

@@ -20,7 +20,7 @@ class ExceptionsMessages
     /**
      * @return Exception
      */
-    public function getException(): Exception
+    public function getException()
     {
         return $this->exception;
     }

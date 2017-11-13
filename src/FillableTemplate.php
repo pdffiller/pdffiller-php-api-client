@@ -2,7 +2,6 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
-use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Core\ModelsList;
 use PDFfiller\OAuth2\Client\Provider\DTO\FillableField;
@@ -42,8 +41,9 @@ class FillableTemplate extends Model
     }
 
     /**
+     * @param $provider
      * @param $id
-     * @return FillableTemplate
+     * @return static
      */
     public static function dictionary($provider, $id)
     {
