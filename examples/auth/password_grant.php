@@ -9,6 +9,7 @@ $provider = new PDFfiller([
     'clientId'       => getenv('CLIENT_ID'),
     'clientSecret'   => getenv('CLIENT_SECRET'),
     'urlAccessToken' => getenv('URL_ACCESS_TOKEN'),
+    'redirectUri'    => getenv('REDIRECT_URI'),
     'urlApiDomain'   => getenv('URL_API_DOMAIN')
 ]);
 
