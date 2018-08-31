@@ -37,7 +37,7 @@ class ExceptionsMessages
      * @param string $locale
      * @return string
      */
-    public function getMessage($locale = "en")
+    public function getMessage($locale = "en"):string
     {
         $className = (new \ReflectionClass($this->exception))->getShortName();
         $class = substr($className, 0, strpos($className, 'Exception'));
@@ -54,7 +54,7 @@ class ExceptionsMessages
      * @param string $locale
      * @return array
      */
-    protected function getMessages($locale = "en")
+    protected function getMessages(string $locale = "en"):array
     {
         $path = __DIR__ . "/../Messages/" . $locale . "/messages.json";
 

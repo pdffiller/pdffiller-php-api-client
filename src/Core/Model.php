@@ -2,6 +2,7 @@
 
 namespace PDFfiller\OAuth2\Client\Provider\Core;
 
+use Inflect\Inflect;
 use PDFfiller\OAuth2\Client\Provider\Traits\CastsTrait;
 use PDFfiller\OAuth2\Client\Provider\Contracts\Arrayable;
 use PDFfiller\OAuth2\Client\Provider\Contracts\Stringable;
@@ -22,6 +23,9 @@ abstract class Model implements Arrayable
 {
     use CastsTrait;
 
+    /** @var string  */
+    protected $primaryKey = 'id';
+
     /** @var array */
     protected $mapper = [];
 
@@ -33,9 +37,6 @@ abstract class Model implements Arrayable
 
     /** @var array cached attributes */
     private $oldValues = [];
-
-    /** @var array attributes */
-    protected $attributes = ['id'];
 
     /** @var array  */
     protected $properties = [];
@@ -50,8 +51,9 @@ abstract class Model implements Arrayable
      * Model constructor.
      * @param PDFfiller $provider
      * @param array $array
+     * @throws \ReflectionException
      */
-    public function __construct(PDFfiller $provider, $array = [])
+    public function __construct(PDFfiller $provider, array $array = [])
     {
         if (isset($array['exists'])) {
             $this->exists = $array['exists'];
@@ -62,14 +64,14 @@ abstract class Model implements Arrayable
         $this->initArrayFields($except);
         $this->client = $provider;
         $this->parseArray($array);
-
     }
 
     /**
      * Initializes the object's arrays and lists
      * @param array $except
+     * @throws \ReflectionException
      */
-    protected function initArrayFields($except = [])
+    protected function initArrayFields(array $except = [])
     {
         $reflection = new ReflectionClass(static::class);
         $docs = ($reflection->getDocComment());
@@ -86,11 +88,6 @@ abstract class Model implements Arrayable
     }
 
     /**
-     * @inheritdoc
-     */
-    public abstract function attributes();
-
-    /**
      * Returns an URL of current endpoint
      *
      * @return string
@@ -102,10 +99,10 @@ abstract class Model implements Arrayable
 
     /**
      * Creates or updates model
-     *
      * @param array $options
      * @return mixed
-     * @internal param bool $newRecord
+     * @throws InvalidRequestException
+     * @throws ResponseException
      */
     public function save($options = [])
     {
@@ -125,33 +122,19 @@ abstract class Model implements Arrayable
     /**
      * @inheritdoc
      */
-    public function toArray($options = [])
+    public function toArray($options = []): array
     {
-        $allowed = $this->getAttributes();
-        $props = $this->properties;
-
-        !isset($options['except']) && $options['except'] = [];
-
-        if (isset($options['only'])) {
-            $allowed = array_intersect($options['only'], $allowed);
-        } else {
-            $allowed = array_diff($allowed, $options['except']);
-        }
-
-        foreach ($props as $key => $value) {
-            if (!in_array($key, $allowed)) {
-                unset($props[$key]);
-                continue;
-            }
-
+        foreach ($this->properties as $key => $value) {
             if ($value instanceof Arrayable) {
-                $props[$key] = $value->toArray();
+                $properties[$key] = $value->toArray();
             } elseif ($value instanceof Stringable) {
-                $props[$key] = $value->__toString();
+                $properties[$key] = $value->__toString();
+            } else {
+                $properties[$key] = $value;
             }
         }
 
-        return $props;
+        return $properties ?? [];
     }
 
     /**
@@ -164,7 +147,7 @@ abstract class Model implements Arrayable
     public function parseArray($array, $options = [])
     {
         // default options
-        !isset($options['except']) && $options['except'] = [];
+        $options['except'] = $options['except'] ?? [];
 
         foreach ($options['except'] as $value) {
             unset($array[$value]);
@@ -237,13 +220,12 @@ abstract class Model implements Arrayable
 
     /**
      * Returns entity properties as a result of get request.
-     * @param PDFfiller $provider
-     * @param array $entities request URI path entities:
-     * ['entity1', 'entity2'] becomes {request_uri}/entity1/entity2/
-     * @param array $params query parameters
-     * ['param1' => 'val1', 'param2' => 'val2'] becomes ?param1=val1&param2=val2
-     * @return mixed entity parameters
+     * @param $provider
+     * @param array $entities
+     * @param array $params
+     * @return mixed
      * @throws InvalidQueryException
+     * @throws InvalidRequestException
      */
     public static function query($provider, $entities = [], $params = [])
     {
@@ -254,10 +236,11 @@ abstract class Model implements Arrayable
 
     /**
      * Returns a result of post request
-     * @param PDFfiller $provider
+     * @param $provider
      * @param $uri
      * @param array $params
      * @return mixed
+     * @throws InvalidRequestException
      */
     public static function post($provider, $uri, $params = [])
     {
@@ -266,10 +249,11 @@ abstract class Model implements Arrayable
 
     /**
      * Returns a result of put request
-     * @param PDFfiller $provider
+     * @param $provider
      * @param $uri
      * @param array $params
      * @return mixed
+     * @throws InvalidRequestException
      */
     public static function put($provider, $uri, $params = [])
     {
@@ -278,9 +262,10 @@ abstract class Model implements Arrayable
 
     /**
      * Returns a result of delete request
-     * @param PDFfiller $provider
+     * @param $provider
      * @param $uri
      * @return mixed
+     * @throws InvalidRequestException
      */
     public static function delete($provider, $uri)
     {
@@ -289,14 +274,15 @@ abstract class Model implements Arrayable
 
     /**
      * Creates model
-     *
      * @param array $options
      * @return mixed
+     * @throws InvalidRequestException
      * @throws ResponseException
      */
     protected function create($options = [])
     {
         $params = $this->prepareFields($options);
+
         $uri = static::getUri();
         $createResult =  static::post($this->client, $uri, [
             'json' => $params,
@@ -315,23 +301,21 @@ abstract class Model implements Arrayable
         }
 
         $this->parseArray($object);
-//        foreach($object as $name => $property) {
-//            $this->__set($name, $property);
-//        }
 
         return $createResult;
     }
 
     /**
      * Updates instance/ Only changed fields will be updated
-     * @param array $options supports 'only' or 'except' options
+     * @param array $options
      * @return mixed
+     * @throws InvalidRequestException
      */
     protected function update($options = [])
     {
         $params = $this->prepareFields($options);
         $diff = $this->findDiff($params);
-        $uri = static::getUri() . $this->id;
+        $uri = static::getUri() . $this->{$this->primaryKey};
 
         $updateResult = static::put($this->client, $uri, [
             'json' => $diff,
@@ -350,13 +334,14 @@ abstract class Model implements Arrayable
     /**
      * Removes current instance entity if it has an id property
      * @return mixed
-     * @throws IdMissingException if object has no id
+     * @throws IdMissingException
+     * @throws InvalidRequestException
      */
     public function remove()
     {
-        if (isset($this->properties['id'])) {
+        if (isset($this->properties[$this->primaryKey])) {
             $this->exists = false;
-            return static::deleteOne($this->client, $this->id);
+            return static::deleteOne($this->client, $this->{$this->primaryKey});
         }
 
         throw new IdMissingException();
@@ -364,9 +349,10 @@ abstract class Model implements Arrayable
 
     /**
      * Removes entity by id
-     * @param PDFfiller $provider
+     * @param $provider
      * @param $id
-     * @return mixed deletion result
+     * @return mixed
+     * @throws InvalidRequestException
      */
     public static function deleteOne($provider, $id)
     {
@@ -380,6 +366,9 @@ abstract class Model implements Arrayable
      * @param PDFfiller $provider
      * @param $id
      * @return static
+     * @throws InvalidQueryException
+     * @throws InvalidRequestException
+     * @throws \ReflectionException
      */
     public static function one(PDFfiller $provider, $id)
     {
@@ -394,7 +383,10 @@ abstract class Model implements Arrayable
      * Returns a list of entities
      * @param PDFfiller $provider
      * @param array $queryParams
-     * @return ModelsList entities list
+     * @return ModelsList
+     * @throws InvalidQueryException
+     * @throws InvalidRequestException
+     * @throws \ReflectionException
      */
     public static function all(PDFfiller $provider, array $queryParams = [])
     {
@@ -406,17 +398,17 @@ abstract class Model implements Arrayable
 
     /**
      * Unwrap the instances from response
-     *
      * @param $provider
      * @param $array
      * @return array
+     * @throws \ReflectionException
      */
     protected static function formItems($provider, $array)
     {
         $set = [];
 
         foreach ($array['items'] as $params) {
-            $instance = new static ($provider, array_merge($params, ['exists' => true]));
+            $instance = new static($provider, array_merge($params, ['exists' => true]));
             $instance->cacheFields($params);
             if (isset($instance->id)) {
                 $set[$instance->id] = $instance;
@@ -449,7 +441,18 @@ abstract class Model implements Arrayable
      */
     public static function getEntityUri()
     {
-        return static::$entityUri;
+
+        if (isset(static::$entityUri))  {
+            return static::$entityUri;
+        }
+
+        $parts = explode('\\', static::class);
+        return
+            strtolower(
+                preg_replace('/([^A-Z])([A-Z])/', "$1_$2",
+                    Inflect::pluralize(end($parts))
+                )
+            );
     }
 
     /**
@@ -478,16 +481,6 @@ abstract class Model implements Arrayable
         }
 
         return $diff;
-    }
-
-    /**
-     * Merge and return available attributes of current model
-     *
-     * @return array
-     */
-    private function getAttributes()
-    {
-        return array_merge($this->attributes, $this->attributes());
     }
 
     /**

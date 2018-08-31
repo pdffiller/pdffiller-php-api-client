@@ -2,6 +2,7 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
+use PDFfiller\OAuth2\Client\Provider\Contracts\AdditionalDocuments;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\MethodNotSupportedException;
 
@@ -17,9 +18,6 @@ use PDFfiller\OAuth2\Client\Provider\Exceptions\MethodNotSupportedException;
  */
 abstract class AdditionalDocument extends Model
 {
-    const DOWNLOAD = 'download';
-    const ADDITIONAL_DOCUMENT = 'additional_document';
-
     /**
      * FillRequestId or SignatureRequestId
      * @var int|null
@@ -33,35 +31,15 @@ abstract class AdditionalDocument extends Model
     protected $resourceId = null;
 
     /**
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'name',
-            'filename',
-            'id',
-            'ip',
-            'date_created',
-            'document_request_notification',
-        ];
-    }
-
-    /**
      * AdditionalDocument constructor.
      * @param PDFfiller $provider
      * @param int $requestId
      * @param int $resourceId
      * @param array $properties
+     * @throws \ReflectionException
      */
-    public function __construct(PDFfiller $provider, $requestId, $resourceId, $properties = [])
+    public function __construct(PDFfiller $provider, int $requestId, int $resourceId, array $properties = [])
     {
-        if (is_string($properties)) {
-            $properties = [
-                'document_request_notification' => $properties
-            ];
-        }
-
         $this->requestId = $requestId;
         $this->resourceId = $resourceId;
         parent::__construct($provider, $properties);
@@ -70,22 +48,23 @@ abstract class AdditionalDocument extends Model
             $this->requestId,
             $this->getResourceIdentifier(),
             $this->resourceId,
-            self::ADDITIONAL_DOCUMENT,
+            AdditionalDocuments::ADDITIONAL_DOCUMENTS,
         ]));
     }
 
     /**
-     * Downloads additional document
      * @param array $parameters
      * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
     public function download($parameters = [])
     {
         return self::query(
             $this->client,
             [
-                $this->id,
-                self::DOWNLOAD,
+                $this->{$this->primaryKey},
+                AdditionalDocuments::ADDITIONAL_DOCUMENTS_DOWNLOAD,
             ],
             $parameters
         );

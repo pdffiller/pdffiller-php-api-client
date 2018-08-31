@@ -15,7 +15,6 @@ use PDFfiller\OAuth2\Client\Provider\Contracts\Uploadable;
  */
 class Template extends Model implements Uploadable
 {
-    public static $entityUri = 'templates';
     const DOWNLOAD = 'download';
     const DOWNLOAD_SIGNATURES = 'download_signatures';
     const FILLED_DOCUMENTS = 'filled_documents';
@@ -27,24 +26,12 @@ class Template extends Model implements Uploadable
     const TYPE_CHECKBOX = 'checkmark';
 
     /**
-     * @inheritdoc
-     */
-    public function attributes()
-    {
-        return [
-            'name',
-            'type',
-            'created',
-            'folder',
-        ];
-    }
-
-    /**
-     * Return template content
-     *
+     *  Return template content
      * @param $provider
      * @param $templateId
-     * @return string
+     * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
     public static function download($provider, $templateId)
     {
@@ -53,10 +40,11 @@ class Template extends Model implements Uploadable
 
     /**
      * Return zip-archive of template signatures
-     *
      * @param $provider
      * @param $templateId
-     * @return string
+     * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
     public static function downloadSignatures($provider, $templateId)
     {
@@ -65,8 +53,9 @@ class Template extends Model implements Uploadable
 
     /**
      * Return zip-archive of template signatures
-     *
-     * @return string
+     * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
     public function getDocumentSignatures()
     {
@@ -75,8 +64,9 @@ class Template extends Model implements Uploadable
 
     /**
      * Return template content
-     *
-     * @return string
+     * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
     public function getContent()
     {
@@ -85,21 +75,27 @@ class Template extends Model implements Uploadable
 
     /**
      * Create link to edit a specific template
-     *
-     * @param int $expire |5
-     * @return array
+     * @param array $params
+     * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
-    public function createConstructor($expire = 5)
+    public function createConstructor(array $params)
     {
-        $url = self::resolveFullUrl([$this->id, 'constructor'], ['expire' => $expire]);
+        $url = self::resolveFullUrl([$this->id, 'constructor']);
 
-        return static::post($this->client, $url);
+        $options = [
+            'json' => $params,
+        ];
+
+        return static::post($this->client, $url, $options);
     }
 
     /**
      * Retrieve a list of url's and hash's for a specific template
-     *
-     * @return array
+     * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
     public function getConstructorList()
     {
@@ -107,10 +103,11 @@ class Template extends Model implements Uploadable
     }
 
     /**
-     *  Removing one (if hash is specified) or all shared link('s) to template
-     *
-     * @param $hash |null
-     * @return array
+     * Removing one (if hash is specified) or all shared link('s) to template
+     * @param null $hash
+     * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
     public function deleteConstructor($hash = null)
     {
@@ -125,9 +122,10 @@ class Template extends Model implements Uploadable
 
     /**
      * Fill template with named fields
-     *
      * @param array $fields
-     * @return array
+     * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
     public function fill($fields = [])
     {
@@ -168,8 +166,9 @@ class Template extends Model implements Uploadable
 
     /**
      * Get all fields from template
-     *
-     * @return array
+     * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
     public function fields()
     {
@@ -178,8 +177,9 @@ class Template extends Model implements Uploadable
 
     /**
      * Get all filled documents from template
-     *
-     * @return array
+     * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
     public function getFilledDocument()
     {
@@ -188,8 +188,9 @@ class Template extends Model implements Uploadable
 
     /**
      * Return original document
-     *
-     * @return string
+     * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
     public function getOriginalDocument()
     {
@@ -198,10 +199,11 @@ class Template extends Model implements Uploadable
 
     /**
      * Download original document
-     *
      * @param $provider
      * @param $templateId
      * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
     public function downloadOriginalDocument($provider, $templateId)
     {
@@ -210,8 +212,9 @@ class Template extends Model implements Uploadable
 
     /**
      * Get template meta
-     *
-     * @return array
+     * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
     public function meta()
     {
@@ -220,8 +223,10 @@ class Template extends Model implements Uploadable
 
     /**
      * Get template meta
-     *
-     * @return array
+     * @param $watermarkText
+     * @return mixed
+     * @throws Exceptions\InvalidQueryException
+     * @throws Exceptions\InvalidRequestException
      */
     public function watermark($watermarkText)
     {

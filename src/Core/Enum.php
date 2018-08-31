@@ -1,6 +1,7 @@
 <?php
 
 namespace PDFfiller\OAuth2\Client\Provider\Core;
+
 use PDFfiller\OAuth2\Client\Provider\Contracts\Stringable;
 
 /**
@@ -35,7 +36,7 @@ abstract class Enum implements Stringable
      * @param bool $includeDefault
      * @return array
      */
-    public function getConstants($includeDefault = false)
+    public function getConstants(bool $includeDefault = false): array
     {
         $constants = (new \ReflectionClass($this))->getConstants();
 
@@ -57,7 +58,7 @@ abstract class Enum implements Stringable
     /**
      * @inheritdoc
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getValue();
     }

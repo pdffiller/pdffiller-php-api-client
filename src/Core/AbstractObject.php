@@ -60,7 +60,7 @@ abstract class AbstractObject implements Arrayable
     /**
      * @inheritdoc
      */
-    public function toArray()
+    public function toArray(): array
     {
         $array = [];
         $attributes = array_intersect($this->attributes, array_keys(get_object_vars($this)));

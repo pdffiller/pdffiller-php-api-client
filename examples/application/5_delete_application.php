@@ -5,7 +5,7 @@ use \PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 $provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
 
 try {
-    $application = Application::one($provider, 'fd1880a821c748d4');
+    $application = Application::one($provider, 'a5fefwe7bef001ce6');
     $response = $application->remove();
     dd($response);
 } catch (ResponseException $e) {

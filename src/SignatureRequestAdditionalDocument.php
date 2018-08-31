@@ -13,13 +13,13 @@ namespace PDFfiller\OAuth2\Client\Provider;
  */
 class SignatureRequestAdditionalDocument extends AdditionalDocument
 {
-    protected static $entityUri = 'signature_request';
+    protected static $entityUri = 'signature_requests';
 
     /**
      * @inheritdoc
      */
     protected function getResourceIdentifier()
     {
-        return 'recipient';
+        return 'recipients';
     }
 }

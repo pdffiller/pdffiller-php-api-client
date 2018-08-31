@@ -8,5 +8,6 @@
   "optionsMissing": "Required options are not defined",
   "tokenMissing": "Token is missing",
   "type": "Wrong type",
-  "response": "Response returned with errors"
+  "response": "Response returned with errors",
+  "jobAlreadyRunning": "Job already running. You can make another job"
 }

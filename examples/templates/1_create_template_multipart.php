@@ -7,6 +7,7 @@ $provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
 $uploader = new Uploader($provider, Template::class);
 $uploader->type = Uploader::TYPE_MULTIPART;
 $uploader->file = __DIR__ . '/pdf_open_parameters.pdf';
+$uploader->setAdditionalAttributes(['folder_id' => 318140]);
 
 $template = $uploader->upload();
 dd($template);

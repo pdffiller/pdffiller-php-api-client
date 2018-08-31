@@ -26,12 +26,6 @@ class Uploader extends Model
     protected $class = null;
 
     /** @var array */
-    protected $attributes = [
-        'file',
-        'type'
-    ];
-
-    /** @var array */
     protected $attributesAdditional = [];
 
     /**
