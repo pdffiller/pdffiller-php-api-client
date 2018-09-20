@@ -6,7 +6,7 @@
 You can sign up for the API [here](https://www.pdffiller.com/en/developers#tab-pricing)
 
 ## System Requirements
-* PHP >= 5.5.9 but the latest stable version of PHP is recommended;
+* PHP >= 7.0 but the latest stable version of PHP is recommended;
 * `mbstring` extension;
 * `intl` extension;
 
@@ -82,8 +82,8 @@ use \PDFfiller\OAuth2\Client\Provider\PDFfiller;
 $oauthParams = [
     'clientId'       => 'YOUR_CLIENT_ID',
     'clientSecret'   => 'YOUR_CLIENT_SECRET',
-    'urlAccessToken' => 'https://api.pdffiller.com/v1/oauth/access_token',
-    'urlApiDomain'   => 'https://apidev8.pdffiller.com/v1/'
+    'urlAccessToken' => 'https://api.pdffiller.com/v2/oauth/token',
+    'urlApiDomain'   => 'https://api.pdffiller.com/v2/'
 ];
 
 $passwordGrantCredentials = [
@@ -145,82 +145,6 @@ $application = Application::one($provider, 'app_client_id');
 $result = $application->remove();
 print_r($result);
 ````
-### Uploading a File to PDFfiller
-Create a new Uploader object with the necessary information and upload it using:
-`PDFfiller\OAuth2\Client\Provider\Uploader::upload()`.
-````php
-$uploader = new Uploader($provider, Document::class);
-$uploader->type = Uploader::TYPE_URL;
-$uploader->file = 'http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf';
-$document = $uploader->upload();
-````
-### Filling a Document Template
-Create a new Fillable Template object, pass values for fields and save using:
-`PDFfiller\OAuth2\Client\Provider\FillableTemplate::save()`.
-````php
-$fields['fillable_fields'] = [
-    '*Text_1' => 'Fillable field text', // * - lock field for edit in filled document
-    'Number_1' => '2017',
-    'Checkbox_1' => '1',
-    'Date_1' => '01/13/2017',
-];
-$fillableTemplate = new FillableTemplate($provider, $fields);
-$fillableTemplate->document_id = 11111111;
-$result = $fillableTemplate->save();
-````
-### Creating a LinkToFill Document
-Create a new FillRequest object with needed information and save it using:
-`PDFfiller\OAuth2\Client\Provider\FillRequest::save()`.
-````php
-$fillRequestEntity = new FillRequest($provider, [
-    'additional_documents' => [
-        'name',
-        'name2'
-    ]
-]);
-
-$fillRequestEntity->document_id = 86707463;
-$fillRequestEntity->access = "full";
-$fillRequestEntity->status = "public";
-$fillRequestEntity->email_required = true;
-$fillRequestEntity->name_required = true;
-$fillRequestEntity->custom_message = "Custom";
-$fillRequestEntity->callback_url = "your_application_callback_url";
-$fillRequestEntity->notification_emails[] = new NotificationEmail(['name' => 'name', 'email' => 'email@email.com']);
-$fillRequestEntity->additional_documents[] = new AdditionalDocument('name1');
-$fillRequestEntity->additional_documents[] = new AdditionalDocument('name3');
-$fillRequestEntity->enforce_required_fields = true;
-$fillRequestEntity->welcome_screen = false;
-$fillRequestEntity->notifications = new FillRequestNotifications(FillRequestNotifications::WITH_PDF);
-$newFillRequest = $fillRequestEntity->save();
-````
-### Creating a SendToSign Document
-Create a new SignatureRequest object with the necessary information and save it using:
-`PDFfiller\OAuth2\Client\Provider\SignatureRequest::save()`.
-````php
-$signatureRequestEntity = new SignatureRequest($provider);
-$signatureRequestEntity->document_id = 11111111;
-//$signatureRequestEntity->method = 'sendtoeach';
-
-$signatureRequestEntity->method = new SignatureRequestMethod(SignatureRequestMethod::SEND_TO_GROUP);
-$signatureRequestEntity->envelope_name = 'group envelope';
-$signatureRequestEntity->sign_in_order = false;
-
-$signatureRequestEntity->security_pin = new SignatureRequestSecurityPin(SignatureRequestSecurityPin::STANDARD);
-$signatureRequestEntity->recipients[] = new SignatureRequestRecipient($provider, [
-    'email' => 'email@email.com',
-    'name' => 'Some user',
-    'access' => 'full',
-    'require_photo' => false,
-    'message_subject' => 'subject',
-    'message_text' => 'message',
-    'additional_documents' => [
-        'doc1'
-    ]
-]);
-
-$signatureRequestEntity->save();
-````
 All examples with other endpoints are available in the [examples](https://github.com/pdffiller/pdffiller-php-api-client/tree/master/examples) folder
 
 ## Support
@@ -230,7 +154,7 @@ If you have any problems feel free to contact us:
 * Join our Gitter chat room for technical advice https://gitter.im/pdffiller/pdffiller-php-api-client
 
 ## License
-This software is licensed under the following MIT [license](https://github.com/pdffiller/pdffiller-php-api-client/blob/2.0.0/LICENSE)
+This software is licensed under the following MIT [license](https://github.com/pdffiller/pdffiller-php-api-client/blob/3.0.0/LICENSE)
 
 ## Author
 API Team (integrations@pdffiller.com)
