@@ -34,6 +34,7 @@ class PDFfiller extends GenericProvider
      * PDFfiller constructor.
      * @param array $options
      * @param array $collaborators
+     * @throws OptionsMissingException
      */
     public function __construct(array $options = [], array $collaborators = [])
     {
@@ -162,6 +163,7 @@ class PDFfiller extends GenericProvider
         }
 
         $request = Psr7\modify_request($request, $modify);
+
         if ($request->getBody() instanceof Psr7\MultipartStream) {
             // Use a multipart/form-data POST if a Content-Type is not set.
             $options['_conditional']['Content-Type'] = 'multipart/form-data; boundary='
@@ -194,8 +196,8 @@ class PDFfiller extends GenericProvider
      * @return array
      * @throws TokenMissingException
      */
-    public function apiCall($method, $url, $options = []) {
-
+    public function apiCall($method, $url, $options = [])
+    {
         if($this->accessToken === null) {
             throw new TokenMissingException();
         }
@@ -203,6 +205,7 @@ class PDFfiller extends GenericProvider
         $options['headers']['User-Agent'] = self::USER_AGENT . '/' . self::VERSION;
         $request = $this->getAuthenticatedRequest($method, $url, $this->getAccessToken()->getToken(), $options);
         $request = $this->applyOptions($request, $options);
+
         return $this->getResponse($request);
     }
 
@@ -262,9 +265,11 @@ class PDFfiller extends GenericProvider
     public function getResponse(RequestInterface $request)
     {
         $response = $this->sendRequest($request);
+
         $parsed = $this->parseResponse($response);
 
         $this->statusCode = $response->getStatusCode();
+
         $this->checkResponse($response, $parsed);
 
         return $parsed;

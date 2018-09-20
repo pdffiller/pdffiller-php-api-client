@@ -27,7 +27,7 @@ class ListObject implements ArrayAccess, Arrayable, Iterator
     /**
      * @inheritdoc
      */
-    public function toArray()
+    public function toArray(): array
     {
         return array_map(function ($entry) {
             if ($entry instanceof Arrayable) {
@@ -41,7 +41,7 @@ class ListObject implements ArrayAccess, Arrayable, Iterator
     /**
      * @inheritdoc
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->items[$offset]);
     }

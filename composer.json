@@ -10,8 +10,9 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9",
-        "league/oauth2-client": "^1.0"
+        "php": ">=7.0",
+        "league/oauth2-client": "^1.0",
+        "oodle/inflect": "^0.2.0"
     },
     "require-dev": {
         "adammbalogh/key-value-store-file": "^0.5.3",

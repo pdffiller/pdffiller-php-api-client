@@ -7,7 +7,7 @@ use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestSecurityPin;
 $provider = require_once __DIR__ . '/../bootstrap/initWithFabric.php';
 
 $e = new SignatureRequest($provider);
-$e->document_id = 85998138;
+$e->document_id = 172423999;
 //$e->method = 'sendtoeach';
 ///////////
 $e->method = new SignatureRequestMethod(SignatureRequestMethod::SEND_TO_GROUP);
@@ -16,7 +16,7 @@ $e->sign_in_order = false;
 //////////
 $e->security_pin = new SignatureRequestSecurityPin(SignatureRequestSecurityPin::STANDARD);
 $e->recipients[] = new SignatureRequestRecipient($provider, [
-    'email' => 'test@test.com',
+    'email' => 'email@email.test',
     'name' => 'Test user',
     'access' => 'full',
     'require_photo' => false,

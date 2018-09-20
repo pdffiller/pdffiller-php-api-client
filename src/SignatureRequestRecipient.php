@@ -2,7 +2,7 @@
 
 namespace PDFfiller\OAuth2\Client\Provider;
 
-use PDFfiller\OAuth2\Client\Provider\Contracts\IAdditionalDocuments;
+use PDFfiller\OAuth2\Client\Provider\Contracts\AdditionalDocuments;
 use PDFfiller\OAuth2\Client\Provider\Core\ListObject;
 use PDFfiller\OAuth2\Client\Provider\Core\Model;
 use PDFfiller\OAuth2\Client\Provider\Core\Exception;
@@ -32,23 +32,22 @@ use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
  * @property FieldsAccess $fields
  */
 
-class SignatureRequestRecipient extends Model implements IAdditionalDocuments
+class SignatureRequestRecipient extends Model implements AdditionalDocuments
 {
-    const RECIPIENT = 'recipient';
+    const RECIPIENT = 'recipients';
     const REMIND = 'remind';
 
     /** @var int */
     protected $signatureRequestId = null;
 
     /** @var string */
-    protected static $entityUri = 'signature_request';
+    protected static $entityUri = 'signature_requests';
 
     /** @var array */
     protected $casts = [
         'status' => SignatureRequestStatus::class,
         'access' => DocumentAccess::class,
         'fields' => FieldsAccess::class,
-        'additional_documents' => ['list_of', SignatureRequestAdditionalDocument::class],
     ];
 
     /** @var array */
@@ -62,35 +61,11 @@ class SignatureRequestRecipient extends Model implements IAdditionalDocuments
     ];
 
     /**
-     * @inheritdoc
-     */
-    public function attributes()
-    {
-        return [
-            'email',
-            'user_id',
-            'status',
-            'name',
-            'order',
-            'message_subject',
-            'message_text',
-            'date_created',
-            'date_signed',
-            'access',
-            'additional_documents',
-            'require_photo',
-            'ip',
-            'status',
-            'fields',
-            'phone_authenticate',
-        ];
-    }
-
-    /**
      * SignatureRequestRecipient constructor.
-     * @param PDFfiller $provider
+     * @param $provider
      * @param array $array
-     * @param integer|string $signatureRequestId
+     * @param null $signatureRequestId
+     * @throws \ReflectionException
      */
     public function __construct($provider, $array = [], $signatureRequestId = null)
     {
@@ -154,7 +129,7 @@ class SignatureRequestRecipient extends Model implements IAdditionalDocuments
         $recipients['recipients'] = [$params];
 
         $uri = $this->uri();
-        $createResult =  static::post($this->client, $uri, [
+        $createResult = static::post($this->client, $uri, [
             'json' => $recipients,
         ]);
 
@@ -245,7 +220,6 @@ class SignatureRequestRecipient extends Model implements IAdditionalDocuments
             self::RECIPIENT,
             $this->id,
             self::ADDITIONAL_DOCUMENTS,
-            self::ADDITIONAL_DOCUMENTS_ALL,
             self::ADDITIONAL_DOCUMENTS_DOWNLOAD,
         ], $parameters);
     }

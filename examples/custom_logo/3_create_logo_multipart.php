@@ -8,4 +8,3 @@ $uploader->type = Uploader::TYPE_MULTIPART;
 $uploader->file = __DIR__ . '/test.jpg';
 $document = $uploader->upload();
 dd($document);
-

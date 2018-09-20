@@ -23,6 +23,7 @@ use PDFfiller\OAuth2\Client\Provider\Enums\SignatureRequestStatus;
  * @property ListObject $recipients
  * @property ListObject $callbacks
  * @property string $owner
+ * @property int $signature_request_id
  */
 class SignatureRequest extends Model
 {
@@ -31,10 +32,7 @@ class SignatureRequest extends Model
     const INBOX = 'inbox';
     const DOWNLOAD = 'download';
 
-    /**
-     * @var string
-     */
-    protected static $entityUri = 'signature_request';
+    protected $primaryKey = 'signature_request_id';
 
     /** @var array */
     protected $casts = [
@@ -54,28 +52,6 @@ class SignatureRequest extends Model
     ];
 
     /**
-     * @inheritdoc
-     */
-    public function attributes()
-    {
-        return [
-            'document_id',
-            'method',
-            'envelope_name',
-            'security_pin',
-            'pin',
-            'callback_url',
-            'callbacks',
-            'recipients',
-            'date_created',
-            'date_signed',
-            'sign_in_order',
-            'status',
-            'owner',
-        ];
-    }
-
-    /**
      * SignatureRequest constructor.
      * @param PDFfiller $provider
      * @param array $array
@@ -85,7 +61,7 @@ class SignatureRequest extends Model
         $recipients = isset($array['recipients']) ? $array['recipients'] : [];
         unset($array['recipients']);
         parent::__construct($provider, $array);
-        $recipients = self::formRecipients($recipients, $this->client, $this->id);
+        $recipients = self::formRecipients($recipients, $this->client, $this->signature_request_id);
         $this->recipients = new ListObject($recipients);
     }
 
@@ -128,6 +104,11 @@ class SignatureRequest extends Model
         return self::query($provider, [self::INBOX, self::DOWNLOAD], $params);
     }
 
+    public function getInboxContent(array $params = [])
+    {
+        return self::inboxDownload($this->getClient(), $params);
+    }
+
     /**
      * Prepares recipients array
      *
@@ -160,7 +141,7 @@ class SignatureRequest extends Model
      * @return mixed
      */
     public function signedDocument() {
-        return self::query($this->client, [$this->id, self::SIGNED_DOCUMENT]);
+        return self::query($this->client, [$this->signature_request_id, self::SIGNED_DOCUMENT]);
     }
 
     /**
@@ -183,7 +164,7 @@ class SignatureRequest extends Model
      */
     public function createRecipient()
     {
-        return new SignatureRequestRecipient($this->client, [], $this->id);
+        return new SignatureRequestRecipient($this->client, [], $this->signature_request_id);
     }
 
     /**

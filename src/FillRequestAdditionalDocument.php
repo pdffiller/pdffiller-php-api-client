@@ -13,13 +13,13 @@ namespace PDFfiller\OAuth2\Client\Provider;
  */
 class FillRequestAdditionalDocument extends AdditionalDocument
 {
-    protected static $entityUri = 'fill_request';
+    protected static $entityUri = 'fillable_forms';
 
     /**
      * @inheritdoc
      */
     protected function getResourceIdentifier()
     {
-        return 'filled_form';
+        return 'filled_forms';
     }
 }

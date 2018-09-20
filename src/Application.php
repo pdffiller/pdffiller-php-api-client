@@ -18,9 +18,6 @@ use PDFfiller\OAuth2\Client\Provider\DTO\EmbeddedClient;
  */
 class Application extends Model
 {
-    /** @var string */
-    protected static $entityUri = 'application';
-
     /** @var array */
     protected $mapper = [
         'all_domains' => 'all-domains',
@@ -38,25 +35,6 @@ class Application extends Model
     /**
      * @inheritdoc
      */
-    public function attributes()
-    {
-        return [
-            'id',
-            'secret',
-            'name',
-            'description',
-            'domain',
-            'redirect_uri',
-            'all_domains',
-            'embedded_domain',
-            'logo',
-            'embedded_client'
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
     protected function prepareFields($options = [])
     {
         $embeddedClient = $this->embedded_client;
@@ -68,10 +46,6 @@ class Application extends Model
 
         if (!isset($fields['all-domains'])) {
             $fields['all-domains'] = $embeddedClient->allow_all_domains;
-        }
-
-        if (!isset($fields['embedded-domain'])) {
-            $fields['embedded-domain'] = $embeddedClient->domain;
         }
 
         return $fields;

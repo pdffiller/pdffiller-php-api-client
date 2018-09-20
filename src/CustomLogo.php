@@ -20,21 +20,7 @@ use PDFfiller\OAuth2\Client\Provider\Contracts\Uploadable;
 class CustomLogo extends Model implements Uploadable
 {
     /** @var string */
-    protected static $entityUri = 'custom_logo';
-
-    /**
-     * @inheritdoc
-     */
-    public function attributes()
-    {
-        return [
-            'id',
-            'width',
-            'height',
-            'filesize',
-            'logo_url',
-        ];
-    }
+    protected static $entityUri = 'custom_branding/custom_logo';
 
     /**
      * @inheritdoc
