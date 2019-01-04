@@ -15,7 +15,7 @@ $provider = new PDFfiller([
 ]);
 
 $provider->getAccessToken(new GrantType(GrantType::AUTHORIZATION_CODE_GRANT), [
-    'code'           => $code,
+    'code'           => urldecode($code),
 ]);
 
 dd($provider->queryApiCall('test'));
