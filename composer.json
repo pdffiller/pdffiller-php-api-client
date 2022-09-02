@@ -11,8 +11,9 @@
     ],
     "require": {
         "php": ">=7.0",
-        "league/oauth2-client": "^1.0",
-        "oodle/inflect": "^0.2.0"
+        "league/oauth2-client": "2.6.1",
+        "oodle/inflect": "^0.2.0",
+        "guzzlehttp/guzzle": "7.4.5"
     },
     "require-dev": {
         "adammbalogh/key-value-store-file": "^0.5.3",
@@ -27,5 +28,10 @@
     },
     "autoload-dev": {
         "psr-4": { "Examples\\": "examples/" }
+    },
+    "config": {
+        "allow-plugins": {
+            "kylekatarnls/update-helper": false
+        }
     }
 }
