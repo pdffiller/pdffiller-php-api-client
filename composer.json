@@ -18,8 +18,8 @@
     "require-dev": {
         "adammbalogh/key-value-store-file": "^0.5.3",
         "larapack/dd": "^1.0",
-        "nesbot/carbon": "^1.21",
-        "vlucas/phpdotenv": "^2.1"
+        "nesbot/carbon": "^2.31",
+        "vlucas/phpdotenv": "^3.3"
     },
     "autoload": {
         "psr-4": {
