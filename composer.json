@@ -11,15 +11,15 @@
     ],
     "require": {
         "php": ">=7.0",
-        "league/oauth2-client": "2.6.1",
+        "league/oauth2-client": "^2.6.1",
         "oodle/inflect": "^0.2.0",
-        "guzzlehttp/guzzle": "7.4.5"
+        "guzzlehttp/guzzle": "^7.4.5"
     },
     "require-dev": {
         "adammbalogh/key-value-store-file": "^0.5.3",
         "larapack/dd": "^1.0",
         "nesbot/carbon": "^2.31",
-        "vlucas/phpdotenv": "^3.3"
+        "vlucas/phpdotenv": "^5.4"
     },
     "autoload": {
         "psr-4": {
