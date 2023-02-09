@@ -11,9 +11,9 @@
     ],
     "require": {
         "php": ">=7.0",
-        "league/oauth2-client": "^2.6.1",
+        "league/oauth2-client": "^2.6",
         "oodle/inflect": "^0.2.0",
-        "guzzlehttp/guzzle": "^7.4.2"
+        "guzzlehttp/guzzle": "^7.4"
     },
     "require-dev": {
         "adammbalogh/key-value-store-file": "^0.5.3",
