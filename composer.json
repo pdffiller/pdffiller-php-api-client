@@ -19,7 +19,7 @@
         "adammbalogh/key-value-store-file": "^0.5.3",
         "larapack/dd": "^1.0",
         "nesbot/carbon": "^2.31",
-        "vlucas/phpdotenv": "^5.4"
+        "vlucas/phpdotenv": "^3.3|^5.4"
     },
     "autoload": {
         "psr-4": {
