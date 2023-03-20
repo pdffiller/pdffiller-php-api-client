@@ -2,8 +2,8 @@
     "name" : "pdffiller/pdffiller-php-api-client",
     "description": "PHP client for pdffiller.com REST API",
     "require": {
-        "league/oauth2-client": "^1.0",
-        "symfony/translation": "^3.0"
+        "league/oauth2-client": "^1.0 || ^2.0",
+        "symfony/translation": "^4.0"
     },
     "require-dev": {
         "adammbalogh/key-value-store-file": "^0.5.3",
