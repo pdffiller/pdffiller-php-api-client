@@ -6,7 +6,7 @@
 You can sign up for the API [here](https://www.pdffiller.com/en/developers#tab-pricing)
 
 ## System Requirements
-* PHP >= 7.0 but the latest stable version of PHP is recommended;
+* PHP >= 8.1 (tested on PHP 8.1–8.5);
 * `mbstring` extension;
 * `intl` extension;
 
