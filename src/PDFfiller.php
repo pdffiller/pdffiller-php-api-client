@@ -8,6 +8,7 @@ use PDFfiller\OAuth2\Client\Provider\Enums\GrantType;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodyException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodySourceException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidQueryException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidRequestException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\OptionsMissingException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\TokenMissingException;
@@ -65,12 +66,21 @@ class PDFfiller extends GenericProvider
      * @param AccessToken|string $token
      * @param array $options
      * @return RequestInterface
+     * @throws InvalidRequestException if the URL leaves urlApiDomain
      */
     public function getAuthenticatedRequest($method, $url, $token, array $options = [])
     {
         $baseUri = new Psr7\Uri($this->urlApiDomain);
         $relativeUri = new Psr7\Uri($url);
         $newUri = Psr7\UriResolver::resolve($baseUri, $relativeUri);
+
+        // Never send the access token outside of urlApiDomain
+        if ($newUri->getScheme() !== $baseUri->getScheme()
+            || strtolower($newUri->getHost()) !== strtolower($baseUri->getHost())
+            || $newUri->getPort() !== $baseUri->getPort()
+        ) {
+            throw new InvalidRequestException('The request URL must use the scheme, host and port of urlApiDomain.');
+        }
 
         return parent::getAuthenticatedRequest($method, $newUri, $token, $options);
     }
