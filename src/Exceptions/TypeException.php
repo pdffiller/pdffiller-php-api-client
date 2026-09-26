@@ -20,7 +20,7 @@ class TypeException extends Exception
      * @param int $code
      * @param Exception|null $previous
      */
-    public function __construct($types = [], $message = "", $code = 0, Exception $previous = null)
+    public function __construct($types = [], $message = "", $code = 0, ?Exception $previous = null)
     {
         $this->typesAllowed = $types;
         parent::__construct($message, $code, $previous);

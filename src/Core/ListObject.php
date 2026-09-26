@@ -49,6 +49,7 @@ class ListObject implements ArrayAccess, Arrayable, Iterator
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if (isset($this->items[$offset])) {
@@ -61,6 +62,7 @@ class ListObject implements ArrayAccess, Arrayable, Iterator
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -73,6 +75,7 @@ class ListObject implements ArrayAccess, Arrayable, Iterator
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->items[$offset]);
@@ -81,6 +84,7 @@ class ListObject implements ArrayAccess, Arrayable, Iterator
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return current($this->items);
@@ -89,6 +93,7 @@ class ListObject implements ArrayAccess, Arrayable, Iterator
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         return next($this->items);
@@ -97,6 +102,7 @@ class ListObject implements ArrayAccess, Arrayable, Iterator
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return key($this->items);
@@ -105,6 +111,7 @@ class ListObject implements ArrayAccess, Arrayable, Iterator
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return key($this->items) !== null;
@@ -113,6 +120,7 @@ class ListObject implements ArrayAccess, Arrayable, Iterator
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         return reset($this->items);

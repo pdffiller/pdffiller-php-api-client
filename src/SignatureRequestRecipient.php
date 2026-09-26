@@ -155,7 +155,7 @@ class SignatureRequestRecipient extends Model implements AdditionalDocuments
     /**
      * @inheritdoc
      */
-    public static function all(PDFfiller $provider = null, array $params = [])
+    public static function all(?PDFfiller $provider = null, array $params = [])
     {
         throw new Exception("Getting list of this items isn't supported.");
     }
@@ -163,7 +163,7 @@ class SignatureRequestRecipient extends Model implements AdditionalDocuments
     /**
      * @inheritdoc
      */
-    public static function one(PDFfiller $provider = null, $id = null)
+    public static function one(?PDFfiller $provider = null, $id = null)
     {
         throw new Exception("Getting instance of this items isn't supported. Use SignatureRequest class.");
     }

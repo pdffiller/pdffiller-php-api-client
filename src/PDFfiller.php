@@ -8,10 +8,12 @@ use PDFfiller\OAuth2\Client\Provider\Enums\GrantType;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodyException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidBodySourceException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidQueryException;
+use PDFfiller\OAuth2\Client\Provider\Exceptions\InvalidRequestException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\OptionsMissingException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\ResponseException;
 use PDFfiller\OAuth2\Client\Provider\Exceptions\TokenMissingException;
 use League\OAuth2\Client\Provider\GenericProvider;
+use GuzzleHttp\Exception\BadResponseException;
 use Psr\Http\Message\RequestInterface;
 use \GuzzleHttp\Psr7 as Psr7;
 use Psr\Http\Message\ResponseInterface;
@@ -64,12 +66,21 @@ class PDFfiller extends GenericProvider
      * @param AccessToken|string $token
      * @param array $options
      * @return RequestInterface
+     * @throws InvalidRequestException if the URL leaves urlApiDomain
      */
     public function getAuthenticatedRequest($method, $url, $token, array $options = [])
     {
         $baseUri = new Psr7\Uri($this->urlApiDomain);
         $relativeUri = new Psr7\Uri($url);
-        $newUri = Psr7\Uri::resolve($baseUri, $relativeUri);
+        $newUri = Psr7\UriResolver::resolve($baseUri, $relativeUri);
+
+        // Never send the access token outside of urlApiDomain
+        if ($newUri->getScheme() !== $baseUri->getScheme()
+            || strtolower($newUri->getHost()) !== strtolower($baseUri->getHost())
+            || $newUri->getPort() !== $baseUri->getPort()
+        ) {
+            throw new InvalidRequestException('The request URL must use the scheme, host and port of urlApiDomain.');
+        }
 
         return parent::getAuthenticatedRequest($method, $newUri, $token, $options);
     }
@@ -91,7 +102,7 @@ class PDFfiller extends GenericProvider
             if (isset($options['multipart'])) {
                 throw new InvalidBodySourceException();
             }
-            $options['body'] = http_build_query($options['form_params'], null, '&');
+            $options['body'] = http_build_query($options['form_params'], '', '&');
             unset($options['form_params']);
             $options['_conditional']['Content-Type'] = 'application/x-www-form-urlencoded';
         }
@@ -121,7 +132,7 @@ class PDFfiller extends GenericProvider
             if (is_array($options['body'])) {
                 throw new InvalidBodyException();
             }
-            $modify['body'] = Psr7\stream_for($options['body']);
+            $modify['body'] = Psr7\Utils::streamFor($options['body']);
             unset($options['body']);
         }
 
@@ -147,7 +158,7 @@ class PDFfiller extends GenericProvider
         if (isset($options['query'])) {
             $value = $options['query'];
             if (is_array($value)) {
-                $value = http_build_query($value, null, '&', PHP_QUERY_RFC3986);
+                $value = http_build_query($value, '', '&', PHP_QUERY_RFC3986);
             }
             if (!is_string($value)) {
                 throw new InvalidQueryException();
@@ -157,12 +168,12 @@ class PDFfiller extends GenericProvider
         }
 
         if (isset($options['json'])) {
-            $modify['body'] = Psr7\stream_for(json_encode($options['json']));
+            $modify['body'] = Psr7\Utils::streamFor(json_encode($options['json']));
             $options['_conditional']['Content-Type'] = 'application/json';
             unset($options['json']);
         }
 
-        $request = Psr7\modify_request($request, $modify);
+        $request = Psr7\Utils::modifyRequest($request, $modify);
 
         if ($request->getBody() instanceof Psr7\MultipartStream) {
             // Use a multipart/form-data POST if a Content-Type is not set.
@@ -179,7 +190,7 @@ class PDFfiller extends GenericProvider
                     $modify['set_headers'][$k] = $v;
                 }
             }
-            $request = Psr7\modify_request($request, $modify);
+            $request = Psr7\Utils::modifyRequest($request, $modify);
             // Don't pass this internal value along to middleware/handlers.
             unset($options['_conditional']);
         }
@@ -257,6 +268,36 @@ class PDFfiller extends GenericProvider
     public function getStatusCode()
     {
         return $this->statusCode;
+    }
+
+    /**
+     * Sends a request and returns the response. A 4xx/5xx response is returned,
+     * not thrown, so that checkResponse() can handle it (as in league/oauth2-client 1.x).
+     *
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     */
+    protected function sendRequest(RequestInterface $request)
+    {
+        try {
+            return $this->getHttpClient()->send($request);
+        } catch (BadResponseException $e) {
+            return $e->getResponse();
+        }
+    }
+
+    /**
+     * Sends a request and returns the parsed response.
+     *
+     * league/oauth2-client 2.x expects getResponse() to return a ResponseInterface
+     * here; our getResponse() already parses and checks it.
+     *
+     * @param RequestInterface $request
+     * @return array
+     */
+    public function getParsedResponse(RequestInterface $request)
+    {
+        return $this->getResponse($request);
     }
 
     /**

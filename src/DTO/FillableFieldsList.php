@@ -61,7 +61,7 @@ class FillableFieldsList extends ListObject
     /**
      * @inheritdoc
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         $fields = $this->getFields();
 
@@ -71,6 +71,7 @@ class FillableFieldsList extends ListObject
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $fields = array_flip($this->getFields());
@@ -87,6 +88,7 @@ class FillableFieldsList extends ListObject
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if ($value instanceof FillableField) {
@@ -122,6 +124,7 @@ class FillableFieldsList extends ListObject
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $fields = array_flip($this->getFields());
