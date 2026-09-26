@@ -13,6 +13,7 @@ use PDFfiller\OAuth2\Client\Provider\Contracts\Stringable;
  *
  * @package PDFfiller\OAuth2\Client\Provider\Core
  */
+#[\AllowDynamicProperties]
 abstract class AbstractObject implements Arrayable
 {
     use CastsTrait;

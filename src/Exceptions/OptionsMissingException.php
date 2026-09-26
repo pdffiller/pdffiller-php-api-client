@@ -20,7 +20,7 @@ class OptionsMissingException extends Exception
      * @param int $code
      * @param Exception|null $previous
      */
-    public function __construct($options, $code = 0, Exception $previous = null)
+    public function __construct($options, $code = 0, ?Exception $previous = null)
     {
         $this->options = $options;
         parent::__construct("", $code, $previous);
