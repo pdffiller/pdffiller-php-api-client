@@ -7,6 +7,7 @@ You can sign up for the API [here](https://www.pdffiller.com/en/developers#tab-p
 
 ## System Requirements
 * PHP >= 8.1 (tested on PHP 8.1–8.5);
+* `guzzlehttp/guzzle` 7.4+ or 8.x (with `guzzlehttp/psr7` 1.x–3.x);
 * `mbstring` extension;
 * `intl` extension;
 

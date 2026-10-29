@@ -213,11 +213,34 @@ class PDFfiller extends GenericProvider
             throw new TokenMissingException();
         }
 
+        // guzzlehttp/psr7 3 no longer uppercases the method or casts numeric header values
+        $method = strtoupper($method);
+        $options['headers'] = $this->normalizeHeaders($options['headers'] ?? []);
         $options['headers']['User-Agent'] = self::USER_AGENT . '/' . self::VERSION;
         $request = $this->getAuthenticatedRequest($method, $url, $this->getAccessToken()->getToken(), $options);
         $request = $this->applyOptions($request, $options);
 
         return $this->getResponse($request);
+    }
+
+    /**
+     * Casts numeric header values to strings, as guzzlehttp/psr7 1.x/2.x did
+     * @param array $headers
+     * @return array
+     */
+    private function normalizeHeaders(array $headers)
+    {
+        foreach ($headers as $name => $value) {
+            if (is_int($value) || is_float($value)) {
+                $headers[$name] = (string) $value;
+            } elseif (is_array($value)) {
+                $headers[$name] = array_map(function ($item) {
+                    return is_int($item) || is_float($item) ? (string) $item : $item;
+                }, $value);
+            }
+        }
+
+        return $headers;
     }
 
     /**
