@@ -123,6 +123,27 @@ class PDFfillerTest extends TestCase
         $this->assertSame(200, $provider->getStatusCode());
     }
 
+    public function testLowercaseMethodIsSentUppercase(): void
+    {
+        $provider = $this->provider([self::json([])], true);
+
+        $provider->apiCall('get', 'folders');
+
+        $this->assertSame('GET', $this->request()->getMethod());
+    }
+
+    public function testNumericHeaderValuesAreSentAsStrings(): void
+    {
+        $provider = $this->provider([self::json([])], true);
+
+        $provider->queryApiCall('folders', ['headers' => ['X-Page' => 2, 'X-Ratio' => 1.5, 'X-Ids' => [7, 'eight']]]);
+
+        $request = $this->request();
+        $this->assertSame('2', $request->getHeaderLine('X-Page'));
+        $this->assertSame('1.5', $request->getHeaderLine('X-Ratio'));
+        $this->assertSame(['7', 'eight'], $request->getHeader('X-Ids'));
+    }
+
     public function testFormParamsAreSentUrlEncoded(): void
     {
         $provider = $this->provider([self::json(['id' => 1], 201)], true);
